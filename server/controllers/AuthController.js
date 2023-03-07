@@ -228,8 +228,8 @@ exports.sendEmails = async (req, res) => {
       from: process.env.EMAIL,
       to: req.body.email,
       subject: "forgetting password",
-      text: "message from email",
-      html: "<h1>message from last test in coffée</h1>",
+      text: "Verify email",
+      html: "<h1>message from  !!!!</h1>",
     };
 
     const info = await transporter.sendMail(mailOptions);
