@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../img/login.png";
 import SignUp from "../../img/signUp.png";
 import Forget from "../../img/forget.png";
-import GoogleLogin from "react-google-login";
+// import GoogleLogin from "react-google-login";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 import "./Login.css";
 
@@ -32,13 +33,39 @@ const Login = () => {
   const [isReset, setIsReset] = useState(false);
   const [data, setData] = useState(initialState);
 
-  const responseSuccessGoogle = (response) => {
-    console.log("Success" + response);
-  };
+  // ====== google =====
+  function handleCallbackResponse(response) {
+    console.log("Encoded JWT : " + response.credential);
+    var userObject = jwt_decode(response.credential);
+    console.log(userObject["family_name"]);
 
-  const responseErrorGoogle = (error) => {
-    console.log(error);
-  };
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        username: userObject["family_name"],
+        email: userObject["email"],
+        name: userObject["name"],
+        image: userObject["picture"],
+      })
+    );
+    navigate("/home");
+  }
+
+  useEffect(() => {
+    const google = window.google;
+    google.accounts.id.initialize({
+      client_id:
+        "524515332728-27fqktclhcj59ejke4i1rfpotg8c47k8.apps.googleusercontent.com",
+      callback: handleCallbackResponse,
+    });
+
+    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+      theme: "outline",
+      size: "large",
+    });
+
+    google.accounts.id.prompt();
+  }, []);
 
   // const loading = useSelector((state) => state.authReducer.loading);
   const navigate = useNavigate();
@@ -371,7 +398,7 @@ const Login = () => {
                 </p>
               </div>
             )}
-            <div className="inputBx">
+            <div class="button">
               <button type="submit" className="button">
                 {signUp ? "register" : isForget ? "resset now" : "login"}
               </button>
@@ -393,16 +420,7 @@ const Login = () => {
           </form>
           <hr />
 
-          <div className="google">
-            <GoogleLogin
-              clientId="271675632150-ssc2jgfdk1gv0gtkng5s3q4ukmb9c801.apps.googleusercontent.com"
-              buttonText="Login With Google"
-              onSuccess={responseSuccessGoogle}
-              onFailure={responseErrorGoogle}
-              cookiePolicy={"single_host_origin"}
-              isSignedIn={true}
-            />
-          </div>
+          <div id="signInDiv">Sign in with google</div>
         </div>
       </div>
     </section>
