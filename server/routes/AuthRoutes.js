@@ -11,4 +11,5 @@ route.post("/signin", auth.signin);
 route.post("/reset-password/:id", verifyToken, auth.ResetPassword);
 route.post("/forget-password", auth.ForgotPassword);
 
+
 module.exports = route;

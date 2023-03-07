@@ -19,7 +19,7 @@ const port = process.env.PORT;
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() =>
-    server.listen(port, () => console.log("server is run in port 3000 "))
+    server.listen(port, () => console.log("server is run in port 5000 "))
   )
   .catch(() => console.log("cannot find server connection"));
 
