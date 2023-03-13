@@ -1,28 +1,29 @@
 const mongoose = require("mongoose");
+const { date } = require("yup");
 
 const userSchema = new mongoose.Schema({
   fullname: String,
-  picture: String,
+  picture: file,
   gender: String,
-  birthday: String,
+  birthday: Date,
   email: String,
   password: String,
-  experience: [],
-  competence: String,
-  cv: String,
-  university: String,
+  experience: [], //periode w societe
+  competence: [],
+  cv: file,
+  university: [String], // user plusieurs university
   open_work: String,
   open_stage: String,
   adress: String,
   city: String,
-  certificate: String,
+  certificate: file, // type file upload certif //objet : nom certif , date , societe , url
   role: {
     type: String,
-    enum: ["admin", "user", "expert", "campany"],
+    enum: ["admin", "user", "expert"],
     default: "user",
   },
   activated: {
-    type: String,
+    type: Boolean, // boolean
     default: false,
   },
 });

@@ -1,6 +1,5 @@
 const User = require("../models/userModel.js");
 const Company = require("../models/campanyModel.js");
-const Expert = require("../models/expertModel.js");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -40,12 +39,13 @@ exports.register =
     req.body.password = hashedPass;
     let exist = false;
     const iscampany = await Company.findOne({ email: Email });
-    const isExpert = await Expert.findOne({ email: Email });
+    const isExpert = await User.findOne({ email: Email });
     const isUser = await User.findOne({ email: Email });
     if (isUser || isExpert || iscampany) {
       exist = true;
       res.status(400).json({ msg: "user already exist " });
     }
+
     if (req.body.role === "user") {
       if (!exist) {
         const actif = true;
@@ -92,7 +92,7 @@ exports.register =
       }
     } else if (req.body.role === "expert") {
       if (!exist) {
-        const user = await Expert.create({
+        const user = await User.create({
           fullname,
           email,
           password: hashedPass,
@@ -143,6 +143,7 @@ exports.signin =
       var token = jwt.sign(
         {
           id: user.id,
+          role: user.role,
         },
         process.env.SECRET_TOKEN,
         {
@@ -178,7 +179,7 @@ exports.signin =
             email: user.email,
             fullName: user.fullName,
           },
-          message: "Login successfull for company",
+          message: "Login successfull for company or expert",
           accessToken: token,
         });
       } else {
@@ -189,57 +190,57 @@ exports.signin =
     }
   });
 
-exports.sendEmails = async (req, res) => {
-  const oAuth2Client = new google.auth.OAuth2(
-    process.env.CLIENT_ID,
-    process.env.CLIENT_SECRET,
-    process.env.REDIRECT_URL
-  );
-  oAuth2Client.setCredentials({
-    refresh_token: process.env.REFRESH_TOKEN,
-  });
+// exports.sendEmails = async (req, res) => {
+//   const oAuth2Client = new google.auth.OAuth2(
+//     process.env.CLIENT_ID,
+//     process.env.CLIENT_SECRET,
+//     process.env.REDIRECT_URL
+//   );
+//   oAuth2Client.setCredentials({
+//     refresh_token: process.env.REFRESH_TOKEN,
+//   });
 
-  const accessToken = new Promise((resolve, reject) => {
-    oAuth2Client.getAccessToken((err, accessToken) => {
-      if (err) reject(err);
-      resolve(accessToken);
-    });
-  });
+//   const accessToken = new Promise((resolve, reject) => {
+//     oAuth2Client.getAccessToken((err, accessToken) => {
+//       if (err) reject(err);
+//       resolve(accessToken);
+//     });
+//   });
 
-  // email config
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        type: "OAuth2",
-        clientId: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        refreshToken: process.env.REFRESH_TOKEN,
-        accessToken: accessToken,
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
+//   // email config
+//   try {
+//     const transporter = nodemailer.createTransport({
+//       service: "gmail",
+//       host: "smtp.gmail.com",
+//       port: 587,
+//       secure: false,
+//       auth: {
+//         type: "OAuth2",
+//         clientId: process.env.CLIENT_ID,
+//         clientSecret: process.env.CLIENT_SECRET,
+//         refreshToken: process.env.REFRESH_TOKEN,
+//         accessToken: accessToken,
+//         user: process.env.EMAIL,
+//         pass: process.env.EMAIL_PASSWORD,
+//       },
+//     });
 
-    const mailOptions = {
-      from: process.env.EMAIL,
-      to: req.body.email,
-      subject: "forgetting password",
-      text: "Verify email",
-      html: "<h1>message from  !!!!</h1>",
-    };
+//     const mailOptions = {
+//       from: process.env.EMAIL,
+//       to: req.body.email,
+//       subject: "forgetting password",
+//       text: "Verify email",
+//       html: "<h1>message from  !!!!</h1>",
+//     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-    return res.status(200).json(info);
-  } catch (error) {
-    console.error("Error sending email: " + error);
-    return res.status(400).json(error);
-  }
-};
+//     const info = await transporter.sendMail(mailOptions);
+//     console.log("Email sent: " + info.response);
+//     return res.status(200).json(info);
+//   } catch (error) {
+//     console.error("Error sending email: " + error);
+//     return res.status(400).json(error);
+//   }
+// };
 
 //Forgot Password
 
@@ -283,9 +284,9 @@ exports.sendEmails = async (req, res) => {
     const mailOptions = {
       from: process.env.EMAIL,
       to: req.body.email,
-      subject: "TLINK well be deployed soon",
-      text: "message from email",
-      html: "<h1>hello every One guess how's back</h1>",
+      subject: "forgetting password",
+      text: "message from WORKHUB",
+      html: "<h1>Check to update your password</h1>",
     };
 
     const info = await transporter.sendMail(mailOptions);

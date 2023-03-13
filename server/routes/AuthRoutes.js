@@ -15,7 +15,8 @@ const {
 
 //imported validators
 
-route.post("/signup", validate(registerValidator), auth.register);
+// 9odem signUp hatta nchouuf aaleeh l méé yssayviich f DB :=> validate(registerValidator),
+route.post("/signup", auth.register);
 route.post("/sendMail", auth.sendEmails);
 route.post("/signin", validate(loginValidator), auth.signin);
 route.post("/reset-password/:id", verifyToken, auth.ResetPassword);

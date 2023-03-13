@@ -15,9 +15,8 @@ const registerValidator = yup.object().shape({
   experience: yup.string().min(4),
   birthday: yup
     .date()
-    .max(new Date(Date.now() - 567648000000), "You must be valid")
-    .required("Required"),
-  gender: yup.string().required().max(255).oneOf(["male", "female"]),
+    .max(new Date(Date.now() - 567648000000), "You must be valid"),
+  gender: yup.string().oneOf(["male", "female"]),
   website: yup.string().matches(URL, "Enter a valid url"),
 });
 

@@ -47,11 +47,10 @@ section .contentBx {
 section .contentBx .formBx {
   width: 50%;
 }
-.radio{
+.radio {
   display: flex;
   justify-content: space-between;
 }
-
 
 .selectForm {
   width: 100%;
@@ -65,8 +64,12 @@ section .contentBx .formBx {
   margin-top: 10%;
 }
 
-.button{
-    
+.withGoogle {
+  display: flex;
+  padding: 20px 85px;
+}
+
+.button {
   /* display: flex;
   justify-content: center;
   margin-top: 10%; */
@@ -81,20 +84,15 @@ section .contentBx .formBx {
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  
-
-  
 }
 
-
-.google {
+/* .google {
   display: flex;
   justify-content: center;
   margin-top: 10%;
-}
+} */
 
-
-.GoogleBtn {
+/* .GoogleBtn {
   display: flex;
   padding: 10px 20px;
   width: 100%;
@@ -105,13 +103,8 @@ section .contentBx .formBx {
   font-size: 14px;
   margin-top: 10%;
 
-  /* color: rgb(12, 12, 12);
-  outline: none;
-  font-weight: 500;
-  cursor: pointer;
-  border-style: 1px;
-   */
-}
+} */
+
 .hashedDiv {
   display: flex;
   width: 100%;
@@ -125,6 +118,7 @@ section .contentBx .formBx h1 {
   margin-bottom: 20px;
   display: inline-block;
   letter-spacing: 1px;
+  margin-top: 5%;
 }
 section .contentBx .formBx p {
   margin-left: 15%;
@@ -132,7 +126,7 @@ section .contentBx .formBx p {
 
 section .contentBx .formBx .inputBx {
   margin-bottom: 10px;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 section .contentBx .formBx .inputBx span {
@@ -172,7 +166,7 @@ section .contentBx .formBx .inputBx input[type="submit"]:hover {
 }
 
 section .contentBx .formBx .remember {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   color: #607d8b;
   font-weight: 400;
   display: flex;

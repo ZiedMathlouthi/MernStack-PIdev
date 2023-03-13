@@ -10,6 +10,7 @@ import jwt_decode from "jwt-decode";
 import "./Login.css";
 
 import { register, signin } from "../../Actions/AuthActions.js";
+import axios from "axios";
 const Login = () => {
   const initialState = {
     role: "user",
@@ -74,6 +75,13 @@ const Login = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+  const registerBackFront = async (d) => {
+    await axios
+      .post("/auth/signup", d)
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log({ msg: err.message }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -124,7 +132,7 @@ const Login = () => {
                 value={data.gender}
                 onChange={handleChange}
               />
-              <label>Homme</label>
+              <label>Male</label>
               <input
                 required
                 type="radio"
@@ -132,7 +140,7 @@ const Login = () => {
                 value={data.gender}
                 onChange={handleChange}
               />
-              <label>Femme</label>
+              <label>Female</label>
             </div>
             <div className="inputBx">
               <span>Competence</span>
@@ -181,7 +189,7 @@ const Login = () => {
                 value={data.gender}
                 onChange={handleChange}
               />
-              <label>Homme</label>
+              <label>Male</label>
               <input
                 required
                 type="radio"
@@ -189,7 +197,7 @@ const Login = () => {
                 value={data.gender}
                 onChange={handleChange}
               />
-              <label>Femme</label>
+              <label>Female</label>
             </div>
             <div className="inputBx">
               <span>Competence</span>
@@ -214,7 +222,7 @@ const Login = () => {
               />
             </div>
             <div className="inputBx">
-              <span>Certificate expertize</span>
+              <span>Certificate Of expertise</span>
               <input
                 required
                 type="file"
@@ -385,8 +393,8 @@ const Login = () => {
             ) : (
               <div className="remember">
                 <label>
-                  <input required type="checkbox" name="checkremember" />
-                  Remember me
+                  <input required type="checkbox" name="checkremember" /> I
+                  agree with Terms
                 </label>
                 <p
                   onClick={() => {
@@ -399,8 +407,12 @@ const Login = () => {
               </div>
             )}
             <div class="button">
-              <button type="submit" className="button">
-                {signUp ? "register" : isForget ? "resset now" : "login"}
+              <button
+                type="submit"
+                className="button"
+                onClick={() => registerBackFront(data)}
+              >
+                {signUp ? "Register" : isForget ? "Reset" : "Login"}
               </button>
             </div>
             <div className="inputBx">
@@ -420,7 +432,9 @@ const Login = () => {
           </form>
           <hr />
 
-          <div id="signInDiv">Sign in with google</div>
+          <div className="withGoogle" id="signInDiv">
+            Sign in with google
+          </div>
         </div>
       </div>
     </section>

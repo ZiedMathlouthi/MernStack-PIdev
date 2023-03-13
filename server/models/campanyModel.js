@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const campanySchema = new mongoose.Schema({
   fullname: String,
-  picture: String,
+  picture: file,
   email: String,
   password: String,
   adress: String,
@@ -15,7 +15,7 @@ const campanySchema = new mongoose.Schema({
     default: "user",
   },
   activated: {
-    type: String,
+    type: Boolean,
     default: false,
   },
 });
