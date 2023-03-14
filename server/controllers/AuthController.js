@@ -1,12 +1,19 @@
 const User = require("../models/userModel.js");
 const Company = require("../models/campanyModel.js");
 const Expert = require("../models/expertModel.js");
+const UserVerification = require("../models/UserVerification")
+const router = require("express").Router();
 
+const path= require("path")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const createToken = require("../midleware/CreateToken");
 const { google } = require("googleapis");
 const nodemailer = require("nodemailer");
+const{v4 : uuidv4} =require("uuid")
+require ("dotenv").config()
+
+
 
 // const randomstring = require("randomstring");
 
@@ -32,6 +39,7 @@ exports.register =
       registerCommerce,
       certificate,
       experience,
+      verified,
     } = req.body;
 
     const Email = req.body.email;
@@ -64,12 +72,15 @@ exports.register =
           certificate,
           experience,
           activated: actif,
+          verified:false,
         });
+        
         const token = jwt.sign(
           { email: user.email, id: user._id },
           process.env.SECRET_TOKEN,
           { expiresIn: "200ms" }
         );
+        user.save().then((result)=>{sendVerificationEmail(result,res)})
         res.status(201).send({ msg: "created sucess", user, token });
       }
     } else if (req.body.role === "campany") {
@@ -84,7 +95,9 @@ exports.register =
           adress,
           webSite,
           registerCommerce,
+          verified:false,
         });
+        user.save().then((result)=>{sendVerificationEmail(result,res)})
         res
           .status(201)
           .send({ msg: "created sucess please wait the verification", user });
@@ -102,7 +115,9 @@ exports.register =
           adress,
           certificate,
           experience,
+          verified:false,
         });
+        user.save().then((result)=>{sendVerificationEmail(result,res)})
         res
           .status(201)
           .send({ msg: "created sucess please wait the verification", user });
@@ -110,6 +125,130 @@ exports.register =
     }
   });
 
+  const sendVerificationEmail = ({_id,email},res)=>{
+    const currentUrl="http://localhost:5000/"
+
+    const uniqueString = uuidv4() + _id
+
+    const mailOptions ={
+      from: process.env.EMAIL,
+      to : email,
+      subject : "verify your email",
+      html:`<p>Verifiy your email address to complete the signup and login into your accourt.</p><p>This link
+       <b>expires in 6hours</b>.</p><p>Press <a href =${currentUrl + "auth/verify/" + _id + "/" + uniqueString}>here</
+       a> to proceed.</p>`
+    }
+
+    const saltRounds=10
+    bcrypt.hash(uniqueString, saltRounds).then((hashedUniqueString)=> {
+      const newVerification = new UserVerification({
+        userId : _id,
+        uniqueString : hashedUniqueString,
+        createdAt : Date.now(),
+        expiresAt : Date.now() + 21600000
+      })
+      newVerification.save().then(()=>{
+        transporter.sendMail(mailOptions).then(()=>{
+          // res.json({
+          //   status : "PENDING",
+          //   message : "Verification email sent",
+          // })
+        }).catch((error)=>{
+          console.log(error)
+          res.json({
+            status : "FAILED",
+            message : "Verification email failed",
+          })
+        })
+      }).catch((error)=>{
+        console.log(error)
+        res.json({
+          status : "FAILED",
+          message : "couldn't save verification email",
+        })
+      })
+    }).catch(()=> {
+      res.json({
+        status : "FAILED",
+        message : "An error occurred while hashing email data",
+      })
+    })
+  }
+
+  exports.verif =  async (req, res)=>{
+
+   /* let {userId, uniqueString} = req.params
+
+    users : [User] ;
+    try{
+      users = await User.findByIdAndUpdate(userId, {verified:true});
+      res.status(200).json({message:"cbon"})
+      console.log("test")
+    }catch(error){
+        res.status(400).json({message:error})
+    }
+    */
+
+
+    let {userId, uniqueString} = req.params
+
+    UserVerification.find({userId}).then((result)=>{
+      if(result.length > 0){
+        const {expiresAt} = result[0];
+        const hashedUniqueString = result [0].uniqueString
+
+        if (expiresAt < Date.now()){
+          UserVerification.deleteOne({userId}).then((result)=>{
+            User.deleteOne({_id : userId}).then(()=>{
+              let message = "Link has expired try again"
+              res.redirect(`/auth/verified/error=true&message=${message}`)
+            }).catch((error)=>{
+              let message = "clearing user with expired unique string failed"
+              res.redirect(`/auth/verified/error=true&message=${message}`)
+            })
+          }).catch((error)=>{
+            console.log(error)
+            let message = "an error withle clearing expired user verification record"
+            res.redirect(`/auth/verified/error=true&message=${message}`)
+          })
+        }else{
+          bcrypt.compare(uniqueString, hashedUniqueString).then((result)=>{
+            if(result){
+              User.updateOne({_id : userId}, {verified : true}).then(()=>{
+                UserVerification.deleteOne({userId}).then(()=>{
+                  res.sendFile(path.join(__dirname,"../views/verified.html"))
+                }).catch((error)=>{
+                  console.log(error)
+                  let message = "an error withlefinalizing successful verification email"
+                  res.redirect(`/auth/verified/error=true&message=${message}`)
+                })
+              }).catch((error)=>{
+                console.log(error)
+                let message = "an error coccured while updating user record to show verified"
+                res.redirect(`/auth/verified/error=true&message=${message}`)
+              })
+            }else{
+              let message = "invalid verification detailspassed , check your inbox"
+              res.redirect(`/auth/verified/error=true&message=${message}`)
+            }
+          }).catch((error)=>{
+            let message = "an error withle comparing unique srings"
+            res.redirect(`/auth/verified/error=true&message=${message}`)
+          })     
+        }
+      }else{
+        let message = "account record dosent exist or has been verified already Pleaze signup or login "
+        res.redirect(`/auth/verified/error=true&message=${message}`)
+      }
+    }).catch((error)=>{
+      console.log(error)
+      let message = "an error withle checking verification email"
+      res.redirect(`/auth/verified/error=true&message=${message}`)
+    })
+  }
+exports.verified =  (req,res)=>{
+  res.sendFile(path.join(__dirname, "../views/verified.html"))
+}
 //Login
 exports.signin =
   ("/",
@@ -118,47 +257,31 @@ exports.signin =
       email: req.body.email,
     });
 
+
     if (!user) {
       return res.status(404).send({
         message: "User Not found.",
       });
     }
     if (user.role == "user") {
-      //comparing passwords
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
-      // checking if password was valid and send response accordingly
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!",
-        });
-      }
-      //signing token with user id
-      var token = jwt.sign(
-        {
-          id: user.id,
-        },
-        process.env.SECRET_TOKEN,
-        {
-          expiresIn: 86400,
-        }
-      );
 
-      //responding to client request with user profile success message and  access token .
-      res.status(200).send({
-        user: {
-          id: user._id,
-          email: user.email,
-          fullName: user.fullName,
-        },
-        message: "Login successfull for user",
-        accessToken: token,
-      });
-    } else if (user.role === "campany" || user.role === "expert") {
-      if (!user.activated) {
+      if(!user.verified){
+        res.json({
+          status:"FAILED",
+          message:"Emil hasn't been verifiedyet . check inbox"
+        })
+      }else{
+        var passwordIsValid = bcrypt.compareSync(
+          req.body.password,
+          user.password
+        );
+        // checking if password was valid and send response accordingly
+        if (!passwordIsValid) {
+          return res.status(401).send({
+            accessToken: null,
+            message: "Invalid Password!",
+          });
+        }
         //signing token with user id
         var token = jwt.sign(
           {
@@ -169,15 +292,53 @@ exports.signin =
             expiresIn: 86400,
           }
         );
-        return res.status(200).send({
+  
+        //responding to client request with user profile success message and  access token .
+        res.status(200).send({
           user: {
             id: user._id,
             email: user.email,
             fullName: user.fullName,
           },
-          message: "Login successfull for company",
+          message: "Login successfull for user",
           accessToken: token,
         });
+      }
+      //comparing passwords
+      
+    } else if (user.role === "campany" || user.role === "expert") {
+      if (!user.activated) {
+
+        if(!user.verified){
+          res.json({
+            status:"FAILED",
+            message:"Emil hasn't been verifiedyet . check inbox"
+          })
+        }else{
+          var token = jwt.sign(
+            {
+              id: user.id,
+            },
+            process.env.SECRET_TOKEN,
+            {
+              expiresIn: 86400,
+            }
+          );
+
+          return res.status(200).send({
+            user: {
+              id: user._id,
+              email: user.email,
+              fullName: user.fullName,
+            },
+            message: "Login successfull for company",
+            accessToken: token,
+          });
+        }
+
+        //signing token with user id
+
+        
       } else {
         return res.status(200).send({ msg: "please wait your activation" });
       }
@@ -258,6 +419,7 @@ exports.sendEmails = async (req, res) => {
       resolve(accessToken);
     });
   });
+  
 
   // email config
   try {
@@ -452,6 +614,15 @@ exports.ForgotPassword = async (req, res) => {
   }
 };
 
+exports.deletet = async  (req,res,next)=>{
+  try{
+      await User.findByIdAndRemove(req.params.id)
+      res.send("delete")
+  }catch(err){
+      res.send(err)
+  }
+ }
+
 exports.ResetPassword = async (req, res) => {
   try {
     // get password
@@ -473,3 +644,28 @@ exports.ResetPassword = async (req, res) => {
     res.status(500).json({ msg: err.message });
   }
 };
+
+
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        type: "OAuth2",
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        refreshToken: process.env.REFRESH_TOKEN,
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+})
+
+transporter.verify((error,success)=>{
+  if(error){
+    console.log(error)
+  }else{
+    console.log("ready for messages");
+    console.log(success)
+  }
+})

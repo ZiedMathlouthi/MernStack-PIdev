@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Logo from "../../img/affichage.jpg";
 import "./Login.css";
 import reset from "../../img/reset.png"
@@ -32,6 +32,7 @@ if (data.status == 201){
 
   
   return (
+    
     <section>
       <div className="imgBx">
         <img src={Logo} alt="logo" />
@@ -59,7 +60,7 @@ if (data.status == 201){
           
         </div>
       </div>
-    </section>
+  </section>
   );
 };
 

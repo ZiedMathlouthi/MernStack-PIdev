@@ -10,5 +10,7 @@ route.post("/sendMail", auth.sendEmails);
 route.post("/signin", auth.signin);
 route.post("/reset-password/:id", verifyToken, auth.ResetPassword);
 route.post("/forget-password", auth.ForgotPassword);
+route.get("/verify/:userId/:uniqueString", auth.verif);
+route.delete('/delete/:id' , auth.deletet)
 
 module.exports = route;

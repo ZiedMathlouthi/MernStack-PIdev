@@ -21,5 +21,6 @@ const expertSchema = new mongoose.Schema({
     type: String,
     default: false,
   },
+  verified : Boolean
 });
 module.exports = mongoose.model("expert", expertSchema);

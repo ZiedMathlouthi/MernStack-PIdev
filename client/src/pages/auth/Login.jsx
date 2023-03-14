@@ -3,6 +3,7 @@ import Logo from "../../img/login.png";
 import { FcGoogle } from "react-icons/fc";
 import "./Login.css";
 import { Link } from "react-router-dom";
+import UserService from "../../services/UserService";
 
 const Login = () => {
   const initialState = {
@@ -36,6 +37,10 @@ const Login = () => {
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+
+    
+  
+ 
   return (
     <section>
       <div className="imgBx">
