@@ -1,5 +1,6 @@
 const Users = require("../models/model.user");
 const Companies = require("../models/model.company");
+
 const updatePassword = async (req, res) => {
   const user = await Users.findOne({ email: req.body.email });
   const match = await user.matchPassword(req.body.password);
@@ -49,6 +50,7 @@ const updateCV = async (req, res) => {
     return res.status(200).json("cv updated");
   } else return res.status(403).json("Access denied");
 };
+
 module.exports = {
   updatePassword,
   updateProfile,
