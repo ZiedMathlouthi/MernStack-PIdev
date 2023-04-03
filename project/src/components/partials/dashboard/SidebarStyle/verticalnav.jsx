@@ -207,10 +207,10 @@ const VerticalNav = React.memo(() => {
 
         {expert ? (
           <div className="d-grid my-3">
-            <Button variant="success" className="rounded-pill mb-1">
+            <Button variant="success" className="rounded-pill mb-1" href="/addTest">
               add Test
             </Button>
-            <Button variant="success" className="rounded-pill mb-1">
+            <Button variant="success" className="rounded-pill mb-1" href="/addCourse">
               Add Courses
             </Button>
           </div>

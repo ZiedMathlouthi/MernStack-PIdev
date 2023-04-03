@@ -38,11 +38,22 @@ import EventDetail from "../views/dashboard/app/event-detail";
 import Groups from "../views/dashboard/app/groups";
 import ProfileForums from "../views/dashboard/app/profile-forum";
 
+import AddCourseComponent from "../views/dashboard/addCourse";
+
 export const SimpleRouter = [
   {
     path: "/",
     element: <Default />,
     children: [...DefaultRouter, ...Layout1Router],
+  },
+  {
+    path: "/addCourse",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <AddCourseComponent /> <RightSidebar />{" "}
+      </>
+    ),
   },
   {
     path: "/dashboards/profiles/profile2",

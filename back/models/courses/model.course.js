@@ -14,7 +14,7 @@ const courseSchema = new Schema (
               max: 5
             }],
             default: [],
-          },
+        },
         courseContent: [
             {
                 type: mongoose.Schema.Types.ObjectId,
