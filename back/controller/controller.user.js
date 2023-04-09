@@ -1,53 +1,73 @@
 const Users = require("../models/model.user");
 const Companies = require("../models/model.company");
 const updatePassword = async (req, res) => {
-  const user = await Users.findOne({ email: req.body.email });
-  const match = await user.matchPassword(req.body.password);
-  if (!match) return res.status(400).json({ error: "wrong password" });
-  user.password = req.body.newPassword;
-  await user.save();
-  return res.status(200).json("password updated");
+  try {
+    const user = await Users.findOne({ email: req.body.email });
+    const match = await user.matchPassword(req.body.password);
+    if (!match) return res.status(400).json({ error: "wrong password" });
+    user.password = req.body.newPassword;
+    await user.save();
+    return res.status(200).json("password updated");
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 };
 const updateProfile = async (req, res) => {
-  const {  role, email } = req;
-  const id = req.params.id;
-  if (role == "user" || role == "expert") {
-    await Users.findByIdAndUpdate(id, req.body);
-    return res.status(200).json("profile updated");
-  }
-  if (role == "company") {
-    await Companies.findByIdAndUpdate(id, req.body);
-    return res.status(200).json("profile updated");
+  try {
+    const { role, email } = req;
+    const id = req.params.id;
+    if (role == "user" || role == "expert") {
+      await Users.findByIdAndUpdate(id, req.body);
+      return res.status(200).json("profile updated");
+    }
+    if (role == "company") {
+      await Companies.findByIdAndUpdate(id, req.body);
+      return res.status(200).json("profile updated");
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };
 const updateCoverPhoto = async (req, res) => {
-  const { id, role, email } = req;
-  if (role == "user" || role == "expert") {
-    await Users.findByIdAndUpdate(id, { coverPhoto: req.file.path });
-    return res.status(200).json("cover photo updated");
-  }
-  if (role == "company") {
-    await Companies.findByIdAndUpdate(id, { coverPhoto: req.file.path });
-    return res.status(200).json("cover photo updated");
+  try {
+    const { id, role, email } = req;
+    if (role == "user" || role == "expert") {
+      await Users.findByIdAndUpdate(id, { coverPhoto: req.file.path });
+      return res.status(200).json("cover photo updated");
+    }
+    if (role == "company") {
+      await Companies.findByIdAndUpdate(id, { coverPhoto: req.file.path });
+      return res.status(200).json("cover photo updated");
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };
 const updatePicture = async (req, res) => {
-  const { id, role, email } = req;
-  if (role == "user" || role == "expert") {
-    await Users.findByIdAndUpdate(id, { picture: req.file.path });
-    return res.status(200).json("picture updated");
-  }
-  if (role == "company") {
-    await Companies.findByIdAndUpdate(id, { picture: req.file.path });
-    return res.status(200).json("picture updated");
+  try {
+    const { id, role, email } = req;
+    if (role == "user" || role == "expert") {
+      await Users.findByIdAndUpdate(id, { picture: req.file.path });
+      return res.status(200).json("picture updated");
+    }
+    if (role == "company") {
+      await Companies.findByIdAndUpdate(id, { picture: req.file.path });
+      return res.status(200).json("picture updated");
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };
 const updateCV = async (req, res) => {
-  const { id, role, email } = req;
-  if (role == "user" || role == "expert") {
-    await Users.findByIdAndUpdate(id, { cv: req.file.path });
-    return res.status(200).json("cv updated");
-  } else return res.status(403).json("Access denied");
+  try {
+    const { id, role, email } = req;
+    if (role == "user" || role == "expert") {
+      await Users.findByIdAndUpdate(id, { cv: req.file.path });
+      return res.status(200).json("cv updated");
+    } else return res.status(403).json("Access denied");
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 };
 module.exports = {
   updatePassword,

@@ -50,9 +50,9 @@ const Sidebar = () => {
     )
     return (
         <>
-            <aside className={`${sidebarType.join(" ")} ${sidebarMenuStyle} sidebar sidebar-default sidebar-base navs-rounded-all w-250`} id="first-tour" data-toggle="main-sidebar" data-sidebar="responsive">
+            <aside  className={`${sidebarType.join(" ")} ${sidebarMenuStyle}  sidebar sidebar-default sidebar-base navs-rounded-all w-250`} id="first-tour" data-toggle="main-sidebar" data-sidebar="responsive">
                 <div className="sidebar-body pt-0 data-scrollbar">
-                    <div className="sidebar-list">
+                    <div className="sidebar-list  ">
                        <Verticalnav/>
                     </div>
                 </div>

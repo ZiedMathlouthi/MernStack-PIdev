@@ -37,9 +37,6 @@ import ProfileEvents from "../views/dashboard/app/profile-events";
 import EventDetail from "../views/dashboard/app/event-detail";
 import Groups from "../views/dashboard/app/groups";
 import ProfileForums from "../views/dashboard/app/profile-forum";
-import AppliersTable from "../components/apliersTable";
-import CompanyOffers from "../pages/offers/CompanyOffers";
-import MeetsPage from "../pages/meet/MeetsPage";
 
 export const SimpleRouter = [
   {
@@ -66,11 +63,11 @@ export const SimpleRouter = [
     ),
   },
   {
-    path: "/dashboards/app/offers",
+    path: "/dashboards/app/group-detail",
     element: (
       <>
         <Sidebar />
-        <Header /> <CompanyOffers /> <RightSidebar />{" "}
+        <Header /> <EventDetail /> <RightSidebar />{" "}
       </>
     ),
   },
@@ -84,38 +81,11 @@ export const SimpleRouter = [
     ),
   },
   {
-    path: "/dashboards/app/meets",
-    element: (
-      <>
-        <Sidebar />
-        <Header /> <MeetsPage /> <RightSidebar />{" "}
-      </>
-    ),
-  },
-  {
     path: "/dashboard/app/profile-forum",
     element: (
       <>
         <Sidebar />
         <Header /> <ProfileForums /> <RightSidebar />{" "}
-      </>
-    ),
-  },
-  {
-    path: "/dashboard/app/groups/appliers/:offerId",
-    element: (
-      <>
-        <Sidebar />
-        <Header /> <AppliersTable /> <RightSidebar />{" "}
-      </>
-    ),
-  },
-  {
-    path: "/dashboard/app/groups/offers",
-    element: (
-      <>
-        <Sidebar />
-        <Header /> <CompanyOffers /> <RightSidebar />{" "}
       </>
     ),
   },

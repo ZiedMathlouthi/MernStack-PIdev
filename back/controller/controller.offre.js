@@ -2,9 +2,9 @@ const Offres = require("../models/model.offre");
 const stringMatch = require("../utils/stringMatch");
 applierDetails = {
   fullName: 1,
-  picture: 1,
-  coverPhoto: 1,
+  email: 1,
   city: 1,
+  _id: 1
 };
 offerOwner = {
   fullName: 1,
@@ -22,9 +22,10 @@ offerDetails = {
 };
 const addOffre = async (req, res) => {
   try {
+    console.log(req.id);
     const newOffre = new Offres({
       ...req.body,
-      owner: req.company._id,
+      owner: req.id,
     });
     await newOffre.save();
     newOffre.populate({ path: "owner", select: offerOwner });
@@ -67,14 +68,18 @@ const deleteOffre = (id) => async (req, res) => {
   }
 };
 const applyOffre = (id) => async (req, res) => {
+  console.log(req.params[id])
+  console.log(req.body.id)
   try {
     const offre = await Offres.findById(req.params[id]).exec();
     if (!offre.valid) return res.status(400).json("offer not valid");
     const index = offre.appliers.findIndex(
-      (e) => e.toString?.() === req.user?._id.toString?.()
+      (e) => e.user.toString?.() === req.id.toString?.()
     );
     if (index !== -1) return res.status(400).json("already applied");
-    offre.appliers.push(req.user._id);
+    offre.appliers.push({
+      user: req.body.id
+    });
     await offre.save();
     return res.status(200).json(" applied");
   } catch (err) {
@@ -85,7 +90,7 @@ const unapplyOffre = (id) => async (req, res) => {
   try {
     const offre = await Offres.findById(req.params[id]).exec();
     const index = offre.appliers.findIndex(
-      (e) => e.toString?.() === req.user?._id.toString?.()
+      (e) => e.user.toString?.() === req.body.id.toString?.()
     );
     if (index === -1) return res.status(200).json("already not applied");
     offre.appliers.splice(index, 1);
@@ -96,9 +101,11 @@ const unapplyOffre = (id) => async (req, res) => {
   }
 };
 const getAppliers = (offerId) => async (req, res) => {
+  console.log(req.params[offerId])
   try {
+   
     const offre = await Offres.findById(req.params[offerId])
-      .populate({ path: "appliers", select: applierDetails })
+      .populate({ path: "appliers.user", select: applierDetails })
       .select({ appliers: 1 })
       .lean()
       .exec();
@@ -111,72 +118,39 @@ const getAppliers = (offerId) => async (req, res) => {
 };
 const acceptApplier = (offerId, userId) => async (req, res) => {
   try {
-    console.log("hh");
-    const offre = await Offres.findById(req.params[offerId]).exec();
+    const offre = await Offres.findById(req.body.offerId).exec();
+
     const index = offre?.appliers.findIndex(
-      (e) => e.toString?.() === req.params[userId]
+      (e) => e.user.toString?.() === req.params[userId]
     );
     if (index === -1) return res.status(400).json("invalid params");
-    const indexAccepted = offre?.acceptedAppliers.findIndex(
-      (e) => e.toString?.() === req.params[userId]
-    );
-    if (indexAccepted !== -1) return res.status(400).json("already accepted");
-    offre.acceptedAppliers.push(req.params[userId]);
-    await offre.save();
-    return res.status(200).json("accepted");
+offre.appliers.splice(index, 1, {user: req.params[userId], accepted: true});
+await offre.save();
+return res.status(200).json("accepted");
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
 const unacceptApplier = (offerId, userId) => async (req, res) => {
   try {
-    const offre = await Offres.findById(req.params[offerId]).exec();
+    const offre = await Offres.findById(req.body.offerId).exec();
+    console.log("offer",offre)
     const index = offre?.appliers.findIndex(
-      (e) => e.toString?.() === req.params[userId]
+      (e) => e.user.toString?.() === req.params[userId]
     );
     if (index === -1) return res.status(400).json("invalid params");
-    const indexAccepted = offre?.acceptedAppliers.findIndex(
-      (e) => e.toString?.() === req.params[userId]
-    );
-    if (indexAccepted === -1) return res.status(400).json("already unaccepted");
-    offre.acceptedAppliers.splice(indexAccepted, 1);
+    
+    offre.appliers.splice(index, 1,{user: req.params[userId], accepted: false});
     await offre.save();
     return res.status(200).json("unaccepted");
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
-const getAccepted = async (req, res) => {
-  try {
-    const { offerId } = req.params;
-    const offre = await Offres.findById(offerId)
-      .populate({ path: "acceptedAppliers", select: applierDetails })
-      .select({ acceptedAppliers: 1 })
-      .lean()
-      .exec();
-    if (offre.acceptedAppliers.length === 0)
-      return res.status(204).json(offre.acceptedAppliers);
-    return res.status(200).json(offre.acceptedAppliers);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-};
+
 const getAllOffers = async (req, res) => {
   try {
-    const { search } = req.query;
-    let filterQuery = { valid: true };
-    if (search) {
-      filterQuery = {
-        ...filterQuery,
-        $or: [
-          { name: { $regex: search } },
-          { description: { $regex: search } },
-          { category: { $regex: search } },
-          { mode: { $regex: search } },
-        ],
-      };
-    }
-    const offers = await Offres.find(filterQuery)
+    const offers = await Offres.find({})
       .populate({ path: "owner", select: offerOwner })
       .select(offerDetails)
       .lean()
@@ -221,6 +195,19 @@ const searchOffers = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+const getCompanyOffer = async (req, res) => {
+  try {
+    const offers = await Offres.find({ owner: req.id })
+      .populate({ path: "owner", select: offerOwner })
+      .select(offerDetails)
+      .lean()
+      .exec();
+    if (offers.length === 0) return res.status(204).json(offers);
+    return res.status(200).json(offers);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
 
 module.exports = {
   addOffre,
@@ -231,9 +218,10 @@ module.exports = {
   unapplyOffre,
   acceptApplier,
   unacceptApplier,
-  getAccepted,
+  
   validOffre,
   invalidOffre,
   getAllOffers,
   searchOffers,
+  getCompanyOffer,
 };
