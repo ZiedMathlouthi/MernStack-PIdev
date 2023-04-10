@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Container, Row, Col} from 'react-bootstrap';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
@@ -19,40 +20,29 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const AddCourseComponent = () => {
+const UpdateCourseComponent = () => {
+    const navigate = useNavigate();
     const userData = localStorage.getItem('myData');
     const token = JSON.parse(userData).token;
     const user = JSON.parse(userData).user;
+    const idCourse = useParams().id;
     const API_Url = 'http://127.0.0.1:9000/courses/';
     const config = {
         headers: { Authorization: `Bearer ${token}`}
     };
+    console.log(config)
 
     const [alertVisibility, setAlertVisibility] = useState(false);
-    const [requiredField, setrequiredField] = useState(false);
-    const [chapterTitleData, setChapterTitleData] =useState('');
-    const [courseContentData, setCourseContentData] = useState([]); //mazelet fel submit nguedha
-    const [chapterParagraphsData, setchapterParagraphsData] =useState([]); //mazelet fel submit nguedha
+    const [courseToUpdateData, setCourseToUpdateData] = useState(null);
+    const [chapterTitleData, setChapterTitleData] = useState('');
     const [paragraphTitleData, setparagraphTitle] = useState('');
-    const [paragraphContentData, setparagraphContentData] =useState('');
+    const [paragraphContentData, setparagraphContentData] = useState();
     const [courseData, setCourseData] = useState({
         courseName: '',
         courseDescription: '',
-        courseContent: [
-        {
-            chapterTitle: '',
-            chapterParagraphs: [
-            {
-                paragraphTitle: '',
-                paragraphContent: '',
-                paragraphVideos: null,
-                paragraphImages: null,
-            },
-            ],
-        },
-        ],
+        courseContent: [],
         coursePhoto: null,
-        courseOwner: user._id,
+        courseOwner: '',
     });
 
     const handleClose = (event, reason) => {
@@ -60,6 +50,21 @@ const AddCourseComponent = () => {
             return;
         }
         setAlertVisibility(false);
+    }
+    const handleAddParagraph = (indexChapter) => {
+        let newParag = {
+            paragraphTitle: '',
+            paragraphContent: '',
+            paragraphVideos: null,
+            paragraphImages: null,
+        };
+        courseData.courseContent[indexChapter].chapterParagraphs.push(newParag);
+        setCourseData({...courseData, courseContent: courseData.courseContent})
+    }
+    const handleDeleteChapter = (indexChapter) => () => {
+        let courseContentArray = [...courseData.courseContent];
+        courseContentArray.splice(indexChapter,1);
+        setCourseData({...courseData, courseContent: courseContentArray});
     }
     const handleAddChapter = () => {
         let newChapter = {
@@ -76,24 +81,6 @@ const AddCourseComponent = () => {
         let courseContentArray = courseData.courseContent;
         courseContentArray.push(newChapter);
         setCourseData({...courseData, courseContent: courseContentArray})
-    }
-    const handleAddParagraph = (indexChapter) => {
-        let newParag = {
-            paragraphTitle: '',
-            paragraphContent: '',
-            paragraphVideos: null,
-            paragraphImages: null,
-        };
-        courseData.courseContent[indexChapter].chapterParagraphs.push(newParag);
-        setCourseData({...courseData, courseContent: courseData.courseContent})
-    }
-
-    const handleDeleteChapter = (index) => {
-        console.log(index)
-        let courseContentArray = courseData.courseContent;
-        courseContentArray.splice(index,1);
-        setCourseData({...courseData, courseContent: courseContentArray});
-        setChapterTitleData('');
     }
     const handleCourseInputChange = (event) => {
         const {name,value} = event.target;
@@ -121,16 +108,17 @@ const AddCourseComponent = () => {
     const submitData = (event) => {
         const myForm = document.getElementById("myForm");
         if( myForm.checkValidity() ) {
-            axios.post(API_Url+"addCourse", courseData, config).then(
+            axios.put(API_Url+"updateCourseById/"+idCourse, {updatedCourseContent: courseData}, config).then(
                 (result) => {
                     console.log(result);
-                    setAlertVisibility(true);
                 }
             ).catch(
                 (error) => {
                     console.log(error);
                 }
             )
+            setAlertVisibility(true);
+            navigate("../../");
             console.log(courseData);
             console.log(token)
         }else{
@@ -138,9 +126,62 @@ const AddCourseComponent = () => {
             console.log(myForm)
         }
     }
-        
 
-    return (
+
+
+    // this fct/useEffect is used to fetch The object Course by its Id
+    useEffect(()=>{
+        const fetchCourseToUpdateData = async () => {
+            await axios.get(API_Url+"getCourseById/"+idCourse).then(
+                (result) => {
+                    setCourseToUpdateData(result.data);
+                }
+            ).catch(
+                (error) => {
+                    console.log(error);
+                }
+            )
+        };
+        fetchCourseToUpdateData();
+    },[]);
+
+    //this useEffect to fetch all the chapters data and insert it into courseData
+    useEffect(() => {
+        const fetchChapterData = async () => {
+            const chapterPromises = courseToUpdateData.courseContent.map((chapterId) => {
+                return axios.get(API_Url+"getChapterById/"+chapterId);
+            });
+
+            const chapterResponses = await Promise.all(chapterPromises);
+            const chapterData = chapterResponses.map((chapterResponse) => chapterResponse.data);
+
+            const coureToupdate = {
+                courseName: courseToUpdateData.courseName,
+                courseDescription: courseToUpdateData.courseDescription,
+                coursePhoto: courseToUpdateData.coursePhoto,
+                courseOwner: courseToUpdateData.courseOwner,
+                courseContent: chapterData.map((chapter) => ({
+                    chapterTitle: chapter.chapterTitle,
+                    chapterParagraphs: chapter.chapterParagraphs.map((parag) => ({
+                        paragraphTitle: parag.paragraphTitle,
+                        paragraphContent: parag.paragraphContent,
+                        paragraphVideos: parag.paragraphVideos,
+                        paragraphImages: parag.paragraphImages
+                    })),
+                })),
+            };
+            setCourseData(coureToupdate);
+        };
+
+        if(courseToUpdateData){
+            fetchChapterData();
+        }
+    },[courseToUpdateData])
+    
+
+    if(courseData && courseData.courseName){
+        // console.log(courseData)
+        return (
         <>
             <div id='content-page' className='content-page'>
 
@@ -157,12 +198,14 @@ const AddCourseComponent = () => {
                                 <br/>
                                 <br/>
                                 <TextField 
-                                    error={requiredField}
+                                    // error={requiredField}
                                     id="outlined-basic" 
                                     label="Course Title" 
                                     name='courseName'
                                     fullWidth
-                                    variant="outlined" 
+                                    variant="outlined"
+                                    defaultValue={courseData.courseName}
+                                    
                                     onChange={handleCourseInputChange}
                                     required
                                 />
@@ -176,6 +219,7 @@ const AddCourseComponent = () => {
                                     fullWidth
                                     rows={8}
                                     required
+                                    defaultValue={courseData.courseDescription}
                                     onChange={handleCourseInputChange}
                             />
                             <br/><br/>
@@ -183,6 +227,7 @@ const AddCourseComponent = () => {
                                     type="file"
                                     name='coursePhoto'
                                     label="Course Image"
+                                    defaultValue={courseData.coursePhoto}
                                     onChange={handleCourseInputChange}
                                     InputLabelProps={{
                                         shrink: true,
@@ -209,6 +254,7 @@ const AddCourseComponent = () => {
                                         name={`chapterTitle${indexChapter}`}
                                         fullWidth
                                         variant="outlined" 
+                                        defaultValue={_.chapterTitle}
                                         onChange={(e)=>handleChapterTitleInputChange(e,indexChapter)}
                                         required
                                     />
@@ -224,7 +270,8 @@ const AddCourseComponent = () => {
                                             id="outlined-basic" 
                                             label={`Paragraph ${indexParag+1} title`}
                                             name='paragraphTitle'
-                                            variant="outlined" 
+                                            variant="outlined"
+                                            defaultValue={_.paragraphTitle}
                                             onChange={(e)=>handleParagrapheTitleInputChange(e,indexChapter,indexParag)}
                                             required
                                         />
@@ -236,7 +283,8 @@ const AddCourseComponent = () => {
                                             rows={6}
                                             fullWidth
                                             name='paragraphContent'
-                                            variant="outlined" 
+                                            variant="outlined"
+                                            defaultValue={_.paragraphContent}
                                             onChange={(e)=>handleParagrapheContentInputChange(e,indexChapter,indexParag)}
                                             required
                                         />
@@ -268,7 +316,7 @@ const AddCourseComponent = () => {
                                         key={indexChapter+1} 
                                         variant="contained" 
                                         startIcon={<AddIcon />} 
-                                        onClick={(event) => handleAddParagraph(indexChapter)}
+                                        onClick={(event)=>handleAddParagraph(indexChapter)}
                                     >
                                         Add Paragraph
                                     </Button>
@@ -276,7 +324,7 @@ const AddCourseComponent = () => {
                                         key={indexChapter} 
                                         variant="outlined" 
                                         startIcon={<DeleteIcon />} 
-                                        onClick={(event) => handleDeleteChapter(indexChapter)}
+                                        onClick={handleDeleteChapter(indexChapter)}
                                     >
                                         Delete
                                     </Button>
@@ -305,7 +353,7 @@ const AddCourseComponent = () => {
                                     </Button>
                                     <Snackbar open={alertVisibility} autoHideDuration={6000} onClose={handleClose} >
                                         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                                            Course added successfully
+                                            Course updated successfully
                                         </Alert>
                                     </Snackbar>
                                 </Stack>
@@ -317,6 +365,12 @@ const AddCourseComponent = () => {
             </div>
         </>
     );
+    }else{
+        return (
+            <><h1>LOAAAAAAADING</h1></>
+        )
+    }
+    
 }
 
-export default AddCourseComponent
+export default UpdateCourseComponent

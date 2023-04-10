@@ -39,6 +39,8 @@ import Groups from "../views/dashboard/app/groups";
 import ProfileForums from "../views/dashboard/app/profile-forum";
 
 import AddCourseComponent from "../views/dashboard/addCourse";
+import UpdateCourseComponent from "../views/dashboard/updateCourse";
+import CourseComponent from "../views/dashboard/course";
 
 export const SimpleRouter = [
   {
@@ -52,6 +54,24 @@ export const SimpleRouter = [
       <>
         <Sidebar />
         <Header /> <AddCourseComponent /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/course/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> < CourseComponent/> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/updateCourse/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <UpdateCourseComponent /> <RightSidebar />{" "}
       </>
     ),
   },

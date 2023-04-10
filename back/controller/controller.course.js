@@ -1,9 +1,10 @@
 const Course = require("../models/courses/model.course");
 const Chapter = require("../models/courses/model.chapter");
 const UserModel = require("../models/model.user");
+const progressionCourseModel = require("../models/courses/model.progressionCourse");
+const axios = require("axios");
 
 exports.addCourse = async(req, res) => {
-
     const chaptersData = req.body.courseContent;
     let arrayOfChapters = [];
 
@@ -61,7 +62,7 @@ exports.addChapter = async (req, res) => {
 
 exports.getAllCourses = async (req, res) => {
     try {
-        const coursesList = await Course.find({}).then(
+        await Course.find({}).then(
             (e)=>{
                 res.status(200).send(e)
             }
@@ -74,7 +75,7 @@ exports.getAllCourses = async (req, res) => {
 };
 
 exports.getCourseById = async (req, res) => {
-    const id = req.body.id;
+    const id = req.params.id;
 
     try {
         const courseById = await Course.findById(id).then(
@@ -88,6 +89,24 @@ exports.getCourseById = async (req, res) => {
         )
     } catch (error) {
         res.status(400).json({message: "failed getting course by id !!!!"})
+    }
+}
+
+exports.getChapterById = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const chapterById = await Chapter.findById(id).then(
+            (result) => {
+                res.status(200).send(result);
+            }
+        ).catch(
+            (error) => {
+                res.status(404).json({ message: "Chapter NOT FOUND !!!!" })
+            }
+        )
+    } catch (error) {
+        RES.status(400).json({ message: "Failed getting chapter by Id !!!!!" })
     }
 }
 
@@ -128,21 +147,73 @@ exports.getCourseBySubscribedId = async (req, res) => {
 }
 
 exports.applyCourse = async (req, res) => {
-    const courseId = req.body.courseId;
-    const userId = req.body.userId;
+    const courseID = req.params.id;
+    const userID = req.body.userID;
 
-    Course.findByIdAndUpdate(courseId, { $push:{ courseSubcribed: userId } }).then(
+    Course.findByIdAndUpdate(courseID, { $push:{ courseSubcribed: userID } }).then(
         (result) => {
             if(result){
-                res.status(200).json({ message: `userId ${userId} is just subscribed to courseId ${courseId}` });
+                const progressionData = {
+                    userId: userID,
+                    courseId: courseID,
+                }
+                const _progressionData = new progressionCourseModel(progressionData);
+                _progressionData.save().then(
+                    (success) => {
+                        res.status(200).json({ message: `userID ${userID} is just subscribed to courseID ${courseID}` });
+                    }
+                ).catch(
+                    (error) => {
+                        res.status(400).json({message: "Failed to initiate the progression"});
+                    }
+                )
             }else{
-                res.status(404).json({ message: `courseId ${courseId} NOT FOUND` });
+                res.status(404).json({ message: `courseID ${courseID} NOT FOUND` });
             }
         }
     ).catch(
         (error) => {
-            console.log(error);
             res.status(400).json({ message: "Failed Subscribing !!!!!" })
+        }
+    )
+}
+
+exports.getProgressionCourseByUserIdAndCourseId = async (req, res) => {
+    courseID = req.params.courseId;
+    userID = req.params.userId;
+    await progressionCourseModel.find({
+        userId: userID,
+        courseId: courseID
+    }).then (
+        (result) => {
+            res.status(200).send(result);
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({message: `tahche haw l'erruer: ${error}`});
+        }
+    )
+}
+
+exports.updateProgressionCourseByUserIdAndCourseId = async (req, res) => {
+    courseID = req.params.courseId;
+    userID = req.params.userId;
+    incrementOrDecrement = req.body.typeOfUpdate;
+    await progressionCourseModel.findOneAndUpdate(
+        {
+            userId: userID,
+            courseId: courseID
+        },
+        {
+            $inc: { chapterProgression: incrementOrDecrement }
+        }
+    ).then(
+        (result) => {
+            res.status(200).send(result);
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({message:`Error while incrementing/decrementing progression\nError: ${error}`});
         }
     )
 }
@@ -179,8 +250,12 @@ exports.deleteCourseById = async (req, res) => {
 }
 
 exports.updateCourseById = async (req, res) => {
-    const id = req.body.id;
+    const id = req.params.id;
     const updatedCourseContent = req.body.updatedCourseContent;
+    const tokkeeeen = req.header("x-auth-token") || req.headers.authorization;
+    const config = {
+        headers: { Authorization: `Bearer ${tokkeeeen}`}
+    };
 
     let token = req.header("x-auth-token") || req.headers.authorization;
     if(!token){
@@ -197,8 +272,16 @@ exports.updateCourseById = async (req, res) => {
         }else{
             const course = await Course.findById(id);
             if(course.courseOwner.toString() === user.id) {
-                const updatedCourse = await Course.findByIdAndUpdate(id,updatedCourseContent);
-                return res.status(200).json({ message: `Updated successfully` });
+                axios.post("http://127.0.0.1:9000/courses/addCourse",updatedCourseContent).then(
+                    (result) => {
+                        res.status(200).json({msg:"updated SUCCESSFULLY"});
+                    }
+                ).catch(
+                    (ERROR) => {
+                        res.status(400).json({erwrwerwes:"tahche"});
+                    }
+                )
+                const updatedCourse = await Course.findByIdAndDelete(id);
             }
             return res.status(401).send("Bruuuuh youre not the owner !!!");
         }
@@ -206,6 +289,23 @@ exports.updateCourseById = async (req, res) => {
         if(error.name === "CastError"){
             return res.status(404).json({ msg: "Course NOT FOUND !!!!!!" });
         }
-        return res.status(400).json({ msg: error });
+        return res.status(400).json({ mwerwrwsg: error });
+    }
+}
+
+exports.getAllExpertsOwnersArray = async (req, res) => {
+    let ownersArray = [];
+    try {
+        const courses = await Course.find({});
+        courses.map(
+            (course) => {
+                const id = course.courseOwner;
+                const user = UserModel.findById(id).then(
+                    (r) => ownersArray.push(r)
+                );
+            }
+        );
+    } catch (error) {
+        res.status(400).json({msg:error})
     }
 }

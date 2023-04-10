@@ -5,6 +5,7 @@ const userRouter = require("./route.user");
 const offerRouter = require("./route.offre");
 
 const courseRouter = require("./route.course");
+const testsRouter = require("./route.tests");
 
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.use("/user", userRouter);
 router.use("/offers", offerRouter);
 
 router.use("/courses",courseRouter);
+router.use("/tests", testsRouter);
 
 module.exports = router;

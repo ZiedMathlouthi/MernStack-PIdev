@@ -63,7 +63,7 @@ const VerticalNav = React.memo(() => {
       <Accordion as="ul" className="navbar-nav iq-main-menu" id="sidebar-menu">
         <li className="nav-item static-item">
           <Link className="nav-link static-item disabled" to="#" tabIndex="-1">
-            <span className="default-icon">Main Menu</span>
+            <span className="default-icon">Main Menu </span>
             <span
               className="mini-icon"
               data-bs-toggle="tooltip"

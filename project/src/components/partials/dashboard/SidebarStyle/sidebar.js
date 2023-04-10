@@ -58,7 +58,6 @@ const Sidebar = () => {
                 </div>
                 <div className="sidebar-footer"></div>
             </aside>
-            
         </>
     )
 }
