@@ -51,13 +51,16 @@ exports.authorize = (roles) => {
         req.email = email;
         req.id = company._id;
         req.role = "company";
+
         return next();
+
       }
       if (user && roles.includes("user")) {
         console.log("user");
         req.email = email;
         req.id = user._id;
         req.role = "user";
+        console.log("user");
         return next();
       }
       if (user && roles.includes("expert") && user.isExpert) {

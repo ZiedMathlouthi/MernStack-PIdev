@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Container, Button, Image } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -28,6 +28,8 @@ import {
 } from "../../../schemas/user.schema";
 import { login, registerCompany, registerUser } from "../../../api/auth";
 import google_logo from "../../../assets/images/icon-1.png";
+import jwt_decode from "jwt-decode";
+
 const initialValues = {
   password: "",
   email: "",
@@ -37,6 +39,13 @@ SwiperCore.use([Navigation, Autoplay]);
 
 const Register = () => {
   const navigate = useNavigate();
+  const [connected, setConnected] = useState({
+    username: "",
+    email: "",
+    name: "",
+    image: "",
+    google: false,
+  });
 
   function handleSave(data) {
     localStorage.setItem("myData", JSON.stringify(data));
@@ -44,8 +53,61 @@ const Register = () => {
 
   const [done, setDone] = useState(false);
   var response = {};
+
+  // ====== google =====
+  function handleCallbackResponse(response) {
+    console.log("Encoded JWT : " + response.credential);
+    var userObject = jwt_decode(response.credential);
+    console.log(userObject["family_name"]);
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        role: "user",
+        username: userObject["family_name"],
+        email: userObject["email"],
+        name: userObject["name"],
+        image: userObject["picture"],
+      })
+    );
+    navigate("/");
+  }
+
+  useEffect(() => {
+    const google = window.google;
+    google.accounts.id.initialize({
+      client_id:
+        "524515332728-27fqktclhcj59ejke4i1rfpotg8c47k8.apps.googleusercontent.com",
+      callback: handleCallbackResponse,
+    });
+
+    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+      theme: "outline",
+      size: "large",
+    });
+
+    google.accounts.id.prompt();
+  }, []);
+
+  useEffect(() => {
+    const google = window.google;
+    google.accounts.id.initialize({
+      client_id:
+        "524515332728-27fqktclhcj59ejke4i1rfpotg8c47k8.apps.googleusercontent.com",
+      callback: handleCallbackResponse,
+    });
+
+    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+      theme: "outline",
+      size: "large",
+    });
+
+    google.accounts.id.prompt();
+  }, []);
+
   return (
     <>
+      <script src="https://accounts.google.com/gsi/client" async defer></script>
       <section className="sign-in-page ">
         <div id="container-inside" className="d-flex align-content-center">
           <div id="circle-small"></div>
@@ -136,13 +198,13 @@ const Register = () => {
                         return;
                       }
                       if (response.data.user.role == "user") {
-                        navigate("/")
+                        navigate("/");
                       }
                       if (response.data.user.role == "expert") {
-                        navigate("/")
+                        navigate("/");
                       }
                       if (response.data.user.role == "company") {
-                        navigate("/")
+                        navigate("/");
                       }
                       if (response.data.user.role == "admin") {
                         navigate("/dashboard");
@@ -257,28 +319,8 @@ const Register = () => {
                                 >
                                   Or, Sign in with your social account{" "}
                                 </h6>
-                                <div
-                                  style={{
-                                    color: "black",
-                                    borderRadius: "5px",
-                                    border: "1px solid black",
-                                    textAlign: "center",
-                                  }}
-                                  className="form-group mb-1 py-2 "
-                                  id="signInDiv"
-                                >
-                                  <Link
-                                    to="/auth/login"
-                                    className="form-control py-0 style2-input text-black fw-600 bg-facebook border-0 p-0 mb-2"
-                                  >
-                                    <img
-                                      src={google_logo}
-                                      alt="icon"
-                                      className="ms-2 w40 mb-1"
-                                    />{" "}
-                                    Sign in with Google
-                                  </Link>
-                                </div>
+
+                                <div id="signInDiv"></div>
                               </div>
                             </Stack>
                           </Form>

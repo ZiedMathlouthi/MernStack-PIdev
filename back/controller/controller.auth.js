@@ -107,70 +107,74 @@ const signUpCompany = async (req, res) => {
     return res.status(500).json({ error: error });
   }
 };
-const signInWithGoogle = async (req, res, next) => {
-  const { idToken } = req.body;
-  try {
-    if (!idToken)
-      throw new res.status(500).json({
-        message: "Missing Google login infos!",
-      });
-    let response = await client.verifyIdToken({
-      idToken,
-    });
-    const { email_verified, email } = response.payload;
-    if (!email_verified)
-      res.status(400).json({
-        message: "Google account not verified!",
-      });
-    let user = await Users.findOne({ email })
-      .select({
-        email: 1,
-        password: 1,
-        isActive: 1,
-        isBlocked: 1,
-      })
-      .populate("friends")
-      .lean();
-    if (user) {
-      const token = jwt.sign(
-        { _id: user._id, role: AUTH_ROLES.USER },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "15d",
-        }
-      );
-      return res.status(200).json({
-        user,
-        token,
-      });
-    } else {
-      user = new Users({
-        firstName: "FirstnameUser",
-        lastName: "LastnameUser",
-        email,
-        password: email,
-        birthDate: new Date(),
-        country: "Country",
-        gender: "male",
-        isActive: true,
-      });
-      let googleUser = await user.save();
-      const token = jwt.sign(
-        { _id: googleUser._id, role: AUTH_ROLES.USER },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "15d",
-        }
-      );
-      return res.status(200).json({
-        user,
-        token,
-      });
-    }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
+
+//signInWithGoogle
+
+// const signInWithGoogle = async (req, res, next) => {
+//   const { idToken } = req.body;
+//   try {
+//     if (!idToken)
+//       throw new res.status(500).json({
+//         message: "Missing Google login infos!",
+//       });
+//     let response = await client.verifyIdToken({
+//       idToken,
+//     });
+//     const { email_verified, email } = response.payload;
+//     if (!email_verified)
+//       res.status(400).json({
+//         message: "Google account not verified!",
+//       });
+//     let user = await Users.findOne({ email })
+//       .select({
+//         email: 1,
+//         password: 1,
+//         isActive: 1,
+//         isBlocked: 1,
+//       })
+//       .populate("friends")
+//       .lean();
+//     if (user) {
+//       const token = jwt.sign(
+//         { _id: user._id, role: AUTH_ROLES.USER },
+//         process.env.JWT_SECRET,
+//         {
+//           expiresIn: "15d",
+//         }
+//       );
+//       return res.status(200).json({
+//         user,
+//         token,
+//       });
+//     } else {
+//       user = new Users({
+//         firstName: "FirstnameUser",
+//         lastName: "LastnameUser",
+//         email,
+//         password: email,
+//         birthDate: new Date(),
+//         country: "Country",
+//         gender: "male",
+//         isActive: true,
+//       });
+//       let googleUser = await user.save();
+//       const token = jwt.sign(
+//         { _id: googleUser._id, role: AUTH_ROLES.USER },
+//         process.env.JWT_SECRET,
+//         {
+//           expiresIn: "15d",
+//         }
+//       );
+//       return res.status(200).json({
+//         user,
+//         token,
+//       });
+//     }
+//   } catch (err) {
+//     return res.status(500).json({ message: err.message });
+//   }
+// };
+
 const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
