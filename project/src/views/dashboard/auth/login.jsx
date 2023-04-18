@@ -63,7 +63,7 @@ const Register = () => {
     localStorage.setItem(
       "user",
       JSON.stringify({
-        role: "user",
+        role: "user,expert,admin,company",
         username: userObject["family_name"],
         email: userObject["email"],
         name: userObject["name"],
@@ -89,21 +89,21 @@ const Register = () => {
     google.accounts.id.prompt();
   }, []);
 
-  useEffect(() => {
-    const google = window.google;
-    google.accounts.id.initialize({
-      client_id:
-        "524515332728-27fqktclhcj59ejke4i1rfpotg8c47k8.apps.googleusercontent.com",
-      callback: handleCallbackResponse,
-    });
+  // useEffect(() => {
+  //   const google = window.google;
+  //   google.accounts.id.initialize({
+  //     client_id:
+  //       "524515332728-27fqktclhcj59ejke4i1rfpotg8c47k8.apps.googleusercontent.com",
+  //     callback: handleCallbackResponse,
+  //   });
 
-    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "outline",
-      size: "large",
-    });
+  //   google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+  //     theme: "outline",
+  //     size: "large",
+  //   });
 
-    google.accounts.id.prompt();
-  }, []);
+  //   google.accounts.id.prompt();
+  // }, []);
 
   return (
     <>
