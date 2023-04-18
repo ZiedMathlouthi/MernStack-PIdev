@@ -66,7 +66,7 @@ const Postes = () => {
   const [likes, setLikes] = useState(posts.likes);
   const [imagee, setImagee] = useState([])
 const [isLiked, setIsLiked] = useState(false);
-
+const userpicture = JSON.parse(localStorage.getItem("myData")).user.picture;
 	const getUserByID = () => {
 		if (token !== null) {
 			const decoded_token = jwt(token);
@@ -93,20 +93,20 @@ const [isLiked, setIsLiked] = useState(false);
   console.log("this is TOKEN",token)
   console.log( "this is id", User.user._id)
 
+  const fetchData = async () => {
+    try {
+      
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/post/`);
+      setPosts(res.data.posts);
+      setImagee(res.data.data.posts.image)
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+  
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/post/`);
-        setPosts(res.data.posts);
-        setImagee(res.data.data.posts.image)
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      }
-    };
     
-
     fetchData();
   }, []);
   console.log("image list",imagee)
@@ -122,7 +122,6 @@ const [isLiked, setIsLiked] = useState(false);
 			setLikes({ likes: res.data });
 			isLiked  ? setIsLiked(false) : setIsLiked(true);
       setLikes({ status: isLiked });
-      window.location.reload()
 		} catch (err) {
 			console.log(`error with like post ${err}`);
 		}
@@ -198,28 +197,14 @@ const [comment,setComment] = useState()
     const newPost ={
       userId : User.user._id,
       fullName : User.user.fullName,
-      desc :desc.current.value
+      desc :desc.current.value,
+      image
     }
     
-
-     if (image){
-       const data =new FormData()
-       const filename = Date.now() + image.name
-       data.append("name", filename)
-       data.append("file", image)
-       newPost.image = filename
-       console.log(newPost)
-       try {
-         dispatch(uploadImage(data))
-      } catch (error) {
-        console.log(error)
-      }
-
-     }
-     
-     
     dispatch(uploadPost(newPost))
     reset()
+    fetchData()
+
   }
   return (
     <>
@@ -246,7 +231,7 @@ const [comment,setComment] = useState()
                           className="avatar-60 rounded-circle"
                         />
                       </div>
-                      <form
+                      <form enctype='multipart/form-data'
                         className="post-text ms-3 w-100 "
                         // onClick={handleShow}
                       >
@@ -258,10 +243,8 @@ const [comment,setComment] = useState()
                           ref ={desc}
                           required
                         />
-                      </form>
-                    </div>
-                    <hr></hr>
-                    <ul className=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap w-100">
+
+<ul className=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap w-100">
                       <li className="me-3 mb-md-0 mb-2 w-50">
                         <Link to="#" className="btn btn-soft-primary"
                          onClick={()=>imageRef.current.click()}>
@@ -283,6 +266,7 @@ const [comment,setComment] = useState()
                         </button>
                         <div style={{display : "none"}}>
                           <input type="file" name="myImage" ref={imageRef} onChange={onImageChange} />
+
                         </div>
                       </li>
                       {image && (
@@ -293,6 +277,10 @@ const [comment,setComment] = useState()
                        )}
 
                     </ul> 
+                      </form>
+                    </div>
+                    <hr></hr>
+                    
                   </Card.Body>
                 </Card>
               </Col>
@@ -309,7 +297,7 @@ const [comment,setComment] = useState()
                         
                           <img
                             className="rounded-circle img-fluid"
-                            src={user01}
+                            src={`http://localhost:9000/data/${userpicture}`}
                             alt=""
                           />
                           
@@ -396,7 +384,7 @@ const [comment,setComment] = useState()
                         <div className="row-span-2 row-span-md-1">
                         </div>
                         
-                        <img  width={350} src={imgpost} alt=""/>
+                        <img  width={500} height={500} src= {`http://localhost:9000/data/${post.image}`} alt=""/>
                       </div>
                     </div>
                     <div className="comment-area mt-3">
@@ -444,12 +432,12 @@ const [comment,setComment] = useState()
                       <hr />
                       <ul className="post-comments list-inline p-0 m-0">
                      
-                      {post.comments.map((item) => (
+                      {post.comments.map((item,i) => (
                         <li>
                           <div className="d-flex">
                             <div className="user-img">
-                              <img
-                                src={user3}
+                              <img key={i}
+                                src={`http://localhost:9000/data/${item?.user?.picture}`}
                                 alt="user1"
                                 className="avatar-35 rounded-circle img-fluid"
                               />

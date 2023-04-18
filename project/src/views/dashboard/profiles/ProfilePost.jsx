@@ -21,6 +21,7 @@ function ProfilePost() {
 	  const [error, setError] = useState(null);
 	  const [likes, setLikes] = useState(posts.likes);
 	  const [isLiked, setIsLiked] = useState(false);
+    const userpicture = JSON.parse(localStorage.getItem("myData")).user.picture;
 	  // Fetch all comments on component mount
 	  const handleLike = async (postId) => {
 		const userId =User.user._id
@@ -108,7 +109,7 @@ function ProfilePost() {
                         
                           <img
                             className="rounded-circle img-fluid"
-                            src={user3}
+                            src={`http://localhost:9000/data/${userpicture}`}
                             alt=""
                           />
                           
@@ -195,7 +196,7 @@ function ProfilePost() {
                         <div className="row-span-2 row-span-md-1">
                         </div>
                         
-                        <img  className="imgspecif" width = {300}   src={imgpost} alt=""/>
+                        <img  className="imgspecif" width = {300}   src={`http://localhost:9000/data/${post.image}`} alt=""/>
                       </div>
                     </div>
                     <div className="comment-area mt-3">
@@ -243,12 +244,14 @@ function ProfilePost() {
                       <hr />
                       <ul className="post-comments list-inline p-0 m-0">
                      
-                      {post.comments.map((item) => (
+                      {post.comments.map((item,i) => (
+                        
                         <li>
+                          {console.log(item)}
                           <div className="d-flex">
                             <div className="user-img">
-                              <img
-                                src={user3}
+                              <img key={i}
+                                src={`http://localhost:9000/data/${item?.user?.picture}`}
                                 alt="user1"
                                 className="avatar-35 rounded-circle img-fluid"
                               />

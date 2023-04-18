@@ -2,10 +2,14 @@ const Post = require("../models/model.post.js");
 const UserModel = require("../models/model.user.js")
 const mongoose = require('mongoose')
 
-
+const commentDetails = {
+  fullName: 1,
+  picture: 1,
+  _id: 1
+};
  const createPost = async (req,res)=>{
    
-  const newPost = new Post(req.body)
+  const newPost = new Post({...req.body , image:req.file?.filename})
  try {
   await newPost.save()
   res.status(200).json(newPost)
@@ -17,7 +21,7 @@ const mongoose = require('mongoose')
 const getPost = async(req,res)=>{
   const id =req.params.id
   try {
-    const post =await Post.findById(id)
+    const post =await Post.findById(id).populate({ path: "comments.user", select: commentDetails });
     res.status(200).json(post)
   } catch (error) {
     res.status(500).json(error) 
@@ -111,7 +115,8 @@ const getTimelinePosts = async (req,res)=>{
 }
 const getAllPost = async (req, res) => {
 	try {
-		const posts = await Post.find({});
+		const posts = await Post.find({}).populate({ path: "comments.user", select: commentDetails });
+		;
 		res.status(200).json({ status: true, message: 'All Posts', posts });
 	} catch (error) {
 		res.status(500).json({
@@ -165,7 +170,7 @@ const addComent = async (req, res) => {
 const getAllComents = async (req, res) => {
 	const postId = req.params.id;
 	try {
-		const post = await Post.findById(postId);
+		const post = await Post.findById(postId).populate({ path: "comments.user", select: commentDetails });
 		if (!post) {
 			return res
 				.status(404)
@@ -211,7 +216,8 @@ const deleteComment = async (req, res) => {
 const getAllPostsByUserId =async ( req,res)=>{
   const userId = req.params.id;
 	try {
-		const allPosts = await Post.find({userId});
+		const allPosts = await Post.find({userId}).populate({ path: "comments.user", select: commentDetails });
+    ;
 		if (!allPosts) {
 			return res
 				.status(404)

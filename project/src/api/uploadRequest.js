@@ -17,7 +17,14 @@ export const uploadImage = async (data) => {
 
   export const uploadPost = async (data) =>{
     try {
-      const response = await AxiosInstance.post('/post', data);
+      const token = JSON.parse(localStorage.getItem("myData")).token;
+
+    const config = {
+    headers: { 
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}` },
+  };
+      const response = await AxiosInstance.post('/post', data,config);
       console.log(response);
   
       return response;

@@ -24,7 +24,8 @@ const postSchema = new Schema(
       likes:[],
       comments:[{
         user :{
-            type: mongoose.Schema.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user",
             required: true,
         },
         fullName:{

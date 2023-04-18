@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const { upload } = require("../utils/upload");
 
 const {createPost, getPost, updatePost,addComent,getUserByID, deletePost,deleteComment, getAllPostsByUserId,getAllComents,likePost, getTimelinePosts,getAllPost} = require('../controller/controller.post')
 
-router.post("/" , createPost)
+router.post("/" ,upload.single("image"), createPost)
 router.get("/:id" , getPost)
 router.put("/:id" , updatePost)
 router.delete("/:id" , deletePost)
