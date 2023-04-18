@@ -122,6 +122,7 @@ const Groups = () => {
                         <div className="d-grid gap-3 d-grid-template-1fr-19">
                           <Card className="mb-0">
                             <div className="top-bg-image">
+                              {/** insert image of course here */}
                               <img key={indexCourse} src={img1} className="img-fluid w-100" alt="group-bg" />
                             </div>
                             <Card.Body className=" text-center">
@@ -230,6 +231,8 @@ const Groups = () => {
                 </div>
                 </>
               </TabPanel>
+
+              
               <TabPanel value="2">
                   <>
                   <div id="content-page" className="content-page">

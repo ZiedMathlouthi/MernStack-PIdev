@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Container } from 'react-bootstrap';
+import { Card, Container, Row, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 
@@ -143,8 +143,6 @@ const CourseComponent = (props) => {
         }
     };
 
-    console.log(indexCurrentChapter)
-
     if(courseData && chaptersArray){
         //verify if the current user connected is subscribed to the course
         if(indexCurrentChapter<0){
@@ -153,99 +151,111 @@ const CourseComponent = (props) => {
         else if(courseContent.courseSubcribed.includes(userId)){
             return(
                 <>
-                <Container>
-                <h1>Course : {courseTitle}</h1>
-        
-            {/** this is the bar of next and back */}
-                <MobileStepper
-                    style={{ 
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                    variant="progress"
-                    steps={chaptersArrayLength} //lahne l nombre de chapitre 
-                    position="static"
-                    activeStep={activeStep}
-                    
-                />
-            {/** ends here */}
-        
-        
-                <h3>Chapter : {chaptersArray[indexCurrentChapter].chapterTitle}</h3>
-        
-            
-            {/** this is where it begins the parags details and course details */}
-                <Box
-                    component="main"
-                    sx={{ flexGrow: 1, p: 3, width: { sm: `100% px` } }}
-                >
-                    <Toolbar />
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ flexGrow: 1 }}>
-                            <Typography paragraph>  {/** S mapping the chapter's parag */}
-                                {chaptersArray[indexCurrentChapter].chapterParagraphs.map(
-                                    (paragraph,indexParagraph) => (
-                                        <>
-                                        <h3>Pragraph title : {paragraph.paragraphTitle}</h3>
-                                        {paragraph.paragraphContent}
-                                        </>
-                                    )
-                                )}
-                            </Typography>
-                        </Box>
-                        <Box sx={{ width: '100%', maxWidth: 200, bgcolor: 'background.paper' }}>
-                            <nav aria-label="secondary mailbox folders">
-                                <List>
-                                        {chaptersArray.map(
-                                            (chapter,indexChapter) => (
-                                                <>
-                                                <ListItem disablePadding>
-                                                    <ListItemText primary={`${indexChapter+1}. ${chapter.chapterTitle}`} />
-                                                    <br/>
-                                                </ListItem>
-                                                </>
-                                            )
-                                        )}
-                                </List>
-                            </nav>
-                        </Box>
-                    </Box>
-                </Box>
-            {/**ends here */}
-        
-        
-            {/** this is the bar of next and back */}
-                <MobileStepper
-                    variant="progress"
-                    steps={chaptersArrayLength} //lahne l nombre de chapitre 
-                    position="static"
-                    activeStep={activeStep}
-                    nextButton={
-                        <Button size="small" onClick={handleNext} disabled={activeStep === {chaptersArrayLength}}> {/*lahne nombre chapitre -1*/}
-                            Next
-                            {theme.direction === 'rtl' ? (
-                                <KeyboardArrowLeft />
-                            ) : (
-                                <KeyboardArrowRight />
-                            )}
-                        </Button>
-                    }
-                    backButton={
-                        <Button size="small" onClick={handleBack} >
-                            {theme.direction === 'rtl' ? (
-                                <KeyboardArrowRight />
-                            ) : (
-                                <KeyboardArrowLeft />
-                            )}
-                                Back
-                        </Button>
-                    }
-                />
-            {/** ends here */}
-        
-        
-                </Container>
+                <div id='content-page' className='content-page'>
+                    <Container>
+                        <Row>
+                            <Col sm="200" lg="25">
+                                <Card>
+                                    <Card.Header className="d-flex justify-content-between">
+                                        <div className="header-title">
+                                            <h2 className="card-title"><strong>Course : </strong>{courseTitle}</h2>
+                                        </div>
+                                    </Card.Header>
+                                    <Card.Body>
+                
+                                        {/** this is the bar of next and back */}
+                                            <MobileStepper
+                                                style={{ 
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}
+                                                variant="progress"
+                                                steps={chaptersArrayLength} //lahne l nombre de chapitre 
+                                                position="static"
+                                                activeStep={activeStep}
+                                                
+                                            />
+                                        {/** ends here */}
+                                    
+                                    
+                                            <h3><strong>Chapter : </strong>{chaptersArray[indexCurrentChapter].chapterTitle}</h3>
+                                    
+                                        
+                                        {/** this is where it begins the parags details and course details */}
+                                            <Box
+                                                component="main"
+                                                sx={{ flexGrow: 1, p: 3, width: { sm: `100% px` } }}
+                                            >
+                                                <Toolbar />
+                                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                                    <Box sx={{ flexGrow: 1 }}>
+                                                        <Typography paragraph>  {/** S mapping the chapter's parag */}
+                                                            {chaptersArray[indexCurrentChapter].chapterParagraphs.map(
+                                                                (paragraph,indexParagraph) => (
+                                                                    <>
+                                                                    <h5><u><strong>Pragraph title : </strong>{paragraph.paragraphTitle}</u></h5>
+                                                                    <p><em>{paragraph.paragraphContent}</em></p>
+                                                                    </>
+                                                                )
+                                                            )}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box sx={{ width: '100%', maxWidth: 200, bgcolor: '#f8f9fa', textDecorationThickness:"4" }}>
+                                                        <nav aria-label="secondary mailbox folders">
+                                                            <List>
+                                                                    {chaptersArray.map(
+                                                                        (chapter,indexChapter) => (
+                                                                            <>
+                                                                            <ListItem disablePadding>
+                                                                                <ListItemText primary={`${indexChapter+1}. ${chapter.chapterTitle}`} />
+                                                                                <br/>
+                                                                            </ListItem>
+                                                                            </>
+                                                                        )
+                                                                    )}
+                                                            </List>
+                                                        </nav>
+                                                    </Box>
+                                                </Box>
+                                            </Box>
+                                        {/**ends here */}
+                                    
+                                    
+                                        {/** this is the bar of next and back */}
+                                            <MobileStepper
+                                                variant="progress"
+                                                steps={chaptersArrayLength} //lahne l nombre de chapitre 
+                                                position="static"
+                                                activeStep={activeStep}
+                                                nextButton={
+                                                    <Button size="small" onClick={handleNext} disabled={activeStep === {chaptersArrayLength}}> {/*lahne nombre chapitre -1*/}
+                                                        Next
+                                                        {theme.direction === 'rtl' ? (
+                                                            <KeyboardArrowLeft />
+                                                        ) : (
+                                                            <KeyboardArrowRight />
+                                                        )}
+                                                    </Button>
+                                                }
+                                                backButton={
+                                                    <Button size="small" onClick={handleBack} >
+                                                        {theme.direction === 'rtl' ? (
+                                                            <KeyboardArrowRight />
+                                                        ) : (
+                                                            <KeyboardArrowLeft />
+                                                        )}
+                                                            Back
+                                                    </Button>
+                                                }
+                                            />
+                                        {/** ends here */}
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
                 </>
             )
         }else{

@@ -7,7 +7,7 @@ const testSchema = new Schema(
         testTitle: { type: String, required: true },
         testDescription: { type: String, required: true },
         listOfQuestions: [
-            { type: mongoose.Schema.Types.ObjectId }
+            { type: mongoose.Schema.Types.ObjectId, ref: 'question', required: true }
         ],
 
         listOfRatesTest: {
@@ -18,7 +18,12 @@ const testSchema = new Schema(
             }],
             default: [],
         },
-        
+        listOfSubcribed: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'users',
+            }
+        ],
         testPhoto: String, //when you change this go to the controller and change
         testOwner: { type: mongoose.Schema.Types.ObjectId, ref: 'expert', required: true },
         testTimer: { type: Number, default: 15 },

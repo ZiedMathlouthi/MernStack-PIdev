@@ -272,22 +272,20 @@ exports.updateCourseById = async (req, res) => {
         }else{
             const course = await Course.findById(id);
             if(course.courseOwner.toString() === user.id) {
-                axios.post("http://127.0.0.1:9000/courses/addCourse",updatedCourseContent).then(
-                    (result) => {
+                axios.post("http://127.0.0.1:9000/courses/addCourse",updatedCourseContent)
+                .then((result) => {
                         res.status(200).json({msg:"updated SUCCESSFULLY"});
                     }
-                ).catch(
-                    (ERROR) => {
-                        res.status(400).json({erwrwerwes:"tahche"});
+                ).catch((ERROR) => {
+                        res.status(400).json({msg:"Error"});
                     }
                 )
                 const updatedCourse = await Course.findByIdAndDelete(id);
             }
-            return res.status(401).send("Bruuuuh youre not the owner !!!");
         }
     } catch (error) {
         if(error.name === "CastError"){
-            return res.status(404).json({ msg: "Course NOT FOUND !!!!!!" });
+            return res.status(404).json({ msg: "Cast Error !!!!!!" });
         }
         return res.status(400).json({ mwerwrwsg: error });
     }
