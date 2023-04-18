@@ -12,26 +12,16 @@ import {
 import Card from "../../../components/Card";
 import CustomToggle from "../../../components/dropdowns";
 import ReactFsLightbox from "fslightbox-react";
-import { UpdateExperience, UpdateProfile, UpdateStudyCarrier,UpdateSkill,UpdateCertificate } from "../../../api/auth.js";
-import imgp1 from "../../../assets/images/user/15.jpg";
+import {
+  UpdateExperience,
+  UpdateProfile,
+  UpdateStudyCarrier,
+  UpdateSkill,
+  UpdateCertificate,
+} from "../../../api/auth.js";
 
 import imgp25 from "../../../assets/images/user/1.jpg";
-import imgp26 from "../../../assets/images/user/02.jpg";
-import imgp27 from "../../../assets/images/user/05.jpg";
-import imgp28 from "../../../assets/images/user/06.jpg";
-import imgp29 from "../../../assets/images/user/07.jpg";
-import imgp30 from "../../../assets/images/user/08.jpg";
-import imgp31 from "../../../assets/images/user/02.jpg";
-import imgp36 from "../../../assets/images/user/02.jpg";
-import imgp42 from "../../../assets/images/user/02.jpg";
-import imgp43 from "../../../assets/images/user/02.jpg";
-import imgp44 from "../../../assets/images/user/02.jpg";
-import imgp45 from "../../../assets/images/user/02.jpg";
-import imgp46 from "../../../assets/images/user/02.jpg";
-import imgp47 from "../../../assets/images/page-img/52.jpg";
-import imgp48 from "../../../assets/images/page-img/53.jpg";
-import imgp49 from "../../../assets/images/page-img/54.jpg";
-import imgp50 from "../../../assets/images/page-img/55.jpg";
+import ProfilePost from "./ProfilePost";
 import ProfileHeader from "../../../components/profile-header";
 import bg3 from "../../../assets/images/page-img/profile-bg3.jpg";
 import g1 from "../../../assets/images/page-img/g1.jpg";
@@ -56,7 +46,11 @@ import user1 from "../../../assets/images/user/1.jpg";
 import small07 from "../../../assets/images/small/07.png";
 import small08 from "../../../assets/images/small/08.png";
 import small09 from "../../../assets/images/small/09.png";
-import { updatePicture ,updateProfilePicture,updateCv} from "../../../api/auth.js";
+import {
+  updatePicture,
+  updateProfilePicture,
+  updateCv,
+} from "../../../api/auth.js";
 // Fslightbox plugin
 const FsLightbox = ReactFsLightbox.default
   ? ReactFsLightbox.default
@@ -78,8 +72,6 @@ const Profile2 = () => {
   const [show9, setShow9] = useState(false);
   const handleClose9 = () => setShow9(false);
   const handleShow9 = () => setShow9(true);
-  
-
 
   const [imageController, setImageController] = useState({
     toggler: false,
@@ -97,38 +89,19 @@ const Profile2 = () => {
   const [company, setCompany] = useState(false);
   const [visiteur, setVisiteur] = useState(false);
 
-  const [picture,setPicture]=useState("");
-  const [coverPhoto,setCoverPhoto]=useState("");
-  const [cv,setCv]=useState("");
+  const [picture, setPicture] = useState("");
+  const [coverPhoto, setCoverPhoto] = useState("");
+  const [cv, setCv] = useState("");
 
-  const[fullname, setFullname] = useState('');
-  const[experience, setExperience] = useState('');
-  const[studyCarrier, setStudyCarrier] = useState('');
-  const[skill, setSkill] = useState('');
-  const[certificate, setCertificate] = useState('');
- 
+  const [fullname, setFullname] = useState("");
+  const [experience, setExperience] = useState("");
+  const [studyCarrier, setStudyCarrier] = useState("");
+  const [skill, setSkill] = useState("");
+  const [certificate, setCertificate] = useState("");
 
-
-
-
-
-
-
-  
-      
-
-
-
-
-
-
-
- // Récupérez les données de l'utilisateur à partir de localStorage
- const userr = JSON.parse(localStorage.getItem('myData')).user;
- console.log(userr);
-
-  
-
+  // Récupérez les données de l'utilisateur à partir de localStorage
+  const userr = JSON.parse(localStorage.getItem("myData")).user;
+  console.log(userr);
 
   const buttonsModals = (visiteur) => {
     switch (visiteur) {
@@ -158,7 +131,7 @@ const Profile2 = () => {
               add new experience
             </Button>
             <Modal centered show={show6} onHide={handleClose6}>
-              <Form onSubmit={handleSubmitExperience}> 
+              <Form onSubmit={handleSubmitExperience}>
                 <Modal.Header closeButton>
                   <Modal.Title>New Experience</Modal.Title>
                 </Modal.Header>
@@ -166,7 +139,8 @@ const Profile2 = () => {
                   <Row>
                     <Col md="6" className="mb-3">
                       <Form.Label md="6" htmlFor="validationDefault01">
-                      The Company                       </Form.Label>
+                        The Company{" "}
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         id="validationDefault01"
@@ -178,31 +152,45 @@ const Profile2 = () => {
                     <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
                         <Form.Label>Post</Form.Label>
-                        <Form.Control type="text" required name="poste"  onChange={handleChangeExperience} />
+                        <Form.Control
+                          type="text"
+                          required
+                          name="poste"
+                          onChange={handleChangeExperience}
+                        />
                       </Form.Group>
                     </Col>
-                   
+
                     <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
                         <Form.Label>Start Date</Form.Label>
-                        <Form.Control type="date" defaultValue="2019-12-18" name="startDate"   onChange={handleChangeExperience}/>
+                        <Form.Control
+                          type="date"
+                          defaultValue="2019-12-18"
+                          name="startDate"
+                          onChange={handleChangeExperience}
+                        />
                       </Form.Group>
                     </Col>
 
                     <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
                         <Form.Label>End Date </Form.Label>
-                        <Form.Control type="date" defaultValue="2019-12-18" name="endDate"   onChange={handleChangeExperience} />
+                        <Form.Control
+                          type="date"
+                          defaultValue="2019-12-18"
+                          name="endDate"
+                          onChange={handleChangeExperience}
+                        />
                       </Form.Group>
                     </Col>
                   </Row>
-                
                 </Modal.Body>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={handleClose6}>
                     Close
                   </Button>
-                  <Button variant="primary"  type ="submit">
+                  <Button variant="primary" type="submit">
                     Add new Experience
                   </Button>
                 </Modal.Footer>
@@ -216,7 +204,7 @@ const Profile2 = () => {
   const [updateProfile, setUpdateProfile] = useState(false);
 
   const [data, setData] = useState();
-  
+
   // handle Change in input
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -231,71 +219,71 @@ const Profile2 = () => {
       console.log(error);
     }
   };
-const handleChangeExperience= (e) => {
-  setExperience({ ...experience, [e.target.name]: e.target.value });
-  console.log(experience);
-};
+  const handleChangeExperience = (e) => {
+    setExperience({ ...experience, [e.target.name]: e.target.value });
+    console.log(experience);
+  };
 
-const handleSubmitExperience = (e) => {
-  e.preventDefault();
-  try {
-    const userId = JSON.parse(localStorage.getItem("myData")).user.id;
-    UpdateExperience(experience);
-    handleClose6();
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const handleSubmitExperience = (e) => {
+    e.preventDefault();
+    try {
+      const userId = JSON.parse(localStorage.getItem("myData")).user.id;
+      UpdateExperience(experience);
+      handleClose6();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-const handleChangeStudyCarrier= (e) => {
-  setStudyCarrier({ ...studyCarrier, [e.target.name]: e.target.value });
-  console.log(studyCarrier);
-};
-const handleSubmitStudyCarrier = (e) => {
-  e.preventDefault();
-  try {
-    const userId = JSON.parse(localStorage.getItem("myData")).user.id;
-    UpdateStudyCarrier(studyCarrier);
-    handleClose9();
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const handleChangeStudyCarrier = (e) => {
+    setStudyCarrier({ ...studyCarrier, [e.target.name]: e.target.value });
+    console.log(studyCarrier);
+  };
+  const handleSubmitStudyCarrier = (e) => {
+    e.preventDefault();
+    try {
+      const userId = JSON.parse(localStorage.getItem("myData")).user.id;
+      UpdateStudyCarrier(studyCarrier);
+      handleClose9();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-const handleChangeSkill= (e) => {
-  setSkill({ ...skill, [e.target.name]: e.target.value });
-  console.log(skill);
-};
-const handleSubmitSkill = (e) => {
-  e.preventDefault();
-  try {
-    const userId = JSON.parse(localStorage.getItem("myData")).user.id;
-    UpdateSkill(skill);
-    handleClose8();
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const handleChangeSkill = (e) => {
+    setSkill({ ...skill, [e.target.name]: e.target.value });
+    console.log(skill);
+  };
+  const handleSubmitSkill = (e) => {
+    e.preventDefault();
+    try {
+      const userId = JSON.parse(localStorage.getItem("myData")).user.id;
+      UpdateSkill(skill);
+      handleClose8();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-const handleSubmitCertificate = (e) => {
-  e.preventDefault();
-  try {
-    const userId = JSON.parse(localStorage.getItem("myData")).user.id;
-    UpdateCertificate(certificate);
-    handleClose7();
-  } catch (error) {
-    console.log(error);
-  }
-};
-const handleChangeCertificate= (e) => {
-  setCertificate({ ...certificate, [e.target.name]: e.target.value });
-  console.log(certificate);
-};
+  const handleSubmitCertificate = (e) => {
+    e.preventDefault();
+    try {
+      const userId = JSON.parse(localStorage.getItem("myData")).user.id;
+      UpdateCertificate(certificate);
+      handleClose7();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleChangeCertificate = (e) => {
+    setCertificate({ ...certificate, [e.target.name]: e.target.value });
+    console.log(certificate);
+  };
 
-  const handleSubmitPicture= (e) => {
+  const handleSubmitPicture = (e) => {
     e.preventDefault();
     const form = new FormData();
-    form.append('picture',picture);
+    form.append("picture", picture);
     console.log(form);
     try {
       const userId = JSON.parse(localStorage.getItem("myData")).user.id;
@@ -303,17 +291,12 @@ const handleChangeCertificate= (e) => {
     } catch (error) {
       console.log(error);
     }
-
   };
-  
 
-
-
-
-  const handleSubmitProfilePicture= (e) => {
+  const handleSubmitProfilePicture = (e) => {
     e.preventDefault();
     const form = new FormData();
-    form.append('coverPhoto',coverPhoto);
+    form.append("coverPhoto", coverPhoto);
     console.log(form);
     try {
       const userId = JSON.parse(localStorage.getItem("myData")).user.id;
@@ -321,14 +304,12 @@ const handleChangeCertificate= (e) => {
     } catch (error) {
       console.log(error);
     }
-
   };
 
-
-  const handleSubmitCv= (e) => {
+  const handleSubmitCv = (e) => {
     e.preventDefault();
     const form = new FormData();
-    form.append('cv',cv);
+    form.append("cv", cv);
     console.log(form);
     try {
       const userId = JSON.parse(localStorage.getItem("myData")).user.id;
@@ -336,7 +317,6 @@ const handleChangeCertificate= (e) => {
     } catch (error) {
       console.log(error);
     }
-
   };
   return (
     <>
@@ -345,7 +325,10 @@ const handleChangeCertificate= (e) => {
         sources={[g1, g2, g3, g4, g5, g6, g7, g8, g9]}
         slide={imageController.slide}
       />
-      <ProfileHeader title="Profile 2" img={`http://localhost:9000/data/${userr.picture}`} />
+      <ProfileHeader
+        title="Profile 2"
+        img={`http://localhost:9000/data/${userr.picture}`}
+      />
       <div className="profile-2">
         <div id="content-page" className="content-page">
           <Container>
@@ -863,7 +846,7 @@ const handleChangeCertificate= (e) => {
                         <div className="user-img">
                           <img
                             loading="lazy"
-                            src= {`http://localhost:9000/data/${userr.coverPhoto}`} 
+                            src={`http://localhost:9000/data/${userr.coverPhoto}`}
                             alt="userimg"
                             className="avatar-60 rounded-circle"
                           />
@@ -1257,791 +1240,7 @@ const handleChangeCertificate= (e) => {
                       </ul>
                     </Card.Body>
                   </div>
-                  <Card>
-                    <Card.Body>
-                      <ul className="post-comments p-0 m-0">
-                        <li className="mb-2">
-                          <div className="d-flex justify-content-between">
-                            <div className="user-img">
-                              <img
-                                loading="lazy"
-                                src={imgp26}
-                                alt="userimg"
-                                className="avatar-60 me-3 rounded-circle img-fluid"
-                              />
-                            </div>
-                            <div className="w-100 text-margin">
-                              <h5>Mathilda Gvarliana</h5>
-                              <small className=" d-flex align-items-center ">
-                                <i className="material-symbols-outlined md-14 me-1">
-                                  schedule
-                                </i>
-                                March 14, 23:00
-                              </small>
-                              <p>
-                                Hi, I am flying to Los Angeles to attend
-                                #VSFS2020 castings. I hope it will happen and my
-                                dream comes true. Wish me luck.
-                              </p>
-                              <hr />
-                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      favorite_border
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Love it
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      comment
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Comment
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center">
-                                    <span className="material-symbols-outlined md-18">
-                                      share
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Share
-                                    </span>
-                                  </div>
-                                </div>
-                                <span className="card-text-2">
-                                  5.2k people love it
-                                </span>
-
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <span className="card-text-1 me-1">
-                                    5.2k people love it
-                                  </span>
-                                  <div className="iq-media-group ms-2">
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp27}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp28}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp29}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp30}
-                                        alt=""
-                                      />
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                              <form
-                                className="d-flex align-items-center mt-3"
-                                action="#"
-                              >
-                                <input
-                                  type="text"
-                                  className="form-control rounded"
-                                  placeholder="Write your comment"
-                                />
-                                <div className="comment-attagement d-flex align-items-center me-4">
-                                  <span className="material-symbols-outlined md-18 me-1">
-                                    comment
-                                  </span>
-                                  <h6 className="card-text-1">Comment</h6>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </Card.Body>
-                  </Card>
-                  <Card>
-                    <Card.Body>
-                      <ul className="post-comments p-0 m-0">
-                        <li className="mb-2">
-                          <div className="d-flex justify-content-between">
-                            <div className="user-img">
-                              <img
-                                loading="lazy"
-                                src={imgp31}
-                                alt="userimg"
-                                className="avatar-60 me-3 rounded-circle img-fluid"
-                              />
-                            </div>
-                            <div className="w-100 text-margin">
-                              <h5>Mathilda Gvarliana</h5>
-                              <small className=" d-flex align-items-center ">
-                                <i className="material-symbols-outlined md-14 me-1">
-                                  schedule
-                                </i>
-                                March 14, 23:00
-                              </small>
-                              <div className="mt-2 mb-2 ratio">
-                                <iframe
-                                  title="myFrame"
-                                  className="rounded embed-responsive-item"
-                                  src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0"
-                                  allowFullScreen
-                                ></iframe>
-                              </div>
-                              <p>Dolce Spring Summer 2020 - Women's Show</p>
-                              <hr />
-                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      favorite_border
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Love it
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      comment
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Comment
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center">
-                                    <span className="material-symbols-outlined md-18">
-                                      share
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Share
-                                    </span>
-                                  </div>
-                                </div>
-                                <span className="card-text-2">
-                                  5.2k people love it
-                                </span>
-
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <span className="card-text-1 me-1">
-                                    5.2k people love it
-                                  </span>
-                                  <div className="iq-media-group ms-2">
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp27}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp28}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp29}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp30}
-                                        alt=""
-                                      />
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                              <form
-                                className="d-flex align-items-center mt-3"
-                                action="#"
-                              >
-                                <input
-                                  type="text"
-                                  className="form-control rounded"
-                                  placeholder="Write your comment"
-                                />
-                                <div className="comment-attagement d-flex align-items-center me-4">
-                                  <span className="material-symbols-outlined md-18 me-1">
-                                    comment
-                                  </span>
-                                  <h6 className="card-text-1">Comment</h6>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </Card.Body>
-                  </Card>
-                  <Card>
-                    <Card.Body>
-                      <ul className="post-comments p-0 m-0">
-                        <li className="mb-2">
-                          <div className="d-flex justify-content-between">
-                            <div className="user-img">
-                              <img
-                                loading="lazy"
-                                src={imgp36}
-                                alt="userimg"
-                                className="avatar-60 me-3 rounded-circle img-fluid"
-                              />
-                            </div>
-                            <div className="w-100 text-margin">
-                              <h5>Mathilda Gvarliana</h5>
-                              <small className=" d-flex align-items-center ">
-                                {" "}
-                                <i className="material-symbols-outlined md-14 me-1">
-                                  schedule
-                                </i>{" "}
-                                March 14, 23:00
-                              </small>
-                              <p>
-                                Lorem Ipsum is simply dummy text of the printing
-                                and typesetting industry.{" "}
-                              </p>
-                              <hr />
-                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      favorite_border
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Love it
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      comment
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Comment
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center">
-                                    <span className="material-symbols-outlined md-18">
-                                      share
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Share
-                                    </span>
-                                  </div>
-                                </div>
-                                <span className="card-text-2">
-                                  5.2k people love it
-                                </span>
-
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <span className="card-text-1 me-1">
-                                    5.2k people love it
-                                  </span>
-                                  <div className="iq-media-group ms-2">
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp27}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp28}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp29}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp30}
-                                        alt=""
-                                      />
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="text-center mt-4">
-                                <p>Hide 203 comments</p>
-                              </div>
-                              <ul className="post-comments p-2  card rounded">
-                                <li className="mb-2">
-                                  <div className="d-flex justify-content-between">
-                                    <div className="user-img">
-                                      <img
-                                        src={imgp45}
-                                        alt="userimg"
-                                        className="avatar-60 me-3 rounded-circle img-fluid"
-                                      />
-                                    </div>
-                                    <div className="w-100 text-margin">
-                                      <div className="">
-                                        <h5 className="mb-0 d-inline-block me-1">
-                                          Emma Labelle
-                                        </h5>
-                                        <h6 className=" mb-0 d-inline-block">
-                                          2 weeks ago
-                                        </h6>
-                                      </div>
-                                      <p>
-                                        Lorem Ipsum is simply dummy text of the
-                                        printing and typesetting industry.{" "}
-                                      </p>
-                                      <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                        <div className="d-flex justify-content-between align-items-center">
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              favorite_border
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Love it
-                                            </span>
-                                          </div>
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              comment
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Comment
-                                            </span>
-                                          </div>
-                                          <div className="d-flex align-items-center">
-                                            <span className="material-symbols-outlined md-18">
-                                              share
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Share
-                                            </span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ul>
-                              <ul className="post-comments p-2 m-0 bg-soft-light text-dark">
-                                <li className="mb-2">
-                                  <div className="d-flex justify-content-between">
-                                    <div className="user-img">
-                                      <img
-                                        loading="lazy"
-                                        src={imgp42}
-                                        alt="userimg"
-                                        className="avatar-60 me-3 rounded-circle img-fluid"
-                                      />
-                                    </div>
-                                    <div className="w-100 text-margin">
-                                      <div className="">
-                                        <h5 className="mb-0 d-inline-block me-1">
-                                          Emma Labelle
-                                        </h5>
-                                        <span className=" mb-0 d-inline-block">
-                                          2 weeks ago
-                                        </span>
-                                      </div>
-                                      <p>
-                                        Lorem Ipsum is simply dummy text of the
-                                        printing and typesetting industry. Lorem
-                                        Ipsum has been the industry's standard
-                                        dummy text ever since the 1500s
-                                      </p>
-                                      <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                        <div className="d-flex justify-content-around align-items-center">
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              favorite_border
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Love it
-                                            </span>
-                                          </div>
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              comment
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Comment
-                                            </span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <ul className="post-comments p-0 mt-4 text-dark">
-                                        <li className="mb-2">
-                                          <div className="d-flex justify-content-between">
-                                            <div className="user-img">
-                                              <img
-                                                loading="lazy"
-                                                src={imgp43}
-                                                alt="userimg"
-                                                className="avatar-60 me-3 rounded-circle img-fluid avatar-1"
-                                              />
-                                            </div>
-                                            <div className="w-100 text-margin">
-                                              <div className="">
-                                                <h5 className="mb-0 d-inline-block me-1">
-                                                  Emma Labelle
-                                                </h5>
-                                                <h6 className=" mb-0 d-inline-block">
-                                                  2 weeks ago
-                                                </h6>
-                                              </div>
-                                              <p>
-                                                Lorem Ipsum is simply dummy text
-                                                of the printing and typesetting
-                                                industry. Lorem Ipsum has been
-                                                the industry's standard dummy
-                                                text ever since the 1500s.
-                                              </p>
-                                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                                <div className="d-flex justify-content-around align-items-center">
-                                                  <div className="d-flex align-items-center me-3">
-                                                    <span className="material-symbols-outlined md-18">
-                                                      favorite_border
-                                                    </span>
-                                                    <span className="card-text-1 ms-1">
-                                                      Love it
-                                                    </span>
-                                                  </div>
-                                                  <div className="d-flex align-items-center me-3">
-                                                    <span className="material-symbols-outlined md-18">
-                                                      comment
-                                                    </span>
-                                                    <span className="card-text-1 ms-1">
-                                                      Comment
-                                                    </span>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                      <ul className="post-comments p-0 mt-4 text-dark">
-                                        <li className="mb-2">
-                                          <div className="d-flex justify-content-between">
-                                            <div className="user-img">
-                                              <img
-                                                loading="lazy"
-                                                src={imgp44}
-                                                alt="userimg"
-                                                className="avatar-60 me-3 rounded-circle img-fluid avatar-1"
-                                              />
-                                            </div>
-                                            <div className="w-100 text-margin">
-                                              <div className="">
-                                                <h5 className="mb-0 d-inline-block me-1">
-                                                  Emma Labelle
-                                                </h5>
-                                                <h6 className=" mb-0 d-inline-block">
-                                                  2 weeks ago
-                                                </h6>
-                                              </div>
-                                              <p>
-                                                Lorem Ipsum is simply dummy text
-                                                of the printing and typesetting
-                                                industry.{" "}
-                                              </p>
-                                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                                <div className="d-flex justify-content-around align-items-center">
-                                                  <div className="d-flex align-items-center me-3">
-                                                    <span className="material-symbols-outlined md-18">
-                                                      favorite_border
-                                                    </span>
-                                                    <span className="card-text-1 ms-1">
-                                                      Love it
-                                                    </span>
-                                                  </div>
-                                                  <div className="d-flex align-items-center me-3">
-                                                    <span className="material-symbols-outlined md-18">
-                                                      comment
-                                                    </span>
-                                                    <span className="card-text-1 ms-1">
-                                                      Comment
-                                                    </span>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                              <form
-                                                className="d-flex align-items-center mt-3"
-                                                action="#"
-                                              >
-                                                <input
-                                                  type="text"
-                                                  className="form-control rounded"
-                                                  placeholder="Write your comment"
-                                                />
-                                                <div className="comment-attagement d-flex align-items-center me-4">
-                                                  <span className="material-symbols-outlined md-18 me-1">
-                                                    comment
-                                                  </span>
-                                                  <h6 className="card-text-1 me-2">
-                                                    Comment
-                                                  </h6>
-                                                </div>
-                                              </form>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ul>
-                              <ul className="post-comments p-2 mt-4 text-dark">
-                                <li className="mb-2">
-                                  <div className="d-flex justify-content-between">
-                                    <div className="user-img">
-                                      <img
-                                        loading="lazy"
-                                        src={imgp45}
-                                        alt="userimg"
-                                        className="avatar-60 me-3 rounded-circle img-fluid "
-                                      />
-                                    </div>
-                                    <div className="w-100 text-margin">
-                                      <div className="">
-                                        <h5 className="mb-0 d-inline-block me-1">
-                                          Emma Labelle
-                                        </h5>
-                                        <span className=" mb-0 d-inline-block">
-                                          2 weeks ago
-                                        </span>
-                                      </div>
-                                      <p>
-                                        Lorem Ipsum is simply dummy text of the
-                                        printing and typesetting industry.
-                                      </p>
-                                      <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                        <div className="d-flex justify-content-around align-items-center">
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              favorite_border
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Love it
-                                            </span>
-                                          </div>
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              comment
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Comment
-                                            </span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-                                <form
-                                  className="d-flex align-items-center mt-3"
-                                  action="#"
-                                >
-                                  <input
-                                    type="text"
-                                    className="form-control rounded"
-                                    placeholder="Write your comment"
-                                  />
-                                  <div className="comment-attagement d-flex align-items-center me-4">
-                                    <span className="material-symbols-outlined md-18 me-1">
-                                      comment
-                                    </span>
-                                    <h6 className="card-text-1 me-2">
-                                      Comment
-                                    </h6>
-                                  </div>
-                                </form>
-                              </ul>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </Card.Body>
-                  </Card>
-                  <Card>
-                    <Card.Body>
-                      <ul className="post-comments p-0 m-0">
-                        <li className="mb-2">
-                          <div className="d-flex justify-content-between">
-                            <div className="user-img">
-                              <img
-                                loading="lazy"
-                                src={imgp46}
-                                alt="userimg"
-                                className="avatar-60 me-3 rounded-circle img-fluid"
-                              />
-                            </div>
-                            <div className="w-100 text-margin">
-                              <h4>Mathilda Gvarliana</h4>
-                              <p className="mb-4">June 30, 12: 26</p>
-                              <div className="d-grid gap-2 grid-cols-2 mb-2">
-                                <Link to="#">
-                                  <img
-                                    loading="lazy"
-                                    src={imgp47}
-                                    className="img-fluid bg-soft-info rounded  image-size"
-                                    alt="profile-img"
-                                  />
-                                </Link>
-                                <Link to="#">
-                                  <img
-                                    loading="lazy"
-                                    src={imgp48}
-                                    className="img-fluid bg-soft-info rounded  image-size"
-                                    alt="profile-img"
-                                  />
-                                </Link>
-                                <Link to="#">
-                                  <img
-                                    loading="lazy"
-                                    src={imgp49}
-                                    className="img-fluid bg-soft-info rounded  image-size"
-                                    alt="profile-img"
-                                  />
-                                </Link>
-                                <Link to="#">
-                                  <img
-                                    loading="lazy"
-                                    src={imgp50}
-                                    className="img-fluid bg-soft-info rounded  image-size"
-                                    alt="profile-img"
-                                  />
-                                </Link>
-                              </div>
-                              <span className="">
-                                Photoshoot for Buyers Magazine - 2019
-                              </span>
-                              <hr />
-                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="d-flex justify-content-between align-items-center">
-                                    <div className="d-flex align-items-center me-3">
-                                      <span className="material-symbols-outlined md-18">
-                                        favorite_border
-                                      </span>
-                                      <span className="card-text-1 ms-1">
-                                        Love it
-                                      </span>
-                                    </div>
-                                    <div className="d-flex align-items-center me-3">
-                                      <span className="material-symbols-outlined md-18">
-                                        comment
-                                      </span>
-                                      <span className="card-text-1 ms-1">
-                                        Comment
-                                      </span>
-                                    </div>
-                                    <div className="d-flex align-items-center">
-                                      <span className="material-symbols-outlined md-18">
-                                        share
-                                      </span>
-                                      <span className="card-text-1 ms-1">
-                                        Share
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <span className="card-text-1 me-1">
-                                    5.2k people love it
-                                  </span>
-                                  <div className="iq-media-group ms-2">
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp27}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp28}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp29}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp30}
-                                        alt=""
-                                      />
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                              <form
-                                className="d-flex align-items-center mt-3"
-                                action="#"
-                              >
-                                <input
-                                  type="text"
-                                  className="form-control rounded"
-                                  placeholder="Write your comment"
-                                />
-                                <div className="comment-attagement d-flex align-items-center me-4">
-                                  <span className="material-symbols-outlined md-18 me-1">
-                                    comment
-                                  </span>
-                                  <h6 className="card-text-1 me-2">Comment</h6>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </Card.Body>
-                  </Card>
+                  <ProfilePost />
                 </Col>
               ) : (
                 <Col lg="8">
@@ -2050,11 +1249,13 @@ const handleChangeCertificate= (e) => {
                       <div className="header-title">
                         <h4 className="card-title">Update Your Profile</h4>
                       </div>
-
                     </Card.Header>
                     <Card.Body>
-                      <Form onSubmit={handleSubmitPicture} enctype="multipart/form-data">
-                    <Form.Group className="form-group">
+                      <Form
+                        onSubmit={handleSubmitPicture}
+                        enctype="multipart/form-data"
+                      >
+                        <Form.Group className="form-group">
                           <Form.Label className="custom-file-input">
                             cover Image :
                           </Form.Label>
@@ -2062,21 +1263,22 @@ const handleChangeCertificate= (e) => {
                             type="file"
                             id="customFile"
                             name="imgProfile"
-
-                            onChange={(e)=>{setPicture(e.target.files[0])}}
-                          
-
+                            onChange={(e) => {
+                              setPicture(e.target.files[0]);
+                            }}
                           />
                         </Form.Group>
-                         <Button type="submit" variant="primary">
+                        <Button type="submit" variant="primary">
                           Submit
                         </Button>{" "}
                         <Button variant="danger">Cancel</Button>
-                        </Form >
+                      </Form>
 
-
-                        <Form onSubmit={handleSubmitProfilePicture} enctype="multipart/form-data">
-                    <Form.Group className="form-group">
+                      <Form
+                        onSubmit={handleSubmitProfilePicture}
+                        enctype="multipart/form-data"
+                      >
+                        <Form.Group className="form-group">
                           <Form.Label className="custom-file-input">
                             Profile Image :
                           </Form.Label>
@@ -2084,20 +1286,18 @@ const handleChangeCertificate= (e) => {
                             type="file"
                             id="customFile"
                             name="imgProfile"
-
-                            onChange={(e)=>{setCoverPhoto(e.target.files[0])}}
-                          
-
+                            onChange={(e) => {
+                              setCoverPhoto(e.target.files[0]);
+                            }}
                           />
                         </Form.Group>
-                         <Button type="submit" variant="primary">
+                        <Button type="submit" variant="primary">
                           Submit
                         </Button>{" "}
                         <Button variant="danger">Cancel</Button>
-                        </Form >
-                        
+                      </Form>
+
                       <Form onSubmit={handleSubmit}>
-                      
                         <Form.Group className="form-group">
                           <Form.Label>
                             {company ? "Full Name" : "Full Name :"}
@@ -2109,313 +1309,324 @@ const handleChangeCertificate= (e) => {
                             name="fullName"
                             onChange={handleChange}
                           />
-
                         </Form.Group>
-                        </Form >
+                      </Form>
+                      <Form.Group className="form-group">
+                        <Form.Label>
+                          {company ? "Birthdate" : " Birthdate :"}
+                        </Form.Label>
+                        <Form.Control
+                          type="date"
+                          defaultValue={userr.birthDate}
+                          onChange={handleChange}
+                        />
+                      </Form.Group>
+                      <Form.Group className="form-group">
+                        <Form.Label>gender :</Form.Label>
+                        <Form.Control as="select">
+                          <option value="male">male</option>
+                          <option value="female">female</option>
+                        </Form.Control>
+                      </Form.Group>
+                      <Form.Group className="form-group"></Form.Group>
+                      {company ? (
                         <Form.Group className="form-group">
-                          <Form.Label>
-                            {company ? "Birthdate" : " Birthdate :"}
-                          </Form.Label>
-                          <Form.Control
-                            type="date"
-                            defaultValue={userr.birthDate}
-                            
-                            onChange={handleChange}
-                          />
-                        </Form.Group>
-                        <Form.Group className="form-group">
-                          <Form.Label>gender :</Form.Label>
-                          <Form.Control 
-                          as="select"
-          
-       
-                                         >
-         
-          <option value="male">male</option>
-          <option value="female">female</option>
-        
-        </Form.Control>
-                        </Form.Group>
-                        <Form.Group className="form-group">
-                         
-                        </Form.Group>
-                        {company ? (
-                          <Form.Group className="form-group">
-                            <Form.Label>studyCarrier </Form.Label>
-                            <Form.Control
-                              type="text"
-                              defaultValue="https://getbootstrap.com"
-                              placeholder="Enter university"
-                              onChange={handleChange}
-                            />
-                          </Form.Group>
-                        ) : (
-                          ""
-                        )}
-                        <Form.Group className="form-group">
-                         
-                        </Form.Group>
-                     
-                       
-                        <Form.Group className="form-group">
-                          <Form.Label>Adress :</Form.Label>
+                          <Form.Label>studyCarrier </Form.Label>
                           <Form.Control
                             type="text"
-                            defaultValue={userr.address}
-                            placeholder="Enter Adress"
+                            defaultValue="https://getbootstrap.com"
+                            placeholder="Enter university"
                             onChange={handleChange}
                           />
                         </Form.Group>
-                        <Form.Group className="form-group">
-                          <Form.Label>City :</Form.Label>
-                          <Form.Control
-                            type="text"
-                            defaultValue={userr.city}
-                            placeholder="Enter City"
-                            onChange={handleChange}
-                          />
-                    
-                        </Form.Group>
-                        <Form.Group className="form-group">
-                          
-                          <Form.Check
-                            type="checkbox"
-                            label="Open To Work "
-                   
-                          />
-                            
-                        
-                        
-                        </Form.Group>
-                        <Form.Group className="form-group">
-                          <Form.Check
-                            type="checkbox"
-                            label="Open To Intership "
-                          />
-                        </Form.Group>
-                        {!company ? (
-                          <Form.Group className="form-group">
-                            
-                          </Form.Group>
-                        ) : (
-                          ""
-                        )}
+                      ) : (
+                        ""
+                      )}
+                      <Form.Group className="form-group"></Form.Group>
 
-
-<Button
-              className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
-              onClick={handleShow9}
-            >
-              <span className="material-symbols-outlined  md-16">add</span>
-
-           Study carrier
-            </Button>
-            <Modal centered show={show9} onHide={handleClose9}>
-              <Form onSubmit={handleSubmitStudyCarrier}>  
-                <Modal.Header closeButton>
-                  <Modal.Title>Study carrier</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <Row>
-                  <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      UniversityName                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="validationDefault01"
-                        name="university"
-                        required
-                        onChange={handleChangeStudyCarrier}
-                      />
-                    </Col>
-                    <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
-                        <Form.Label>Start Date</Form.Label>
-                        <Form.Control type="date" required name="startDate"   onChange={handleChangeStudyCarrier}/>
+                        <Form.Label>Adress :</Form.Label>
+                        <Form.Control
+                          type="text"
+                          defaultValue={userr.address}
+                          placeholder="Enter Adress"
+                          onChange={handleChange}
+                        />
                       </Form.Group>
-                    </Col>
-                    <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
-                        <Form.Label>End Date</Form.Label>
-                        <Form.Control type="date" required name="endDate"   onChange={handleChangeStudyCarrier} />
+                        <Form.Label>City :</Form.Label>
+                        <Form.Control
+                          type="text"
+                          defaultValue={userr.city}
+                          placeholder="Enter City"
+                          onChange={handleChange}
+                        />
                       </Form.Group>
-                    </Col>
-
-                  </Row>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleClose9}>
-                    Close
-                  </Button>
-                  <Button variant="primary"  type ="submit">
-                    Add an other etablishement 
-                  </Button>
-                </Modal.Footer>
-              </Form>
-            </Modal>
-
-
-
-
-
-
-         <Button
-              className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
-              onClick={handleShow7}
-            >
-              <span className="material-symbols-outlined  md-16">add</span>
-
-           add new certificate
-            </Button>
-            <Modal centered show={show7} onHide={handleClose7}>
-              <Form onSubmit={handleSubmitCertificate} enctype="multipart/form-data">
-                <Modal.Header closeButton>
-                  <Modal.Title>New certificate</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <Row>
-                    <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      Name                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="validationDefault01"
-                        name="name"
-                        required
-                        onChange={handleChangeCertificate}
-                      />
-                    </Col>
-                    <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      company                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="validationDefault01"
-                        required
-                        name="company"
-                        onChange={handleChangeCertificate}
-                      />
-                    </Col>
-                   
-                    <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
-                        <Form.Label>Date</Form.Label>
-                        <Form.Control type="date" drequired name="date"    onChange={handleChangeCertificate} />
+                        <Form.Check type="checkbox" label="Open To Work " />
                       </Form.Group>
-                    </Col>
-                    <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      upload your certificate                      </Form.Label>
-                      <Form.Control
-                         type="file"
-                         id="customFile"
-                        required
-                        name="file"
-                        onChange={(e)=>{setCertificate({...certificate,certificate:e.target.files[0]})}}
-                      />
-                       </Col>
-                       <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      url                       </Form.Label>
-                      <Form.Control
-                        type="url"
-                        id="validationDefault01"
-                        name="url"
-                        onChange={handleChangeCertificate}
-                      />
-                    </Col>
-                    
+                      <Form.Group className="form-group">
+                        <Form.Check
+                          type="checkbox"
+                          label="Open To Intership "
+                        />
+                      </Form.Group>
+                      {!company ? (
+                        <Form.Group className="form-group"></Form.Group>
+                      ) : (
+                        ""
+                      )}
 
+                      <Button
+                        className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
+                        onClick={handleShow9}
+                      >
+                        <span className="material-symbols-outlined  md-16">
+                          add
+                        </span>
+                        Study carrier
+                      </Button>
+                      <Modal centered show={show9} onHide={handleClose9}>
+                        <Form onSubmit={handleSubmitStudyCarrier}>
+                          <Modal.Header closeButton>
+                            <Modal.Title>Study carrier</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <Row>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  UniversityName{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  id="validationDefault01"
+                                  name="university"
+                                  required
+                                  onChange={handleChangeStudyCarrier}
+                                />
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Group className="form-group">
+                                  <Form.Label>Start Date</Form.Label>
+                                  <Form.Control
+                                    type="date"
+                                    required
+                                    name="startDate"
+                                    onChange={handleChangeStudyCarrier}
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Group className="form-group">
+                                  <Form.Label>End Date</Form.Label>
+                                  <Form.Control
+                                    type="date"
+                                    required
+                                    name="endDate"
+                                    onChange={handleChangeStudyCarrier}
+                                  />
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose9}>
+                              Close
+                            </Button>
+                            <Button variant="primary" type="submit">
+                              Add an other etablishement
+                            </Button>
+                          </Modal.Footer>
+                        </Form>
+                      </Modal>
 
-                   
-                         
-                  </Row>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleClose7}>
-                    Close
-                  </Button>
-                  <Button variant="primary" type="submit">
-                    Add new Certificate
-                  </Button>
-                </Modal.Footer>
-              </Form>
-            </Modal>
+                      <Button
+                        className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
+                        onClick={handleShow7}
+                      >
+                        <span className="material-symbols-outlined  md-16">
+                          add
+                        </span>
+                        add new certificate
+                      </Button>
+                      <Modal centered show={show7} onHide={handleClose7}>
+                        <Form
+                          onSubmit={handleSubmitCertificate}
+                          enctype="multipart/form-data"
+                        >
+                          <Modal.Header closeButton>
+                            <Modal.Title>New certificate</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <Row>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  Name{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  id="validationDefault01"
+                                  name="name"
+                                  required
+                                  onChange={handleChangeCertificate}
+                                />
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  company{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  id="validationDefault01"
+                                  required
+                                  name="company"
+                                  onChange={handleChangeCertificate}
+                                />
+                              </Col>
 
+                              <Col md="6" className="mb-3">
+                                <Form.Group className="form-group">
+                                  <Form.Label>Date</Form.Label>
+                                  <Form.Control
+                                    type="date"
+                                    drequired
+                                    name="date"
+                                    onChange={handleChangeCertificate}
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  upload your certificate{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="file"
+                                  id="customFile"
+                                  required
+                                  name="file"
+                                  onChange={(e) => {
+                                    setCertificate({
+                                      ...certificate,
+                                      certificate: e.target.files[0],
+                                    });
+                                  }}
+                                />
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  url{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="url"
+                                  id="validationDefault01"
+                                  name="url"
+                                  onChange={handleChangeCertificate}
+                                />
+                              </Col>
+                            </Row>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose7}>
+                              Close
+                            </Button>
+                            <Button variant="primary" type="submit">
+                              Add new Certificate
+                            </Button>
+                          </Modal.Footer>
+                        </Form>
+                      </Modal>
 
+                      <Button
+                        className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
+                        onClick={handleShow8}
+                      >
+                        <span className="material-symbols-outlined  md-16">
+                          add
+                        </span>
+                        add new Skill
+                      </Button>
+                      <Modal centered show={show8} onHide={handleClose8}>
+                        <Form onSubmit={handleSubmitSkill}>
+                          <Modal.Header closeButton>
+                            <Modal.Title>New Skill</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <Row>
+                              <Col md="6" className="mb-3">
+                                <Form.Label md="6" htmlFor="skillName">
+                                  Nom de compétence
+                                </Form.Label>
+                                <Form.Control
+                                  as="select"
+                                  id="skillName"
+                                  name="name"
+                                  required
+                                  onChange={handleChangeSkill}
+                                >
+                                  <option value="">
+                                    Choisissez une compétence
+                                  </option>
+                                  <option value="HTML">HTML</option>
+                                  <option value="CSS">CSS</option>
+                                  <option value="JavaScript">JavaScript</option>
+                                  <option value="Python">Python</option>
+                                  <option value="SQL">SQL</option>
+                                  // Ajoutez d'autres options de compétences si
+                                  nécessaire
+                                </Form.Control>
+                              </Col>
 
-            <Button
-              className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
-              onClick={handleShow8}
-            >
-              <span className="material-symbols-outlined  md-16">add</span>
- 
-           add new Skill
-            </Button>
-            <Modal centered show={show8} onHide={handleClose8}>
-               <Form onSubmit={handleSubmitSkill}> 
-                <Modal.Header closeButton>
-                  <Modal.Title>New Skill</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <Row>
-                  <Col md="6" className="mb-3">
-  <Form.Label md="6" htmlFor="skillName">
-    Nom de compétence
-  </Form.Label>
-  <Form.Control
-    as="select"
-    id="skillName"
-    name="name"
-    required
-    onChange={handleChangeSkill}
-  >
-    <option value="">Choisissez une compétence</option>
-    <option value="HTML">HTML</option>
-    <option value="CSS">CSS</option>
-    <option value="JavaScript">JavaScript</option>
-    <option value="Python">Python</option>
-    <option value="SQL">SQL</option>
-    // Ajoutez d'autres options de compétences si nécessaire
-    
-  </Form.Control >
-</Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Label md="6" htmlFor="skillLevel">
+                                  Niveau de compétence
+                                </Form.Label>
+                                <Form.Control
+                                  as="select"
+                                  id="skillLevel"
+                                  name="level"
+                                  required
+                                  onChange={handleChangeSkill}
+                                >
+                                  <option value="">Choisissez un niveau</option>
+                                  <option value="beginner">beginner</option>
+                                  <option value="intermediate">
+                                    intermediate
+                                  </option>
+                                  <option value="advanced">advanced</option>
+                                </Form.Control>
+                              </Col>
+                            </Row>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose8}>
+                              Close
+                            </Button>
+                            <Button variant="primary" type="submit">
+                              Add new Skill
+                            </Button>
+                          </Modal.Footer>
+                        </Form>
+                      </Modal>
 
-<Col md="6" className="mb-3">
-  <Form.Label md="6" htmlFor="skillLevel">
-    Niveau de compétence
-  </Form.Label>
-  <Form.Control
-    as="select"
-    id="skillLevel"
-    name="level"
-    required
-    onChange={handleChangeSkill}
-  >
-    <option value="">Choisissez un niveau</option>
-    <option value="beginner">beginner</option>
-    <option value="intermediate">intermediate</option>
-    <option value="advanced">advanced</option>
-  </Form.Control>
-</Col>
-
-
-         
-                  </Row>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleClose8}>
-                    Close
-                  </Button>
-                  <Button variant="primary" type="submit">
-                    Add new Skill
-                  </Button>
-                </Modal.Footer>
-              </Form>
-            </Modal>
-
-
-                        <Form onSubmit={handleSubmitCv} enctype="multipart/form-data">
+                      <Form
+                        onSubmit={handleSubmitCv}
+                        enctype="multipart/form-data"
+                      >
                         <Form.Group className="form-group">
                           <Form.Label className="custom-file-input">
                             {company
@@ -2428,12 +1639,11 @@ const handleChangeCertificate= (e) => {
                             type="file"
                             id="customFile"
                             name="docs"
-                            onChange={(e)=>{setCv(e.target.files[0])}}
+                            onChange={(e) => {
+                              setCv(e.target.files[0]);
+                            }}
                           />
-            
                         </Form.Group>
-                        
-                        
                         <Button type="submit" variant="primary">
                           Submit
                         </Button>{" "}

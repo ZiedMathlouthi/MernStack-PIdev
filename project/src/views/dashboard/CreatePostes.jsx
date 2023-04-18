@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Row,
   Col,
@@ -7,10 +7,13 @@ import {
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
+import imgpost from "../../assets/images/16620273397236.jpg"
 import { Link } from "react-router-dom";
 import Card from "../../components/Card";
 import CustomToggle from "../../components/dropdowns";
 import ShareOffcanvas from "../../components/share-offcanvas";
+import "../dashboard/Post/Post.css"
+
 
 //image
 import user1 from "../../assets/images/user/1.jpg";
@@ -47,12 +50,177 @@ import icon7 from "../../assets/images/icon/07.png";
 // import img9 from "../../assets/images/small/img-1.jpg";
 // import img10 from "../../assets/images/small/img-2.jpg";
 import loader from "../../assets/images/page-img/page-load-loader.gif";
+import { useDispatch, useSelector } from "react-redux";
+import { uploadImage, uploadPost } from "../../actions/uploadAction";
+import {UilTimes} from '@iconscout/react-unicons'
+import axios from "axios";
+import jwt from "jwt-decode";
 
 const Postes = () => {
-  //   const [show, setShow] = useState(false);
-  //   const handleClose = () => setShow(false);
-  //   const handleShow = () => setShow(true);
+  
+  const [selectedPost, setSelectedPost] = useState({});
+  const [posts, setPosts] = useState([]);
+  const [user, setUser] = useState(null);
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+  const User = JSON.parse(localStorage.getItem("myData"));
+  const [likes, setLikes] = useState(posts.likes);
+  const [imagee, setImagee] = useState([])
+const [isLiked, setIsLiked] = useState(false);
 
+	const getUserByID = () => {
+		if (token !== null) {
+			const decoded_token = jwt(token);
+			console.log(decoded_token);
+			return decoded_token.id;
+		}
+	};
+	const userId = getUserByID();
+  
+
+  const fetchUser = async (userId =User.user._id) => {
+		try {
+			const response = await axios.get(
+				`${process.env.REACT_APP_API_URL}/post/user/${userId}`
+			);
+			setUser(response.data);
+		} catch (err) {
+			setError(err.message);
+		}
+	};
+  //fetchUser(posts.data)
+  console.log("this is user fetching", User)
+  
+  console.log("this is TOKEN",token)
+  console.log( "this is id", User.user._id)
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/post/`);
+        setPosts(res.data.posts);
+        setImagee(res.data.data.posts.image)
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+    
+
+    fetchData();
+  }, []);
+  console.log("image list",imagee)
+
+//64332d9a2874923de3c456ba
+
+	const handleLike = async (postId) => {
+    const userId =User.user._id
+		try {
+			const res = await axios.put(
+				`${process.env.REACT_APP_API_URL}/post/${postId}/like`, {userId}
+			);
+			setLikes({ likes: res.data });
+			isLiked  ? setIsLiked(false) : setIsLiked(true);
+      setLikes({ status: isLiked });
+      window.location.reload()
+		} catch (err) {
+			console.log(`error with like post ${err}`);
+		}
+
+	};
+  //console.log(likes)
+const [comment,setComment] = useState()
+  const [comments, setComments] = useState([]);
+	const [newComment, setNewComment] = useState('');
+	const [error, setError] = useState(null);
+	// Fetch all comments on component mount
+	useEffect(() => {
+		const fetchComments = async (postId) => {
+			try {
+				const response = await axios.get(
+					`${process.env.REACT_APP_API_URL}/post/${postId}/comments`
+				);
+				setComments({data : response.data.comments});
+			} catch (error) {
+				console.error(error);
+				setError('Failed to fetch comments');
+			}
+		};
+		fetchComments();
+	}, []);
+  console.log(posts)
+
+  const handleAddComment = async (postId) => {
+    console.log("postId is :",postId)
+		try {
+			const response = await axios.post(
+				`${process.env.REACT_APP_API_URL}/post/${postId}/comment`,
+				{
+					user: User.user._id,
+					fullName: User.user.fullName,
+					comment: newComment,
+				}
+			);
+      
+			setComments([...comments, response.data.comment]);
+      setPosts(posts.map(post => post._id === postId ? response.data : post));
+			setNewComment('');
+		} catch (error) {
+			console.error(error);
+			setError('Failed to add comment');
+		}
+	};
+  
+	console.log(comments)
+
+  const loading = useSelector((state)=>state.uploading)
+  const [image, setImage] = useState(null);
+  const imageRef = useRef();
+  const desc = useRef();
+  const fullName = useRef();
+  const dispatch = useDispatch()
+  
+
+   const onImageChange = (event) => {
+     if (event.target.files && event.target.files[0]) {
+       let img = event.target.files[0];
+       setImage( img);
+     }
+   };
+  
+
+   const reset =()=>{
+     setImage(null)
+     desc.current.value=""
+   }
+  const handleSubmit =(e) =>{
+    e.preventDefault()
+    const newPost ={
+      userId : User.user._id,
+      fullName : User.user.fullName,
+      desc :desc.current.value
+    }
+    
+
+     if (image){
+       const data =new FormData()
+       const filename = Date.now() + image.name
+       data.append("name", filename)
+       data.append("file", image)
+       newPost.image = filename
+       console.log(newPost)
+       try {
+         dispatch(uploadImage(data))
+      } catch (error) {
+        console.log(error)
+      }
+
+     }
+     
+     
+    dispatch(uploadPost(newPost))
+    reset()
+  }
   return (
     <>
       <div id="content-page" className="content-page ">
@@ -64,7 +232,7 @@ const Postes = () => {
                   id="post-modal-data"
                   className="card-block card-stretch card-height"
                 >
-                  <div className="card-header d-flex justify-content-between">
+                   <div className="card-header d-flex justify-content-between">
                     <div className="header-title">
                       <h4 className="card-title">Create Post</h4>
                     </div>
@@ -87,13 +255,16 @@ const Postes = () => {
                           className="form-control rounded"
                           placeholder="Write something here..."
                           style={{ border: "none" }}
+                          ref ={desc}
+                          required
                         />
                       </form>
                     </div>
                     <hr></hr>
                     <ul className=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap w-100">
                       <li className="me-3 mb-md-0 mb-2 w-50">
-                        <Link to="#" className="btn btn-soft-primary">
+                        <Link to="#" className="btn btn-soft-primary"
+                         onClick={()=>imageRef.current.click()}>
                           <img
                             src={img1}
                             alt="icon"
@@ -103,36 +274,56 @@ const Postes = () => {
                         </Link>
                       </li>
                       <li className="me-3 mb-md-0 mb-2 ms-auto ">
-                        <button type="submit" className="btn btn-primary w-100">
-                          Post
+                        <button type="submit" className="btn btn-primary w-100" 
+                        onClick={handleSubmit}
+                        disabled = {loading}
+                        >
+                          
+                          {loading? "Uploading..." : "Share"}
                         </button>
+                        <div style={{display : "none"}}>
+                          <input type="file" name="myImage" ref={imageRef} onChange={onImageChange} />
+                        </div>
                       </li>
-                    </ul>
+                      {image && (
+                        <div className="previewImage">
+                          <UilTimes onClick={() => setImage(null)} />
+                          <img src={URL.createObjectURL(image)} alt="preview" />
+                        </div>
+                       )}
+
+                    </ul> 
                   </Card.Body>
                 </Card>
               </Col>
-              <Col sm={12}>
+
+              {posts?.map((post) => (
+               <Col sm={12} key={post.postId}>
                 <Card className=" card-block card-stretch card-height">
+                
                   <Card.Body>
+                  
                     <div className="user-post-data">
                       <div className="d-flex justify-content-between">
                         <div className="me-3">
+                        
                           <img
                             className="rounded-circle img-fluid"
                             src={user01}
                             alt=""
                           />
+                          
                         </div>
+
+
+
+
                         <div className="w-100">
                           <div className="d-flex justify-content-between">
                             <div>
                               <h5 className="mb-0 d-inline-block">
-                                Anna Sthesia
+                             {post.fullName}
                               </h5>
-                              <span className="mb-0 ps-1 d-inline-block">
-                                Add New Post
-                              </span>
-                              <p className="mb-0 text-primary">Just Now</p>
                             </div>
                             <div className="card-post-toolbar">
                               <Dropdown>
@@ -197,35 +388,15 @@ const Postes = () => {
                     </div>
                     <div className="mt-3">
                       <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Morbi nulla dolor, ornare at commodo non, feugiat non
-                        nisi. Phasellus faucibus mollis pharetra. Proin blandit
-                        ac massa sed rhoncus
+                       {post.desc}
                       </p>
-                    </div>
+                      </div>
                     <div className="user-post">
                       <div className=" d-grid grid-rows-2 grid-flow-col gap-3">
                         <div className="row-span-2 row-span-md-1">
-                          <img
-                            src={p2}
-                            alt="post1"
-                            className="img-fluid rounded w-100"
-                          />
                         </div>
-                        <div className="row-span-1">
-                          <img
-                            src={p1}
-                            alt="post2"
-                            className="img-fluid rounded w-100"
-                          />
-                        </div>
-                        <div className="row-span-1 ">
-                          <img
-                            src={p3}
-                            alt="post3"
-                            className="img-fluid rounded w-100"
-                          />
-                        </div>
+                        
+                        <img  width={350} src={imgpost} alt=""/>
                       </div>
                     </div>
                     <div className="comment-area mt-3">
@@ -233,94 +404,13 @@ const Postes = () => {
                         <div className="like-block position-relative d-flex align-items-center">
                           <div className="d-flex align-items-center">
                             <div className="like-data">
-                              <Dropdown>
-                                <Dropdown.Toggle as={CustomToggle}>
-                                  <img
-                                    src={icon1}
+                              
+                                  <img  onClick={()=>handleLike(post._id)}
+                                    src={icon2}
                                     className="img-fluid"
                                     alt=""
                                   />
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu className=" py-2">
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={<Tooltip>Like</Tooltip>}
-                                    className="ms-2 me-2"
-                                  >
-                                    <img
-                                      src={icon1}
-                                      className="img-fluid me-2"
-                                      alt=""
-                                    />
-                                  </OverlayTrigger>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={<Tooltip>Love</Tooltip>}
-                                    className="me-2"
-                                  >
-                                    <img
-                                      src={icon2}
-                                      className="img-fluid me-2"
-                                      alt=""
-                                    />
-                                  </OverlayTrigger>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={<Tooltip>Happy</Tooltip>}
-                                    className="me-2"
-                                  >
-                                    <img
-                                      src={icon3}
-                                      className="img-fluid me-2"
-                                      alt=""
-                                    />
-                                  </OverlayTrigger>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={<Tooltip>HaHa</Tooltip>}
-                                    className="me-2"
-                                  >
-                                    <img
-                                      src={icon4}
-                                      className="img-fluid me-2"
-                                      alt=""
-                                    />
-                                  </OverlayTrigger>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={<Tooltip>Think</Tooltip>}
-                                    className="me-2"
-                                  >
-                                    <img
-                                      src={icon5}
-                                      className="img-fluid me-2"
-                                      alt=""
-                                    />
-                                  </OverlayTrigger>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={<Tooltip>Sade</Tooltip>}
-                                    className="me-2"
-                                  >
-                                    <img
-                                      src={icon6}
-                                      className="img-fluid me-2"
-                                      alt=""
-                                    />
-                                  </OverlayTrigger>
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={<Tooltip>Lovely</Tooltip>}
-                                    className="me-2"
-                                  >
-                                    <img
-                                      src={icon7}
-                                      className="img-fluid me-2"
-                                      alt=""
-                                    />
-                                  </OverlayTrigger>
-                                </Dropdown.Menu>
-                              </Dropdown>
+                                
                             </div>
                             <div className="total-like-block ms-2 me-3">
                               <Dropdown>
@@ -328,7 +418,12 @@ const Postes = () => {
                                   as={CustomToggle}
                                   id="post-option"
                                 >
-                                  140 Likes
+                                  {/* { isLiked ? (
+                                          <button onClick={handleLike} >{isLiked && "Dislike"}</button>
+                                        ) : (
+                                          <button onClick={handleLike}>{!isLiked && "Like"}</button>
+                                        )} */}
+                                        <p >{post.likes.length}</p>
                                 </Dropdown.Toggle>
                               </Dropdown>
                             </div>
@@ -339,7 +434,7 @@ const Postes = () => {
                                 as={CustomToggle}
                                 id="post-option"
                               >
-                                20 Comment
+                                <p >{post.comments.length}</p>
                               </Dropdown.Toggle>
                             </Dropdown>
                           </div>
@@ -348,26 +443,8 @@ const Postes = () => {
                       </div>
                       <hr />
                       <ul className="post-comments list-inline p-0 m-0">
-                        <li className="mb-2">
-                          <div className="d-flex">
-                            <div className="user-img">
-                              <img
-                                src={user2}
-                                alt="user1"
-                                className="avatar-35 rounded-circle img-fluid"
-                              />
-                            </div>
-                            <div className="comment-data-block ms-3">
-                              <h6>Monty Carlo</h6>
-                              <p className="mb-0">Lorem ipsum dolor sit amet</p>
-                              <div className="d-flex flex-wrap align-items-center comment-activity">
-                                <Link to="#">like</Link>
-                                <Link to="#">reply</Link>
-                                <span> 5 min </span>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
+                     
+                      {post.comments.map((item) => (
                         <li>
                           <div className="d-flex">
                             <div className="user-img">
@@ -377,28 +454,40 @@ const Postes = () => {
                                 className="avatar-35 rounded-circle img-fluid"
                               />
                             </div>
-                            <div className="comment-data-block ms-3">
-                              <h6>Paul Molive</h6>
-                              <p className="mb-0">Lorem ipsum dolor sit amet</p>
-                              <div className="d-flex flex-wrap align-items-center comment-activity">
-                                <Link to="#">like</Link>
-                                <Link to="#">reply</Link>
-                                <span> 5 min </span>
-                              </div>
-                            </div>
+                            
+																
+																	<div className='comment-data-block ms-3' key={item.user}>
+																		<h6>{item.fullName}</h6>
+																		<p className='mb-0'>{item.comment}</p>
+																		<div className='d-flex flex-wrap align-items-center comment-activity'>
+																			<Link to='#'>
+																				like
+																			</Link>
+																			<Link to='#'>
+																				reply
+																			</Link>
+																			<span>
+																				5min
+																			</span>
+																		</div>
+																	</div>
+																
                           </div>
                         </li>
+                        )
+                        )}
                       </ul>
                       <form className="comment-text d-flex align-items-center mt-3">
                         <input
                           type="text"
                           className="form-control rounded"
                           placeholder="Enter Your Comment"
+                          onChange={(e) => setNewComment(e.target.value)}
                         />
                         <div className="comment-attagement d-flex">
-                          <Link to="#">
-                            <i className="ri-link me-3"></i>
-                          </Link>
+                          
+                            <i className="ri-link me-3"
+                             onClick={()=>handleAddComment(post._id)}> </i>
                           <Link to="#">
                             <i className="ri-user-smile-line me-3"></i>
                           </Link>
@@ -410,8 +499,8 @@ const Postes = () => {
                     </div>
                   </Card.Body>
                 </Card>
-              </Col>
-            </Col>
+              </Col>))}
+            </Col> 
 
             <div className="col-sm-12 text-center">
               <img src={loader} alt="loader" style={{ height: "100px" }} />

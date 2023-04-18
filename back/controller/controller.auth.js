@@ -108,7 +108,7 @@ const signUpCompany = async (req, res) => {
   }
 };
 
-//signInWithGoogle
+//
 
 // const signInWithGoogle = async (req, res, next) => {
 //   const { idToken } = req.body;
@@ -303,7 +303,7 @@ module.exports = {
   confirmAccount,
   restPasswordMail,
   restPasswordToken,
-  signInWithGoogle,
+
   signUpUser,
   signUpCompany,
 };
