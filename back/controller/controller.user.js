@@ -130,19 +130,20 @@ const addNewEducation = async (req, res) => {
 const getUserById = async (req, res) => {
   const id = req.params.id;
   try {
-    const user = await Users.findById(id)
-      .then((result) => {
+    const user = await Users.findById(id).then(
+      (result) => {
         res.status(200).send(result);
-      })
-      .catch((error) => {
-        res.status(404).json({ message: "User NOT FOUND" });
-      });
+      }
+    ).catch(
+      (error) => {
+        res.status(404).json({message: "User NOT FOUND"});
+      }
+    );
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: `Error getting user by Id. Error:\n${error}` });
+    res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
   }
-};
+}
+
 
 module.exports = {
   updatePassword,
