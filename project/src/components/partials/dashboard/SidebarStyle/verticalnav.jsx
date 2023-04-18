@@ -257,16 +257,7 @@ const VerticalNav = React.memo(() => {
         ) : (
           ""
         )}
-
-        {company ? (
-          <div className="d-grid my-3">
-            <Button variant="success" className="rounded-pill mb-1">
-              Add Offers
-            </Button>
-          </div>
-        ) : (
-          ""
-        )}
+       
 
         <li className="nav-item static-item">
           <Link className="nav-link static-item disabled" to="#" tabIndex="-1">

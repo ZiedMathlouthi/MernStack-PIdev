@@ -4,7 +4,7 @@ applierDetails = {
   fullName: 1,
   email: 1,
   city: 1,
-  _id: 1
+  _id: 1,
 };
 offerOwner = {
   fullName: 1,
@@ -68,17 +68,17 @@ const deleteOffre = (id) => async (req, res) => {
   }
 };
 const applyOffre = (id) => async (req, res) => {
-  console.log(req.params[id])
-  console.log(req.body.id)
+  console.log(req.params[id]);
+  console.log(req.body.id);
   try {
     const offre = await Offres.findById(req.params[id]).exec();
     if (!offre.valid) return res.status(400).json("offer not valid");
     const index = offre.appliers.findIndex(
-      (e) => e.user.toString?.() === req.id.toString?.()
+      (e) => e.user.toString?.() === req.body.id.toString?.()
     );
     if (index !== -1) return res.status(400).json("already applied");
     offre.appliers.push({
-      user: req.body.id
+      user: req.body.id,
     });
     await offre.save();
     return res.status(200).json(" applied");
@@ -101,9 +101,8 @@ const unapplyOffre = (id) => async (req, res) => {
   }
 };
 const getAppliers = (offerId) => async (req, res) => {
-  console.log(req.params[offerId])
+  console.log(req.params[offerId]);
   try {
-   
     const offre = await Offres.findById(req.params[offerId])
       .populate({ path: "appliers.user", select: applierDetails })
       .select({ appliers: 1 })
@@ -124,9 +123,12 @@ const acceptApplier = (offerId, userId) => async (req, res) => {
       (e) => e.user.toString?.() === req.params[userId]
     );
     if (index === -1) return res.status(400).json("invalid params");
-offre.appliers.splice(index, 1, {user: req.params[userId], accepted: true});
-await offre.save();
-return res.status(200).json("accepted");
+    offre.appliers.splice(index, 1, {
+      user: req.params[userId],
+      accepted: true,
+    });
+    await offre.save();
+    return res.status(200).json("accepted");
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -134,13 +136,16 @@ return res.status(200).json("accepted");
 const unacceptApplier = (offerId, userId) => async (req, res) => {
   try {
     const offre = await Offres.findById(req.body.offerId).exec();
-    console.log("offer",offre)
+    console.log("offer", offre);
     const index = offre?.appliers.findIndex(
       (e) => e.user.toString?.() === req.params[userId]
     );
     if (index === -1) return res.status(400).json("invalid params");
-    
-    offre.appliers.splice(index, 1,{user: req.params[userId], accepted: false});
+
+    offre.appliers.splice(index, 1, {
+      user: req.params[userId],
+      accepted: false,
+    });
     await offre.save();
     return res.status(200).json("unaccepted");
   } catch (err) {
@@ -218,7 +223,7 @@ module.exports = {
   unapplyOffre,
   acceptApplier,
   unacceptApplier,
-  
+
   validOffre,
   invalidOffre,
   getAllOffers,
