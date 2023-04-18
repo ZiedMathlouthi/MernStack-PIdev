@@ -11,11 +11,14 @@ const {
   updateCoverPhoto,
   updatePicture,
   updateCV,
+  addNewEducation,
+  addNewCertification,
+  addNewSkill,
+  addNewExperience,
   getUserById
 } = require("../controller/controller.user");
 const { userProfile } = require("../validators/validators.user");
 const { changePassword } = require("../validators/validators.changePassword");
-router.put("/:id", authorize([USER]), validate(userProfile), updateProfile);
 router.put(
   "/password",
   authorize([USER]),
@@ -38,7 +41,6 @@ router.put("/cv", authorize([USER]), upload.single("cv"), updateCV);
 router.post("/upload", upload.single("file"), (req, res) => {
   res.status(200).json({ file: req.file });
 });
-router.get("/getUserById/:id", getUserById);
 //update profile
 //experience popup
 //logout

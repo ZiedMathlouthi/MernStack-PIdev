@@ -60,7 +60,7 @@ const VerticalNav = React.memo(() => {
 
   return (
     <React.Fragment>
-      <Accordion as="ul" className="navbar-nav iq-main-menu" id="sidebar-menu">
+      <Accordion as="ul" className="navbar-nav iq-main-menu position-relative" id="sidebar-menu">
         <li className="nav-item static-item">
           <Link className="nav-link static-item disabled" to="#" tabIndex="-1">
             <span className="default-icon">Main Menu </span>
@@ -136,7 +136,7 @@ const VerticalNav = React.memo(() => {
         ) : (
           ""
         )}
-        {!expert && !company ? (
+        {!expert && company ? (
           <Nav.Item as="li">
             <Link
               className={`${
@@ -157,7 +157,48 @@ const VerticalNav = React.memo(() => {
         ) : (
           ""
         )}
-        {!expert && company ? (
+        {user || expert ? (
+          <Nav.Item as="li">
+            <Link
+              className={`${
+                location.pathname === "/dashboards/app/offers" ? "active" : ""
+              } nav-link `}
+              aria-current="page"
+              to="/dashboards/app/offers"
+            >
+              <OverlayTrigger
+                placement="right"
+                overlay={<Tooltip>Group</Tooltip>}
+              >
+                <i className="icon material-symbols-outlined">groups</i>
+              </OverlayTrigger>
+              <span className="item-name">All Offers</span>
+            </Link>
+          </Nav.Item>
+        ) : (
+          ""
+        )}
+
+          <Nav.Item as="li">
+            <Link
+              className={`${
+                location.pathname === "/dashboards/app/meets" ? "active" : ""
+              } nav-link `}
+              aria-current="page"
+              to="/dashboards/app/meets"
+            >
+              <OverlayTrigger
+                placement="right"
+                overlay={<Tooltip>Group</Tooltip>}
+              >
+                <i className="icon material-symbols-outlined">groups</i>
+              </OverlayTrigger>
+              <span className="item-name">Meets</span>
+            </Link>
+          </Nav.Item>
+
+
+        {!expert && !company ? (
           <Nav.Item as="li">
             <Link
               className={`${

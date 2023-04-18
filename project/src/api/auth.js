@@ -20,7 +20,6 @@ export const registerUser = async (values) => {
     return error;
   }
 };
-
 export const registerCompany = async (values) => {
   try {
     const response = await AxiosInstance.post("/auth/company", values, {
@@ -52,6 +51,8 @@ export const registerExpert = async (values) => {
 export const UpdateProfile = async (id,values) => {
   const token = JSON.parse(localStorage.getItem("myData")).token;
 
+
+  
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -60,6 +61,166 @@ export const UpdateProfile = async (id,values) => {
     console.log(response);
     const user = JSON.parse(localStorage.getItem("myData")).user;
     const data = { token: token, user: { ...user, ...response.data } };
+    localStorage.setItem("myData", JSON.stringify(data));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
+
+export const updatePicture = async (values) => {
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+
+
+  
+  const config = {
+    headers: { 
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}` },
+  };
+  
+  
+  try {
+    const response = await AxiosInstance.put(`/user/picture`, values, config);
+    console.log(response);
+    const user = JSON.parse(localStorage.getItem("myData")).user;
+    const data = { token: token, user:response.data };
+    localStorage.setItem("myData", JSON.stringify(data));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
+
+
+export const updateProfilePicture = async (values) => {
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+
+
+  
+  const config = {
+    headers: { 
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}` },
+  };
+  
+  try {
+    const response = await AxiosInstance.put(`/user/coverPhoto`, values, config);
+    console.log(response);
+    const user = JSON.parse(localStorage.getItem("myData")).user;
+    const data = { token: token, user:response.data };
+    localStorage.setItem("myData", JSON.stringify(data));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
+
+
+export const updateCv = async (values) => {
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+
+
+  
+  const config = {
+    headers: { 
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}` },
+  };
+  
+  
+  try {
+    const response = await AxiosInstance.put(`/user/cv`, values, config);
+    console.log(response);
+    const user = JSON.parse(localStorage.getItem("myData")).user;
+    const data = { token: token, user:response.data };
+    localStorage.setItem("myData", JSON.stringify(data));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+
+};
+export const UpdateExperience = async (values) => {
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+
+
+  
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  try {
+    const response = await AxiosInstance.put(`/user/experience`, values, config);
+    console.log(response);
+    const user = JSON.parse(localStorage.getItem("myData")).user;
+    const data = { token: token, user:response.data };
+    localStorage.setItem("myData", JSON.stringify(data));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
+
+export const UpdateStudyCarrier = async (values) => {
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+
+
+  
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  try {
+    const response = await AxiosInstance.put(`/user/education`, values, config);
+    console.log(response);
+    const user = JSON.parse(localStorage.getItem("myData")).user;
+    const data = { token: token, user:response.data };
+    localStorage.setItem("myData", JSON.stringify(data));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
+export const UpdateSkill = async (values) => {
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+
+
+  
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  try {
+    const response = await AxiosInstance.put(`/user/skill`, values, config);
+    console.log(response);
+    const user = JSON.parse(localStorage.getItem("myData")).user;
+    const data = { token: token, user:response.data };
+    localStorage.setItem("myData", JSON.stringify(data));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
+export const UpdateCertificate = async (values) => {
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+
+
+  const config = {
+    headers: { 
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}` },
+  };
+  
+  try {
+    const response = await AxiosInstance.put(`/user/certification`, values, config);
+    console.log(response);
+    const user = JSON.parse(localStorage.getItem("myData")).user;
+    const data = { token: token, user:response.data };
     localStorage.setItem("myData", JSON.stringify(data));
     return response.data;
   } catch (error) {

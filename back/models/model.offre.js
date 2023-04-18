@@ -10,10 +10,18 @@ const offerSchema = new Schema(
       required: true,
     },
     publishedDate: { type: Date, default: new Date() },
-    appliers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+    appliers: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+          required: true,
+        },
+        accepted: { type: Boolean, default: false },
+      },
+    ],
     requirements: [{ required: true, type: String }],
     valid: { type: Boolean, default: true },
-    acceptedAppliers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     category: {
       type: String,
       required: true,

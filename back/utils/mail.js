@@ -1,6 +1,5 @@
 const RestPasswordTokens = require("../models/model.resetPasswordToken");
 nodemailer = require("nodemailer");
-bcrypt = require("bcrypt");
 jwt = require("jsonwebtoken");
 const frontUrl = "http://localhost:3000";
 const transporter = nodemailer.createTransport({
@@ -76,9 +75,18 @@ sendBlockEmail = (email, blockReason) => {
         </div>`,
   });
 };
+sendMeetingEmail = (company, user, offer) => {
+  transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: "accept your application",
+    html: `congratulation your application has been accepted by ${company.fullName} for ${offer.name} and ${offer.mode} and ${offer.category}`,
+  });
+};
 module.exports = {
   sendConfirmationEmail,
   sendRestEmail,
   sendAffirmationEmail,
   sendBlockEmail,
+  sendMeetingEmail,
 };

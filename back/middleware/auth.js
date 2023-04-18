@@ -33,6 +33,7 @@ exports.AUTH_ROLES = {
 exports.authorize = (roles) => {
   return async (req, res, next) => {
     let token = req.header("x-auth-token") || req.headers.authorization;
+    console.log(token);
     if (!token) {
       return res.status(401).send("Access denied. No token provided.");
     }
@@ -50,16 +51,18 @@ exports.authorize = (roles) => {
         req.email = email;
         req.id = company._id;
         req.role = "company";
+
         return next();
       }
-      if (user && roles.includes("user") && user.role === 'user') {
+      if (user && roles.includes("user")) {
         console.log("user");
         req.email = email;
         req.id = user._id;
         req.role = "user";
+        console.log("user");
         return next();
       }
-      if (user && roles.includes("expert") && user.role === 'expert') {
+      if (user && roles.includes("expert") && user.role === "expert") {
         req.email = email;
         req.id = user._id;
         req.role = "expert";

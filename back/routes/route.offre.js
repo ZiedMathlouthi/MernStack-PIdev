@@ -22,9 +22,9 @@ const {
   validOffre,
   invalidOffre,
   unacceptApplier,
-  getAccepted,
   getAllOffers,
   searchOffers,
+  getCompanyOffer,
 } = require("../controller/controller.offre");
 router.delete(
   "/:offreId",
@@ -53,16 +53,16 @@ router.put(
   invalidOffre("offreId")
 );
 router.put(
-  "/apply/:offreId/",
-  authorize(USER),
+  "/apply/:offreId/:userId",
+  // authorize(USER),
   verifyDoc(Offres, "offreId"),
-  applyOffre("offreId")
+  applyOffre("offreId", "userId")
 );
 router.put(
-  "/unapply/:offreId/",
-  authorize(USER),
+  "/unapply/:offreId/:userId",
+  // authorize(USER),
   verifyDoc(Offres, "offreId"),
-  unapplyOffre("offreId")
+  unapplyOffre("offreId", "userId")
 );
 router.get(
   "/appliers/:offerId",
@@ -70,9 +70,9 @@ router.get(
   getAppliers("offerId")
 );
 router.put(
-  "/accept/:offreId/:userId",
+  "/accept/:offerId/:userId",
   authorize(COMPANY),
-  verifyOwners("offreId", Offres),
+  verifyOwners("offerId", Offres),
   verifyDoc(Users, "userId"),
   acceptApplier("offreId", "userId")
 );
@@ -83,7 +83,7 @@ router.put(
   verifyDoc(Users, "userId"),
   unacceptApplier("offerId", "userId")
 );
-router.get("/accepted/:offerId", verifyDoc(Offres, "offerId"), getAccepted);
+router.get("/company", authorize(COMPANY), getCompanyOffer);
 router.get("/all", getAllOffers);
 router.put("/search", validate(offerSearch), searchOffers);
 module.exports = router;
