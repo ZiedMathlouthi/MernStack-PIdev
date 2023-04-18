@@ -54,7 +54,7 @@ exports.authorize = (roles) => {
 
         return next();
       }
-      if (user && roles.includes("user") && user.role === "user") {
+      if (user && roles.includes("user")) {
         console.log("user");
         req.email = email;
         req.id = user._id;

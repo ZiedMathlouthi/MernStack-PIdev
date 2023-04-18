@@ -15,7 +15,7 @@ const {
   addNewCertification,
   addNewSkill,
   addNewExperience,
-  
+  getUserById
 } = require("../controller/controller.user");
 const { userProfile } = require("../validators/validators.user");
 const { changePassword } = require("../validators/validators.changePassword");
@@ -41,12 +41,6 @@ router.put("/cv", authorize([USER]), upload.single("cv"), updateCV);
 router.post("/upload", upload.single("file"), (req, res) => {
   res.status(200).json({ file: req.file });
 });
-router.put("/experience", authorize([USER]), addNewExperience);
-router.put("/skill", authorize([USER]), addNewSkill);
-router.put("/certification",upload.single('certificate'), authorize([USER]), addNewCertification);
-router.put("/education", authorize([USER]), addNewEducation);
-router.put("/:id", authorize([USER]), validate(userProfile), updateProfile);
-
 //update profile
 //experience popup
 //logout

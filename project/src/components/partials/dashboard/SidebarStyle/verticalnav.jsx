@@ -63,7 +63,7 @@ const VerticalNav = React.memo(() => {
       <Accordion as="ul" className="navbar-nav iq-main-menu position-relative" id="sidebar-menu">
         <li className="nav-item static-item">
           <Link className="nav-link static-item disabled" to="#" tabIndex="-1">
-            <span className="default-icon">Main Menu</span>
+            <span className="default-icon">Main Menu </span>
             <span
               className="mini-icon"
               data-bs-toggle="tooltip"
@@ -178,7 +178,6 @@ const VerticalNav = React.memo(() => {
         ) : (
           ""
         )}
-
           <Nav.Item as="li">
             <Link
               className={`${
@@ -246,6 +245,19 @@ const VerticalNav = React.memo(() => {
           ""
         )}
 
+        {expert ? (
+          <div className="d-grid my-3">
+            <Button variant="success" className="rounded-pill mb-1" href="/addTest">
+              add Test
+            </Button>
+            <Button variant="success" className="rounded-pill mb-1" href="/addCourse">
+              Add Courses
+            </Button>
+          </div>
+        ) : (
+          ""
+        )}
+       
 
         <li className="nav-item static-item">
           <Link className="nav-link static-item disabled" to="#" tabIndex="-1">
