@@ -26,9 +26,14 @@ const AddCourseComponent = () => {
     const token = JSON.parse(userData).token;
     const user = JSON.parse(userData).user;
     const API_Url = 'http://127.0.0.1:9000/courses/';
+    // const config = {
+    //     headers: { Authorization: `Bearer ${token}`}
+    // };
     const config = {
-        headers: { Authorization: `Bearer ${token}`}
-    };
+        headers: { 
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}` },
+      };
 
     const [alertVisibility, setAlertVisibility] = useState(false);
     const [alertVisibilityF, setAlertVisibilityF] = useState(false);
@@ -36,6 +41,8 @@ const AddCourseComponent = () => {
     const [chapterTitleData, setChapterTitleData] =useState('');
     const [paragraphTitleData, setparagraphTitle] = useState('');
     const [paragraphContentData, setparagraphContentData] =useState('');
+    const [paragImData, setParagImData] =useState(null);
+    const [paragVidData, setParagVidData] =useState(null);
     const [courseData, setCourseData] = useState({
         courseName: '',
         courseDescription: '',
@@ -104,6 +111,32 @@ const AddCourseComponent = () => {
             [name]:value
         });
     }
+    const onImageChange = (event) => {
+        if (event.target.files && event.target.files[0]) {
+          let img = event.target.files[0];
+          setCourseData({
+            ...courseData,
+            coursePhoto: img
+        });
+        }
+    };
+    const onParagImageChange = (event, indexParag, indexChapter) => {
+        if (event.target.files && event.target.files[0]) {
+            let img = event.target.files[0];
+            let paragsArray = courseData.courseContent[indexChapter].chapterParagraphs;
+            setParagImData(img);
+            paragsArray[indexParag].paragraphImages = paragImData;
+        }
+        console.log(courseData)
+    };
+    const onParagVideoChange = (event, indexParag, indexChapter) => {
+        if (event.target.files && event.target.files[0]) {
+            let img = event.target.files[0];
+            let paragsArray = courseData.courseContent[indexChapter].chapterParagraphs;
+            setParagVidData(img);
+            paragsArray[indexParag].paragraphImages = paragVidData;
+        }
+    };
     const handleChapterTitleInputChange = (event, index) => {
         let chaptersArray = courseData.courseContent;
         setChapterTitleData(event.target.value);
@@ -148,7 +181,7 @@ const AddCourseComponent = () => {
                     <Row>
                         <Card>
                             <Col lg="12">
-                                <form id='myForm'>
+                                <form id='myForm' encType= "multipart/form-data">
                                     <div>
                                         <Typography gutterBottom variant="h3" component="div" align='center'>
                                             <strong>General info about the course</strong>
@@ -184,7 +217,7 @@ const AddCourseComponent = () => {
                                             name='coursePhoto'
                                             type="file"
                                             id="courseImage"
-                                            onChange={handleCourseInputChange}
+                                            onChange={onImageChange}
                                         />
                                     </Form.Group>
     
@@ -238,7 +271,9 @@ const AddCourseComponent = () => {
                                                     <Form.Control
                                                         name='paragraphImages'
                                                         type="file"
-                                                        id="image"/>
+                                                        id="image"
+                                                        onChange={(e) => onParagImageChange(e,indexChapter,indexParag)}
+                                                    />
                                                 </Form.Group>
                                                 <Form.Group className="form-group">
                                                     <Form.Label className="custom-file-input">Paragraph Video</Form.Label>{' '}
@@ -246,7 +281,7 @@ const AddCourseComponent = () => {
                                                         name='paragraphVideos'
                                                         type="file"
                                                         id="video"
-                                                        // onChange={(e)=>handleFileInputChange(e,"paragraphVideos",indexChapter,indexParag)
+                                                        onChange={(e)=> onParagVideoChange(e,indexChapter,indexParag)}
                                                     />
                                                 </Form.Group>
                                                 </>

@@ -21,6 +21,7 @@ exports.uploadPhoto = async (req, res) => {
 
 exports.addCourse = async(req, res) => {
     
+
     const chaptersData = req.body.courseContent;
     let arrayOfChapters = [];
 
@@ -32,17 +33,17 @@ exports.addCourse = async(req, res) => {
     try {
         arrayOfChapters = await Promise.all(chapterPromises)
     } catch (error) {
+        console.log(error)
         res.status(400).send(error)
     }
     
     const data = {
         courseName: req.body.courseName,
         courseDescription: req.body.courseDescription,
-        listOfRatesCourse: req.body.listOfRatesCourse,
         courseContent: arrayOfChapters,
         courseOwner: req.body.courseOwner,
         courseSubcribed: req.body.courseSubcribed,
-        coursePhoto: null
+        coursePhoto: req.file?.filename
     }
     const _course = new Course(data);
     _course.save().then(
@@ -51,6 +52,7 @@ exports.addCourse = async(req, res) => {
         }
     ).catch(
         (err) => {
+            console.log(err)
             res.status(400).json({ message : 'Failed adding new Course !!!!!!!' })
         }
     )
@@ -60,7 +62,8 @@ exports.addCourse = async(req, res) => {
 exports.addChapter = async (req, res) => {
     const data = {
         chapterTitle: req.body.chapterTitle,
-        chapterParagraphs: req.body.chapterParagraphs
+        chapterParagraphs: req.body.chapterParagraphs,
+        
     }
 
     const _chapter = new Chapter(data);

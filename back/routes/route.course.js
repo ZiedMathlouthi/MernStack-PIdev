@@ -7,7 +7,7 @@ const { upload } = require("../utils/upload");
 
 const route = express.Router();
 
-route.post('/addCourse', courseController.addCourse);
+route.post('/addCourse',upload.single("paragIm"), upload.single("paragVid"), upload.single("coursePhoto"), courseController.addCourse);
 
 route.put("/uploadImage/:id", upload.single("coursePhoto"), courseController.uploadPhoto);
 

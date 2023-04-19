@@ -8,8 +8,8 @@ const chapterSchema = new Schema (
         chapterParagraphs: [{
             paragraphTitle: { type: String, required: true },
             paragraphContent: { type: String, required: true },
-            paragraphVideos: [String],
-            paragraphImages: [String],
+            paragraphVideos: String,
+            paragraphImages: String,
         }]
 
     }
