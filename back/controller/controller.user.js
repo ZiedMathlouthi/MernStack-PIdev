@@ -10,7 +10,7 @@ const updatePassword = async (req, res) => {
   return res.status(200).json("password updated");
 };
 const updateProfile = async (req, res) => {
-  const {  role, email } = req;
+  const { role, email } = req;
   const id = req.id; //changement
   if (role == "user" || role == "expert") {
     await Users.findByIdAndUpdate(id, req.body);
@@ -24,11 +24,15 @@ const updateProfile = async (req, res) => {
 const updateCoverPhoto = async (req, res) => {
   const { id, role, email } = req;
   if (role == "user" || role == "expert") {
-   const user= await Users.findByIdAndUpdate(id, { coverPhoto: req.file?.filename  });
+    const user = await Users.findByIdAndUpdate(id, {
+      coverPhoto: req.file?.filename,
+    });
     return res.status(200).json(user);
   }
   if (role == "company") {
-   const company = await Companies.findByIdAndUpdate(id, { coverPhoto: req.file?.filename  });
+    const company = await Companies.findByIdAndUpdate(id, {
+      coverPhoto: req.file?.filename,
+    });
     return res.status(200).json(company);
   }
 };
@@ -37,12 +41,16 @@ const updatePicture = async (req, res) => {
   try {
     const { id, role, email } = req;
     if (role == "user" || role == "expert") {
-      const user =await Users.findByIdAndUpdate(id, { picture: req.file?.filename });
+      const user = await Users.findByIdAndUpdate(id, {
+        picture: req.file?.filename,
+      });
       return res.status(200).json(user);
     }
 
     if (role == "company") {
-      const company =await Companies.findByIdAndUpdate(id, { picture: req.file?.filename });
+      const company = await Companies.findByIdAndUpdate(id, {
+        picture: req.file?.filename,
+      });
       return res.status(200).json(company);
     }
   } catch (error) {
@@ -54,17 +62,20 @@ const updateCV = async (req, res) => {
   try {
     const { id, role, email } = req;
     if (role == "user" || role == "expert") {
-      const user =await Users.findByIdAndUpdate(id, { picture: req.file?.filename });
+      const user = await Users.findByIdAndUpdate(id, {
+        picture: req.file?.filename,
+      });
       return res.status(200).json(user);
-    } 
+    }
   } catch (error) {
     return res.status(500).json(error.message);
   }
-};const addNewExperience= async (req, res) => {
+};
+const addNewExperience = async (req, res) => {
   try {
-    const { id,role} = req;
+    const { id, role } = req;
     if (role == "user" || role == "expert") {
-      const user=await Users.findById(id);
+      const user = await Users.findById(id);
       user.experience.push(req.body);
       await user.save();
       return res.status(200).json(user);
@@ -73,11 +84,11 @@ const updateCV = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-const addNewSkill= async (req, res) => {
+const addNewSkill = async (req, res) => {
   try {
-    const { id,role} = req;
+    const { id, role } = req;
     if (role == "user" || role == "expert") {
-      const user=await Users.findById(id);
+      const user = await Users.findById(id);
       user.skills.push(req.body);
       await user.save();
       return res.status(200).json(user);
@@ -86,13 +97,13 @@ const addNewSkill= async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-const addNewCertification= async (req, res) => {
+const addNewCertification = async (req, res) => {
   console.log("user5");
   try {
-    const { id,role} = req;
+    const { id, role } = req;
     if (role == "user" || role == "expert") {
-      const user=await Users.findById(id);
-      const body = {...req.body,file:req.file.filename}
+      const user = await Users.findById(id);
+      const body = { ...req.body, file: req.file.filename };
       console.log(body);
       user.certificates.push(body);
       await user.save();
@@ -102,11 +113,11 @@ const addNewCertification= async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-const addNewEducation= async (req, res) => {
+const addNewEducation = async (req, res) => {
   try {
-    const { id,role} = req;
+    const { id, role } = req;
     if (role == "user" || role == "expert") {
-      const user=await Users.findById(id);
+      const user = await Users.findById(id);
       user.studyCarrier.push(req.body);
       await user.save();
       return res.status(200).json(user);
@@ -116,10 +127,10 @@ const addNewEducation= async (req, res) => {
   }
 };
 
-
 const getUserById = async (req, res) => {
   const id = req.params.id;
   try {
+<<<<<<< HEAD
     await Users.findById(id).then(
       (result) => {
         res.status(200).send(result);
@@ -129,10 +140,21 @@ const getUserById = async (req, res) => {
         res.status(404).send(error);
       }
     );
+=======
+    const user = await Users.findById(id)
+      .then((result) => {
+        res.status(200).send(result);
+      })
+      .catch((error) => {
+        res.status(404).json({ message: "User NOT FOUND" });
+      });
+>>>>>>> 8def80000ed96683f5a6bfb43095efd43f03db6a
   } catch (error) {
-    res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
+    res
+      .status(400)
+      .json({ message: `Error getting user by Id. Error:\n${error}` });
   }
-}
+};
 
 module.exports = {
   updatePassword,
@@ -144,5 +166,5 @@ module.exports = {
   addNewEducation,
   addNewCertification,
   addNewSkill,
-  addNewExperience
+  addNewExperience,
 };

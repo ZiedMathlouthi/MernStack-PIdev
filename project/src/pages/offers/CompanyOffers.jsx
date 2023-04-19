@@ -76,9 +76,11 @@ const CompanyOffers = () => {
       <div id="content-page" className="content-page">
         <Container>
           <div className="">
-            <h1 className=" mb-5" style={{fontWeight:"bold"}}>Job Offers:</h1>
+            <h1 className=" mb-5" style={{ fontWeight: "bold" }}>
+              Job Offers:
+            </h1>
             <div className="d-flex flex-row flex-wrap gap-5">
-            {offers &&
+              {offers &&
                 offers.map((offer) => (
                   <CardOffer
                     id={offer._id}
@@ -89,19 +91,14 @@ const CompanyOffers = () => {
                     publishedDate={offer.publishedDate}
                     owner={offer.owner}
                     mode={offer.mode}
+                    appliers={offer.appliers}
                     offers={() => getOffers()}
                   />
                 ))}
-             
             </div>
-           
-           
-           
           </div>
         </Container>
       </div>
-
-     
     </>
   );
 };

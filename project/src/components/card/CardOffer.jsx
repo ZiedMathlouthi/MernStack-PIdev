@@ -7,7 +7,13 @@ import { Box, Grid } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import { Stack } from "@mui/material";
 import { addOfferSchema } from "../../schemas/offer.shema";
-import { applyOffer, deleteOffer, editOffer, getOwnOffers, unApplyOffer } from "../../api/offer";
+import {
+  applyOffer,
+  deleteOffer,
+  editOffer,
+  getOwnOffers,
+  unApplyOffer,
+} from "../../api/offer";
 import MultipleSelect from "../Select";
 
 function Popup(props) {
@@ -30,7 +36,8 @@ const CardOffer = ({
   category,
   publishedDate,
   owner,
-  offers
+  offers,
+  appliers,
 }) => {
   const date = new Date(publishedDate);
   const options = { day: "numeric", month: "long" };
@@ -60,7 +67,6 @@ const CardOffer = ({
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("myData")).user);
 
-
     if (
       !document
         .getElementsByTagName("ASIDE")[0]
@@ -70,13 +76,19 @@ const CardOffer = ({
     } else {
       setMargin(false);
     }
-  },[]);
+  }, []);
 
   const [show, setShow] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [showApplied, setShowApplied] = useState(false);
-  const [applied, setApplied] = useState(false);
+  const [applied, setApplied] = useState(
+    appliers?.some?.(
+      (e) =>
+        e.user.toString?.() ===
+        JSON.parse(localStorage.getItem("myData")).user?._id?.toString?.()
+    ) || false
+  );
   const [value, setValue] = useState("");
 
   const handleClose = () => setShow(false);
@@ -96,33 +108,29 @@ const CardOffer = ({
   };
 
   const handleDelete = async (id) => {
-     const response = await deleteOffer(id);
-     offers();
+    const response = await deleteOffer(id);
+    offers();
   };
 
   const navigate = useNavigate();
 
   const handleAplliers = (id) => {
     navigate(`/dashboard/app/groups/appliers/${id}`);
-  }
+  };
 
   const handleApply = async (id) => {
     let response;
-    console.log(user._id)
-    if(!applied) {
-
-       response = await applyOffer(id, user._id);
+    console.log(user._id);
+    if (!applied) {
+      response = await applyOffer(id, user._id);
     } else {
-       response = await unApplyOffer(id, user._id);
-
+      response = await unApplyOffer(id, user._id);
     }
-    if(response.status !== "404"){
-
+    if (response.status !== "404") {
       setApplied(!applied);
     }
     offers();
-  }
-
+  };
 
   const options1 = [
     { label: "react js ", value: "react  js" },
@@ -168,7 +176,7 @@ const CardOffer = ({
         width: "18rem",
         height: "20rem",
         marginLeft: `${margin ? "0rem" : "0rem"}`,
-        boxShadow:"0px 0px 10px rgba(0, 0, 0, 0.2)"
+        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
       }}
     >
       <div class="card-body flex flxe-col">
@@ -219,50 +227,55 @@ const CardOffer = ({
         </span>
 
         <div className="card-footer d-flex justify-content-center gap-5">
-          {user && user.role !== "user" ? (
+          {user && user.role !== "user" && user.role !== "expert" ? (
             <Dropdown>
-            <Link to="#">
-              <Dropdown.Toggle as="span" className="material-symbols-outlined">
-                more_horiz
-              </Dropdown.Toggle>
-            </Link>
-            <Dropdown.Menu className="dropdown-menu-right">
-              <Dropdown.Item
-                onClick={() => {
-                  handleAplliers(id);
-                }}
-              >
-                Appliers
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => {
-                  handleShowEdit();
-                }}
-              >
-                Edit
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => {
-                  handleShow();
-                }}
-              >
-                Delete
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          ) : <button
-          type="button"
-          class="btn btn-success"
-          onClick={() => {
-            handleApply(id);
-            handleShowApplied();
-          }}
-        >
-          {applied ? "UnApply" : "Apply"}
-        </button> }
-        {showPopup && (
-              <Popup message="Congratulations!" onClose={handleClosePopUp} />
-            )}
+              <Link to="#">
+                <Dropdown.Toggle
+                  as="span"
+                  className="material-symbols-outlined"
+                >
+                  more_horiz
+                </Dropdown.Toggle>
+              </Link>
+              <Dropdown.Menu className="dropdown-menu-right">
+                <Dropdown.Item
+                  onClick={() => {
+                    handleAplliers(id);
+                  }}
+                >
+                  Appliers
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    handleShowEdit();
+                  }}
+                >
+                  Edit
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    handleShow();
+                  }}
+                >
+                  Delete
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          ) : (
+            <button
+              type="button"
+              class="btn btn-success"
+              onClick={() => {
+                handleApply(id);
+                handleShowApplied();
+              }}
+            >
+              {applied ? "UnApply" : "Apply"}
+            </button>
+          )}
+          {showPopup && (
+            <Popup message="Congratulations!" onClose={handleClosePopUp} />
+          )}
           <button
             type="button"
             class="btn btn-outline-success"
@@ -322,11 +335,17 @@ const CardOffer = ({
         </Modal.Footer>
       </Modal>
 
-      <Modal style={{ marginTop: "10rem" }} show={showApplied} onHide={handleCloseApplied}>
+      <Modal
+        style={{ marginTop: "10rem" }}
+        show={showApplied}
+        onHide={handleCloseApplied}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Congratulation</Modal.Title>
         </Modal.Header>
-        <Modal.Body><h5>You have applied to</h5> <h3>{" "} {name}</h3></Modal.Body>
+        <Modal.Body>
+          <h5>You have applied to</h5> <h3> {name}</h3>
+        </Modal.Body>
 
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseApplied}>

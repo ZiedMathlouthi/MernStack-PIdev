@@ -18,6 +18,7 @@ const companySchema = new Schema(
     description: { type: String },
     isBlocked: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
+    listofRates: [{ type: mongoose.Schema.Types.ObjectId, ref: "rating" }],
   },
   { timestamps: true }
 );
