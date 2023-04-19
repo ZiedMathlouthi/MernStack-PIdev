@@ -120,13 +120,13 @@ const addNewEducation= async (req, res) => {
 const getUserById = async (req, res) => {
   const id = req.params.id;
   try {
-    const user = await Users.findById(id).then(
+    await Users.findById(id).then(
       (result) => {
         res.status(200).send(result);
       }
     ).catch(
       (error) => {
-        res.status(404).json({message: "User NOT FOUND"});
+        res.status(404).send(error);
       }
     );
   } catch (error) {
@@ -140,7 +140,7 @@ module.exports = {
   updateCoverPhoto,
   updatePicture,
   updateCV,
-  getUserById
+  getUserById,
   addNewEducation,
   addNewCertification,
   addNewSkill,

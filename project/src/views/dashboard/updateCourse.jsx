@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Col, Card, Form} from 'react-bootstrap';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
@@ -177,187 +177,210 @@ const UpdateCourseComponent = () => {
 
     if(courseData && courseData.courseName){
         // console.log(courseData)
-        return (
-        <>
-            <div id='content-page' className='content-page'>
-
-           <Container>
-                <Row>
-                    <Card>
-                        <Col lg="12">
-                            <form id='myForm'>
-                                <div>
-                                    <Typography gutterBottom variant="h3" component="div" align='center'>
-                                        <strong>General info about the course</strong>
-                                    </Typography>
-                                    <Divider style={{ margin: "13px 1px" }} variant="middle" />
-                                    <TextField 
-                                        // error={requiredField}
-                                        id="outlined-basic" 
-                                        label="Course Title" 
-                                        name='courseName'
-                                        fullWidth
-                                        variant="outlined"
-                                        defaultValue={courseData.courseName}
-                                        
-                                        onChange={handleCourseInputChange}
-                                        required
-                                    />
-                                </div>
-                                <br/>
-                                <TextField
-                                        id="outlined-multiline-static"
-                                        label="Course description"
-                                        name='courseDescription'
-                                        multiline
-                                        fullWidth
-                                        rows={8}
-                                        required
-                                        defaultValue={courseData.courseDescription}
-                                        onChange={handleCourseInputChange}
-                                />
-                                <br/><br/>
-                                <Form.Group className="form-group">
-                                    <Form.Label className="custom-file-input">Update Course Image</Form.Label>{' '}
-                                    <Form.Control
-                                        name='Course Image'
-                                        defaultValue={courseData.coursePhoto}
-                                        type="file"
-                                        id="courseImage"
-                                        // onChange={(e)=>handleFileInputChange(e,"paragraphVideos",indexChapter,indexParag)
-                                    />
-                                </Form.Group>
-
-                                <Divider style={{ margin: "13px 1px" }} variant="middle" />
-                                <Typography gutterBottom variant="h3" component="div" align='center'>
-                                    Chapters
-                                </Typography>
-                                <Divider style={{ margin: "13px 1px" }} variant="middle" />
-
-                                <div>
-                                    {courseData.courseContent.map((_,indexChapter)=>(
-                                        <>
-                                        <TextField
-                                            id="outlined-basic" 
-                                            label={`chapter ${indexChapter+1} title`}
-                                            name={`chapterTitle${indexChapter}`}
-                                            fullWidth
-                                            variant="outlined" 
-                                            defaultValue={_.chapterTitle}
-                                            onChange={(e)=>handleChapterTitleInputChange(e,indexChapter)}
-                                            required
-                                        />
-
-                                        
-                                        <br/><br/>
-
-
-                                        {_.chapterParagraphs.map((_,indexParag)=>(
-                                            <>
-                                            <br/><br/>
-                                            <TextField
+        if(user._id === courseData.courseOwner){
+            return (
+                <>
+                    <div id='content-page' className='content-page'>
+        
+                   <Container>
+                        <Row>
+                            <Card>
+                                <Col lg="12">
+                                    <form id='myForm'>
+                                        <div>
+                                            <Typography gutterBottom variant="h3" component="div" align='center'>
+                                                <strong>General info about the course</strong>
+                                            </Typography>
+                                            <Divider style={{ margin: "13px 1px" }} variant="middle" />
+                                            <TextField 
+                                                // error={requiredField}
                                                 id="outlined-basic" 
-                                                label={`Paragraph ${indexParag+1} title`}
-                                                name='paragraphTitle'
-                                                variant="outlined"
-                                                defaultValue={_.paragraphTitle}
-                                                onChange={(e)=>handleParagrapheTitleInputChange(e,indexChapter,indexParag)}
-                                                required
-                                            />
-                                            <br/><br/>
-                                            <TextField
-                                                id="outlined-basic" 
-                                                label={`Paragraph ${indexParag+1} textarea`}
-                                                multiline
-                                                rows={6}
+                                                label="Course Title" 
+                                                name='courseName'
                                                 fullWidth
-                                                name='paragraphContent'
                                                 variant="outlined"
-                                                defaultValue={_.paragraphContent}
-                                                onChange={(e)=>handleParagrapheContentInputChange(e,indexChapter,indexParag)}
+                                                defaultValue={courseData.courseName}
+                                                
+                                                onChange={handleCourseInputChange}
                                                 required
                                             />
-                                            <br/><br/>
-                                            <Form.Group className="form-group">
-                                                <Form.Label className="custom-file-input">Update Paragraph Image</Form.Label>{' '}
-                                                <Form.Control
-                                                    name='paragraphImages'
-                                                    type="file"
-                                                    id="image"
-                                                    // onChange={(e)=>handleFileInputChange(e,"paragraphImages",indexChapter,indexParag)}
-                                                />
-                                            </Form.Group>
-                                            <br/><br/>
-                                            <Form.Group className="form-group">
-                                                <Form.Label className="custom-file-input">Update Paragraph Video</Form.Label>{' '}
-                                                <Form.Control
-                                                    name='paragraphVideos'
-                                                    type="file"
-                                                    id="video"
-                                                    // onChange={(e)=>handleFileInputChange(e,"paragraphVideos",indexChapter,indexParag)
-                                                />
-                                            </Form.Group>
-                                            </>
-                                        ))}
+                                        </div>
+                                        <br/>
+                                        <TextField
+                                                id="outlined-multiline-static"
+                                                label="Course description"
+                                                name='courseDescription'
+                                                multiline
+                                                fullWidth
+                                                rows={8}
+                                                required
+                                                defaultValue={courseData.courseDescription}
+                                                onChange={handleCourseInputChange}
+                                        />
                                         <br/><br/>
-
-                                        <Button 
-                                            key={indexChapter+1} 
-                                            variant="contained" 
-                                            startIcon={<AddIcon />} 
-                                            onClick={(event)=>handleAddParagraph(indexChapter)}
-                                        >
-                                            Add Paragraph
-                                        </Button>
-                                        <Button 
-                                            key={indexChapter} 
-                                            variant="outlined" 
-                                            startIcon={<DeleteIcon />} 
-                                            onClick={handleDeleteChapter(indexChapter)}
-                                        >
-                                            Delete
-                                        </Button>
+                                        <Form.Group className="form-group">
+                                            <Form.Label className="custom-file-input">Update Course Image</Form.Label>{' '}
+                                            <Form.Control
+                                                name='Course Image'
+                                                defaultValue={courseData.coursePhoto}
+                                                type="file"
+                                                id="courseImage"
+                                                // onChange={(e)=>handleFileInputChange(e,"paragraphVideos",indexChapter,indexParag)
+                                            />
+                                        </Form.Group>
+        
                                         <Divider style={{ margin: "13px 1px" }} variant="middle" />
-                                        
-                                        </>
-                                        
-                                        
-                                    ))}
-                                </div>
-                                <Button
+                                        <Typography gutterBottom variant="h3" component="div" align='center'>
+                                            Chapters
+                                        </Typography>
+                                        <Divider style={{ margin: "13px 1px" }} variant="middle" />
+        
+                                        <div>
+                                            {courseData.courseContent.map((_,indexChapter)=>(
+                                                <>
+                                                <TextField
+                                                    id="outlined-basic" 
+                                                    label={`chapter ${indexChapter+1} title`}
+                                                    name={`chapterTitle${indexChapter}`}
+                                                    fullWidth
+                                                    variant="outlined" 
+                                                    defaultValue={_.chapterTitle}
+                                                    onChange={(e)=>handleChapterTitleInputChange(e,indexChapter)}
+                                                    required
+                                                />
+        
+                                                
+                                                <br/><br/>
+        
+        
+                                                {_.chapterParagraphs.map((_,indexParag)=>(
+                                                    <>
+                                                    <br/><br/>
+                                                    <TextField
+                                                        id="outlined-basic" 
+                                                        label={`Paragraph ${indexParag+1} title`}
+                                                        name='paragraphTitle'
+                                                        variant="outlined"
+                                                        defaultValue={_.paragraphTitle}
+                                                        onChange={(e)=>handleParagrapheTitleInputChange(e,indexChapter,indexParag)}
+                                                        required
+                                                    />
+                                                    <br/><br/>
+                                                    <TextField
+                                                        id="outlined-basic" 
+                                                        label={`Paragraph ${indexParag+1} textarea`}
+                                                        multiline
+                                                        rows={6}
+                                                        fullWidth
+                                                        name='paragraphContent'
+                                                        variant="outlined"
+                                                        defaultValue={_.paragraphContent}
+                                                        onChange={(e)=>handleParagrapheContentInputChange(e,indexChapter,indexParag)}
+                                                        required
+                                                    />
+                                                    <br/><br/>
+                                                    <Form.Group className="form-group">
+                                                        <Form.Label className="custom-file-input">Update Paragraph Image</Form.Label>{' '}
+                                                        <Form.Control
+                                                            name='paragraphImages'
+                                                            type="file"
+                                                            id="image"
+                                                            // onChange={(e)=>handleFileInputChange(e,"paragraphImages",indexChapter,indexParag)}
+                                                        />
+                                                    </Form.Group>
+                                                    <br/><br/>
+                                                    <Form.Group className="form-group">
+                                                        <Form.Label className="custom-file-input">Update Paragraph Video</Form.Label>{' '}
+                                                        <Form.Control
+                                                            name='paragraphVideos'
+                                                            type="file"
+                                                            id="video"
+                                                            // onChange={(e)=>handleFileInputChange(e,"paragraphVideos",indexChapter,indexParag)
+                                                        />
+                                                    </Form.Group>
+                                                    </>
+                                                ))}
+                                                <br/><br/>
+        
+                                                <Button 
+                                                    key={indexChapter+1} 
+                                                    variant="contained" 
+                                                    startIcon={<AddIcon />} 
+                                                    onClick={(event)=>handleAddParagraph(indexChapter)}
+                                                >
+                                                    Add Paragraph
+                                                </Button>
+                                                <Button 
+                                                    key={indexChapter} 
+                                                    variant="outlined" 
+                                                    startIcon={<DeleteIcon />} 
+                                                    onClick={handleDeleteChapter(indexChapter)}
+                                                >
+                                                    Delete
+                                                </Button>
+                                                <Divider style={{ margin: "13px 1px" }} variant="middle" />
+                                                
+                                                </>
+                                                
+                                                
+                                            ))}
+                                        </div>
+                                        <Button
+                                            variant="contained"
+                                            startIcon={<AddIcon />}
+                                            onClick={handleAddChapter}
+                                        >Add chapter</Button>
+                                    </form>
+                                </Col>
+                            </Card>
+                            <Stack spacing={2} sx={{ width: '40%' }}>
+                                <Button 
                                     variant="contained"
-                                    startIcon={<AddIcon />}
-                                    onClick={handleAddChapter}
-                                >Add chapter</Button>
-                            </form>
-                        </Col>
-                    </Card>
-                    <Stack spacing={2} sx={{ width: '40%' }}>
-                        <Button 
-                            variant="contained"
-                            style={{left: "160%"}}
-                            startIcon={< SendIcon/>} 
-                            onClick={(event) => submitData(event)}
-                        >submit</Button>
-                        <Snackbar open={alertVisibility} autoHideDuration={6000} onClose={handleClose} >
-                            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                                Course updated successfully
-                            </Alert>
-                        </Snackbar>
-                        <Snackbar open={alertVisibilityF} autoHideDuration={6000} onClose={handleClose} >
-                            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                                Please fill out all the necessary fields
-                            </Alert>
-                        </Snackbar>
-                    </Stack>
-                </Row>
-            </Container>
-            </div>
-        </>
-    );
+                                    style={{left: "160%"}}
+                                    startIcon={< SendIcon/>} 
+                                    onClick={(event) => submitData(event)}
+                                >submit</Button>
+                                <Snackbar open={alertVisibility} autoHideDuration={6000} onClose={handleClose} >
+                                    <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                                        Course updated successfully
+                                    </Alert>
+                                </Snackbar>
+                                <Snackbar open={alertVisibilityF} autoHideDuration={6000} onClose={handleClose} >
+                                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                                        Please fill out all the necessary fields
+                                    </Alert>
+                                </Snackbar>
+                            </Stack>
+                        </Row>
+                    </Container>
+                    </div>
+                </>
+                );
+        }else{
+            return(
+                <>
+                <Container>
+                    <Row>
+                        <Card>
+                            <h3>You do not have the Permission for this url. Go back <Link to="/">Home</Link></h3>
+                        </Card>
+                    </Row>
+                </Container>
+                </>
+            )
+        }
+        
     }else{
         return (
-            <><h1>LOAAAAAAADING</h1></>
+            <>
+            <Container>
+                <Row>
+                    <Card>
+                        LOAAAAADING
+                    </Card>
+                </Row>
+            </Container>
+            </>
         )
     }
     

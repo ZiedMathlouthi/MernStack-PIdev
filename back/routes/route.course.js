@@ -3,10 +3,16 @@ const express = require('express');
 const courseController = require('../controller/controller.course');
 const { authorize, AUTH_ROLES } = require("../middleware/auth");
 const { EXPERT, USER } = AUTH_ROLES;
+const { upload } = require("../utils/upload");
 
 const route = express.Router();
 
 route.post('/addCourse', courseController.addCourse);
+
+route.put("/uploadImage/:id", upload.single("coursePhoto"), courseController.uploadPhoto);
+
+// route.get("/getUserById/:id", courseController.getUserById);
+
 route.post('/addChapter', authorize([EXPERT]), courseController.addChapter);
 route.get('/getAllCourses', courseController.getAllCourses);
 route.get('/getCourseById/:id', courseController.getCourseById);

@@ -4,7 +4,23 @@ const UserModel = require("../models/model.user");
 const progressionCourseModel = require("../models/courses/model.progressionCourse");
 const axios = require("axios");
 
+exports.uploadPhoto = async (req, res) => {
+    const idCourse = req.params.id;
+    try {
+        await Course.findByIdAndUpdate(idCourse, {coursePhoto: req.file?.filename}).then(
+            (result) => {
+                return res.status(200).send(result)}
+        ).catch(
+            (error) => { return res.status(400).send(error)}
+        )
+    } catch (error) {
+        res.status(400).send(error)
+    }
+
+};
+
 exports.addCourse = async(req, res) => {
+    
     const chaptersData = req.body.courseContent;
     let arrayOfChapters = [];
 
@@ -16,23 +32,22 @@ exports.addCourse = async(req, res) => {
     try {
         arrayOfChapters = await Promise.all(chapterPromises)
     } catch (error) {
-        res.status(400).json({message : 'Problem while adding the different Chapters !!!!!!'})
+        res.status(400).send(error)
     }
     
-
     const data = {
         courseName: req.body.courseName,
         courseDescription: req.body.courseDescription,
         listOfRatesCourse: req.body.listOfRatesCourse,
         courseContent: arrayOfChapters,
         courseOwner: req.body.courseOwner,
-        courseSubcribed: req.body.courseSubcribed
+        courseSubcribed: req.body.courseSubcribed,
+        coursePhoto: null
     }
-
     const _course = new Course(data);
     _course.save().then(
         (createdCourse) => {
-            res.status(200).json({ message : 'Course created successfully....' })
+            res.status(200).send(createdCourse)
         }
     ).catch(
         (err) => {
@@ -307,3 +322,21 @@ exports.getAllExpertsOwnersArray = async (req, res) => {
         res.status(400).json({msg:error})
     }
 }
+
+// exports.getUserById = async (req, res) => {
+//     const idExp = req.params.id;
+//     try {
+//       await UserModel.findById(idExp).then(
+//         (result) => {
+//           console.log(result)
+//           res.status(200).send(result);
+//         }
+//       ).catch(
+//         (error) => {
+//           res.status(404).send(error);
+//         }
+//       );
+//     } catch (error) {
+//       res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
+//     }
+// }

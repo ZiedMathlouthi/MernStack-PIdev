@@ -182,3 +182,20 @@ exports.updateTestById = async (req, res) => {
         return res.status(400).send(error);
     }
 }
+
+exports.applyTestById = async (req, res) => {
+    const testID = req.params.id;
+    const userID = req.body.userID;
+
+    testModel.findByIdAndUpdate(testID, { $push:{ listOfSubcribed: userID } }).then(
+        (result) => {
+            if(result){
+                return res.status(200).send(result);
+            }else{
+                return res.status(404).send(result);
+            }
+        }
+    ).catch(
+        (error) => { return res.status(400).send(error) }
+    )
+}
