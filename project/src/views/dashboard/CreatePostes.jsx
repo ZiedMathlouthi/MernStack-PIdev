@@ -7,12 +7,13 @@ import {
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
-import imgpost from "../../assets/images/16620273397236.jpg";
+import imgpost from "../../assets/images/16620273397236.jpg"
 import { Link } from "react-router-dom";
 import Card from "../../components/Card";
 import CustomToggle from "../../components/dropdowns";
 import ShareOffcanvas from "../../components/share-offcanvas";
-import "../dashboard/Post/Post.css";
+import "../dashboard/Post/Post.css"
+
 
 //image
 import user1 from "../../assets/images/user/1.jpg";
@@ -51,156 +52,182 @@ import icon7 from "../../assets/images/icon/07.png";
 import loader from "../../assets/images/page-img/page-load-loader.gif";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadImage, uploadPost } from "../../actions/uploadAction";
-import { UilTimes } from "@iconscout/react-unicons";
+import {UilTimes} from '@iconscout/react-unicons'
 import axios from "axios";
 import jwt from "jwt-decode";
 
 const Postes = () => {
+  
   const [selectedPost, setSelectedPost] = useState({});
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null);
   const token = JSON.parse(localStorage.getItem("myData")).token;
   const User = JSON.parse(localStorage.getItem("myData"));
   const [likes, setLikes] = useState(posts.likes);
-  const [imagee, setImagee] = useState([]);
-  const [isLiked, setIsLiked] = useState(false);
-  const userpicture = JSON.parse(localStorage.getItem("myData")).user.picture;
-  const getUserByID = () => {
-    if (token !== null) {
-      const decoded_token = jwt(token);
-      console.log(decoded_token);
-      return decoded_token.id;
-    }
-  };
-  const userId = getUserByID();
+  const [imagee, setImagee] = useState([])
+const [isLiked, setIsLiked] = useState(false);
+const userpicture = JSON.parse(localStorage.getItem("myData")).user.picture;
+	const getUserByID = () => {
+		if (token !== null) {
+			const decoded_token = jwt(token);
+			console.log(decoded_token);
+			return decoded_token.id;
+		}
+	};
+	const userId = getUserByID();
+  
 
-  const fetchUser = async (userId = User.user._id) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/post/user/${userId}`
-      );
-      setUser(response.data);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  const fetchUser = async (userId =User.user._id) => {
+		try {
+			const response = await axios.get(
+				`${process.env.REACT_APP_API_URL}/post/user/${userId}`
+			);
+			setUser(response.data);
+		} catch (err) {
+			setError(err.message);
+		}
+	};
   //fetchUser(posts.data)
-  console.log("this is user fetching", User);
-
-  console.log("this is TOKEN", token);
-  console.log("this is id", User.user._id);
+  console.log("this is user fetching", User)
+  
+  console.log("this is TOKEN",token)
+  console.log( "this is id", User.user._id)
 
   const fetchData = async () => {
     try {
+      
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/post/`);
       setPosts(res.data.posts);
-      setImagee(res.data.data.posts.image);
+      setImagee(res.data.data.posts.image)
     } catch (error) {
-      console.error("Error fetching posts:", error);
+      console.error('Error fetching posts:', error);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-  console.log("image list", imagee);
-
-  //64332d9a2874923de3c456ba
-
-  const handleLike = async (postId) => {
-    const userId = User.user._id;
+  
+  const handleDelete = async (postId, userId = User.user._id) => {
     try {
-      const res = await axios.put(
-        `${process.env.REACT_APP_API_URL}/post/${postId}/like`,
-        { userId }
-      );
-      setLikes({ likes: res.data });
-      isLiked ? setIsLiked(false) : setIsLiked(true);
-      setLikes({ status: isLiked });
-      window.location.reload();
-    } catch (err) {
-      console.log(`error with like post ${err}`);
-    }
-  };
-  //console.log(likes)
-  const [comment, setComment] = useState();
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
-  const [error, setError] = useState(null);
-  // Fetch all comments on component mount
-  useEffect(() => {
-    const fetchComments = async (postId) => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/post/${postId}/comments`
-        );
-        setComments({ data: response.data.comments });
-      } catch (error) {
-        console.error(error);
-        setError("Failed to fetch comments");
-      }
-    };
-    fetchComments();
-  }, []);
-  console.log(posts);
-
-  const handleAddComment = async (postId) => {
-    console.log("postId is :", postId);
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/post/${postId}/comment`,
+      const ID = userId;
+      console.log("delete id ", ID);
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/post/${postId}`,
         {
-          user: User.user._id,
-          fullName: User.user.fullName,
-          comment: newComment,
+          data: { userId: ID },
         }
       );
-
-      setComments([...comments, response.data.comment]);
-      setPosts(
-        posts.map((post) => (post._id === postId ? response.data : post))
-      );
-      setNewComment("");
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-      setError("Failed to add comment");
+      if (response.status === 200) {
+        alert("Post deleted");
+        window.location.reload();
+      } else {
+        alert("Problem with the deletion of the POST");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  console.log(comments);
+  useEffect(() => {
+    
+    fetchData();
+  }, []);
+  console.log("image list",imagee)
 
-  const loading = useSelector((state) => state.uploading);
+//64332d9a2874923de3c456ba
+
+	const handleLike = async (postId) => {
+    const userId =User.user._id
+		try {
+			const res = await axios.put(
+				`${process.env.REACT_APP_API_URL}/post/${postId}/like`, {userId}
+			);
+			setLikes({ likes: res.data });
+			isLiked  ? setIsLiked(false) : setIsLiked(true);
+      setLikes({ status: isLiked });
+      window.location.reload()
+		} catch (err) {
+			console.log(`error with like post ${err}`);
+		}
+
+	};
+  //console.log(likes)
+const [comment,setComment] = useState()
+  const [comments, setComments] = useState([]);
+	const [newComment, setNewComment] = useState('');
+	const [error, setError] = useState(null);
+	// Fetch all comments on component mount
+	useEffect(() => {
+		const fetchComments = async (postId) => {
+			try {
+				const response = await axios.get(
+					`${process.env.REACT_APP_API_URL}/post/${postId}/comments`
+				);
+				setComments({data : response.data.comments});
+			} catch (error) {
+				console.error(error);
+				setError('Failed to fetch comments');
+			}
+		};
+		fetchComments();
+	}, []);
+  console.log(posts)
+
+  const handleAddComment = async (postId) => {
+    console.log("postId is :",postId)
+		try {
+			const response = await axios.post(
+				`${process.env.REACT_APP_API_URL}/post/${postId}/comment`,
+				{
+					user: User.user._id,
+					fullName: User.user.fullName,
+					comment: newComment,
+				}
+			);
+      
+			setComments([...comments, response.data.comment]);
+      setPosts(posts.map(post => post._id === postId ? response.data : post));
+			setNewComment('');
+      window.location.reload()
+		} catch (error) {
+			console.error(error);
+			setError('Failed to add comment');
+		}
+	};
+  
+	console.log(comments)
+
+  const loading = useSelector((state)=>state.uploading)
   const [image, setImage] = useState(null);
   const imageRef = useRef();
   const desc = useRef();
   const fullName = useRef();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  
 
-  const onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      let img = event.target.files[0];
-      setImage(img);
+   const onImageChange = (event) => {
+     if (event.target.files && event.target.files[0]) {
+       let img = event.target.files[0];
+       setImage( img);
+     }
+   };
+  
+
+   const reset =()=>{
+     setImage(null)
+     desc.current.value=""
+   }
+  const handleSubmit =(e) =>{
+    e.preventDefault()
+    const newPost ={
+      userId : User.user._id,
+      fullName : User.user.fullName,
+      desc :desc.current.value,
+      image
     }
-  };
+    
+    dispatch(uploadPost(newPost))
+    reset()
+    fetchData()
 
-  const reset = () => {
-    setImage(null);
-    desc.current.value = "";
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newPost = {
-      userId: User.user._id,
-      fullName: User.user.fullName,
-      desc: desc.current.value,
-      image,
-    };
-
-    dispatch(uploadPost(newPost));
-    reset();
-    fetchData();
-  };
+  }
   return (
     <>
       <div id="content-page" className="content-page ">
@@ -319,19 +346,24 @@ const Postes = () => {
                                     </span>
                                   </Dropdown.Toggle>
                                   <Dropdown.Menu className="dropdown-menu m-0 p-0">
-                                    <Dropdown.Item className=" p-3" to="#">
-                                      <div className="d-flex align-items-top">
-                                        <div className="h4 material-symbols-outlined">
-                                          <i className="ri-save-line"></i>
+                                    {User.user._id === post.userId ? (
+                                      <Dropdown.Item
+                                        className=" p-3 btn btn-danger"
+                                        to="#"
+                                        onClick={() => handleDelete(post._id)}
+                                      >
+                                        <div className="d-flex align-items-top">
+                                          <div className="h4 material-symbols-outlined">
+                                            <i className="ri-save-line"></i>
+                                          </div>
+                                          <div className="data ms-2">
+                                            <h6>Delete Post</h6>
+                                          </div>
                                         </div>
-                                        <div className="data ms-2">
-                                          <h6>Save Post</h6>
-                                          <p className="mb-0">
-                                            Add this to your saved items
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </Dropdown.Item>
+                                      </Dropdown.Item>
+                                    ) : (
+                                      <></>
+                                    )}
                                     <Dropdown.Item className="p-3" to="#">
                                       <div className="d-flex align-items-top">
                                         <i className="ri-close-circle-line h4"></i>

@@ -30,6 +30,7 @@ const Groups = () => {
 
   const [courseData, setCourseData] = useState(null);
   const [ownersData, setOwnersData] = useState({});
+  const [coursePicture, setCoursePicture] = useState("http://127.0.0.1:9000/data/1681830270752-deddyPhotoDeProfil.jpg");
 
   const [value, setValue] = React.useState('1');
 
@@ -68,7 +69,6 @@ const Groups = () => {
     )
   }
 
-
   useEffect( () => {
     fetchAllCoursesData();
   },[]);
@@ -91,6 +91,7 @@ const Groups = () => {
     if (courseData) {
       courseData.forEach((singleCourseData) => {
         const ownerId = singleCourseData.courseOwner;
+        console.log(ownerId)
         fetchOwnerData(ownerId);
       });
     }
@@ -99,6 +100,7 @@ const Groups = () => {
   // const res = fetchOwnersData("64248c024db8ea26a26d203f");
 
   if(courseData){
+    console.log(courseData)
     return (
       <>
         <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -127,16 +129,30 @@ const Groups = () => {
                             </div>
                             <Card.Body className=" text-center">
                             <div className="group-icon">
-                              <img
-                                key={indexCourse}
-                                src={gi1}
-                                alt="profile-img"
-                                className="rounded-circle img-fluid avatar-120"
-                              />
+                              {`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}` === `http://127.0.0.1:9000/data/` ? (
+                                <>
+                                <img
+                                  key={indexCourse}
+                                  src={gi1}
+                                  alt="profile-img"
+                                  className="rounded-circle img-fluid avatar-120"
+                                />
+                                </>
+                              ): (
+                                <>
+                                <img
+                                  key={indexCourse}
+                                  src={`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}`}
+                                  alt="profile-img"
+                                  className="rounded-circle img-fluid avatar-120"
+                                />
+                                </>
+                              )}
+                              
                             </div>
                             <div className="group-info pt-3 pb-3">
                               <h4>
-                                <Link key={indexCourse} to="/dashboards/app/group-detail">{singleCourseData.courseName}</Link>
+                                {singleCourseData.courseName}
                               </h4>
                               <p key={indexCourse}> {singleCourseData.courseDescription} </p>
                             </div>

@@ -37,6 +37,44 @@ function ProfilePost() {
       console.log(`error with like post ${err}`);
     }
   };
+
+  const handleDelete = async (postId, userId = User.user._id) => {
+    try {
+      const ID = userId;
+      console.log("delete id ", ID);
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/post/${postId}`,
+        {
+          data: { userId: ID },
+        }
+      );
+      if (response.status === 200) {
+        alert("Post deleted");
+        window.location.reload();
+      } else {
+        console.log("Problem with the deletion of the POST");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteComment = async (postId, commentId) => {
+    try {
+      const res = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/post/${postId}/comment/${commentId}`
+      );
+      if (res.data.message === "Comment deleted successfully") {
+        alert("Comment deleted successfully");
+        window.location.reload();
+      } else {
+        alert("Failed to delete comment");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const fetchComments = async (postId) => {
       try {
@@ -124,19 +162,24 @@ function ProfilePost() {
                             </span>
                           </Dropdown.Toggle>
                           <Dropdown.Menu className="dropdown-menu m-0 p-0">
-                            <Dropdown.Item className=" p-3" to="#">
-                              <div className="d-flex align-items-top">
-                                <div className="h4 material-symbols-outlined">
-                                  <i className="ri-save-line"></i>
+                            {User.user._id === post.userId ? (
+                              <Dropdown.Item
+                                className=" p-3"
+                                to="#"
+                                onClick={() => handleDelete(post._id)}
+                              >
+                                <div className="d-flex align-items-top">
+                                  <div className="h4 material-symbols-outlined">
+                                    <i className="ri-save-line"></i>
+                                  </div>
+                                  <div className="data ms-2">
+                                    <h6>Delete Post</h6>
+                                  </div>
                                 </div>
-                                <div className="data ms-2">
-                                  <h6>Save Post</h6>
-                                  <p className="mb-0">
-                                    Add this to your saved items
-                                  </p>
-                                </div>
-                              </div>
-                            </Dropdown.Item>
+                              </Dropdown.Item>
+                            ) : (
+                              <></>
+                            )}
                             <Dropdown.Item className="p-3" to="#">
                               <div className="d-flex align-items-top">
                                 <i className="ri-close-circle-line h4"></i>
@@ -249,9 +292,12 @@ function ProfilePost() {
                           <h6>{item.fullName}</h6>
                           <p className="mb-0">{item.comment}</p>
                           <div className="d-flex flex-wrap align-items-center comment-activity">
-                            <Link to="#">like</Link>
-                            <Link to="#">reply</Link>
-                            <span>5min</span>
+                            <p
+                              className="btn mycustumclass "
+                              onClick={() => deleteComment(post._id, item._id)}
+                            >
+                              Delete Comment
+                            </p>
                           </div>
                         </div>
                       </div>

@@ -33,7 +33,11 @@ const ProfileForums =() =>{
     const [ownersData, setOwnersData] = useState({});
 
 
-    
+    const handleClickApplyTest = (id) => {
+        axios.put("http://127.0.0.1:9000/tests/applyUserById/"+id, {
+            "userID": currentConnectedUser._id
+        });
+    }
     //getting the array of all tests DATA
     useEffect(() => {
         const fetchAllTestsData = async () => {
@@ -45,7 +49,7 @@ const ProfileForums =() =>{
             ).catch( (error) => console.log("error getting data"+error))
         };
         fetchAllTestsData();
-    },)
+    },[testsDataArray])
     //getting owners data of each test
     useEffect(() => {
         const fetchOwnersData = async (id) => {
@@ -68,7 +72,7 @@ const ProfileForums =() =>{
                 fetchOwnersData(ownerId);
             });
         }
-    },)
+    },[ownersData])
     
     
 
@@ -180,11 +184,9 @@ const ProfileForums =() =>{
                                                                         {singleTest.testTimer} minutes
                                                                     </td>
                                                                     <td className="col-lg-4">
-                                                                    <Link to={"/takeTest/"+singleTest._id}>
-                                                                        <button type="submit" className="btn btn-primary d-block w-100">
+                                                                        <button onClick={(e) => handleClickApplyTest(singleTest._id)} type="submit" className="btn btn-primary d-block w-100">
                                                                             Apply Test
                                                                         </button>
-                                                                    </Link>
                                                                     </td>
                                                                 </tr>
                                                                 </>
