@@ -130,7 +130,6 @@ const addNewEducation = async (req, res) => {
 const getUserById = async (req, res) => {
   const id = req.params.id;
   try {
-<<<<<<< HEAD
     await Users.findById(id).then(
       (result) => {
         res.status(200).send(result);
@@ -140,15 +139,6 @@ const getUserById = async (req, res) => {
         res.status(404).send(error);
       }
     );
-=======
-    const user = await Users.findById(id)
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((error) => {
-        res.status(404).json({ message: "User NOT FOUND" });
-      });
->>>>>>> 8def80000ed96683f5a6bfb43095efd43f03db6a
   } catch (error) {
     res
       .status(400)
