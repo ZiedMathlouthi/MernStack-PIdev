@@ -37,12 +37,32 @@ import ProfileEvents from "../views/dashboard/app/profile-events";
 import EventDetail from "../views/dashboard/app/event-detail";
 import Groups from "../views/dashboard/app/groups";
 import ProfileForums from "../views/dashboard/app/profile-forum";
+import RatingsComponentCompany from "../views/dashboard/NewComponent";
+import RatingsComponentUser from "../views/dashboard/NewComponent2";
 
 export const SimpleRouter = [
   {
     path: "/",
     element: <Default />,
     children: [...DefaultRouter, ...Layout1Router],
+  },
+  {
+    path: "/ratingsCompany/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <RatingsComponentCompany /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/ratingsUser/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <RatingsComponentUser /> <RightSidebar />{" "}
+      </>
+    ),
   },
   {
     path: "/dashboards/profiles/profile2",

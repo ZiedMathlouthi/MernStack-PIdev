@@ -37,6 +37,7 @@ const CardOffer = ({
   publishedDate,
   owner,
   offers,
+  appliers,
 }) => {
   const date = new Date(publishedDate);
   const options = { day: "numeric", month: "long" };
@@ -81,7 +82,13 @@ const CardOffer = ({
   const [showEdit, setShowEdit] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [showApplied, setShowApplied] = useState(false);
-  const [applied, setApplied] = useState(false);
+  const [applied, setApplied] = useState(
+    appliers?.some?.(
+      (e) =>
+        e.user.toString?.() ===
+        JSON.parse(localStorage.getItem("myData")).user?._id?.toString?.()
+    ) || false
+  );
   const [value, setValue] = useState("");
 
   const handleClose = () => setShow(false);

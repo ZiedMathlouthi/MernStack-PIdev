@@ -50,9 +50,11 @@ import AddTestComponent from "../views/dashboard/addTest";
 import FormElement from "../views/dashboard/from/form-element";
 import UpdateTestComponent from "../views/dashboard/updateTest";
 import TestComponent from "../views/dashboard/test";
+import RatingsComponentCompany from "../views/dashboard/NewComponent";
+import RatingsComponentUser from "../views/dashboard/NewComponent2";
 
 export const SimpleRouter = [
-  // delete this 
+  // delete this
   {
     path: "dashboard/form/form-element",
     element: <FormElement />,
@@ -72,6 +74,24 @@ export const SimpleRouter = [
     children: [...DefaultRouter, ...Layout1Router],
   },
   {
+    path: "/ratingsCompany/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <RatingsComponentCompany /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/ratingsUser/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <RatingsComponentUser /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
     path: "/addCourse",
     element: (
       <>
@@ -85,7 +105,7 @@ export const SimpleRouter = [
     element: (
       <>
         <Sidebar />
-        <Header /> < CourseComponent/> <RightSidebar />{" "}
+        <Header /> <CourseComponent /> <RightSidebar />{" "}
       </>
     ),
   },

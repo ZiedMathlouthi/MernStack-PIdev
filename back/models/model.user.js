@@ -24,6 +24,7 @@ const userSchema = new Schema(
     city: { type: String }, //signup
     openWork: { type: Boolean, default: false },
     openInternship: { type: Boolean, default: false },
+    listofRates: [{ type: mongoose.Schema.Types.ObjectId, ref: "rating" }],
     studyCarrier: {
       type: [
         {

@@ -8,7 +8,7 @@ const offerRouter = require("./route.offre");
 
 const courseRouter = require("./route.course");
 const testsRouter = require("./route.tests");
-
+const ratingsRouter = require("./route.ratings");
 
 const router = express.Router();
 const postRouter = require("./route.post");
@@ -25,10 +25,10 @@ router.use("/meet", meetingRouter);
 router.use("/offer", offersRouter);
 router.use("/post", postRouter);
 router.use("/upload", uploadRouter);
-
 router.use("/offers", offerRouter);
 
-router.use("/courses",courseRouter);
+router.use("/courses", courseRouter);
 router.use("/tests", testsRouter);
+router.use("/ratings", ratingsRouter);
 
 module.exports = router;
