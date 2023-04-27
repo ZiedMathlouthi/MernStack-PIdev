@@ -28,6 +28,7 @@ import user14 from "../../../../assets/images/page-img/03.jpg";
 import user15 from "../../../../assets/images/page-img/02.jpg";
 import user16 from "../../../../assets/images/page-img/01.jpg";
 //Componets
+import ChatWidget from "../../../chat/ChatWidget";
 import CustomToggle from "../../../dropdowns";
 // import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
 
@@ -50,6 +51,7 @@ const Header = () => {
 
   return (
     <>
+     <ChatWidget userID ={data.user._id}/>
       <div className="iq-top-navbar">
         <Nav
           expand="lg"
