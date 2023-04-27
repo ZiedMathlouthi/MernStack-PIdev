@@ -2,8 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useToast,Badge } from '@chakra-ui/react';
 import io from "socket.io-client";
 import axios from "axios";
-const userPrompt = prompt("Please enter your id: ");
-const socket = io("http://localhost:9000");
+const socket = io("http://localhost:3005");
 
 const Chat = (props) => {
   // variables declaration
@@ -20,8 +19,8 @@ const Chat = (props) => {
   const [activeUserId, setActiveUserId] = useState({});
   // get users methode
   const getUsers = async () => {
-    const result = await axios.get("http://localhost:9000/api/user/all");
-    return result.data.data;
+    const result = await axios.get("http://localhost:9000/user/users");
+    return result.data;
   };
   // set the active chat tab with the selected user and filter the messages array based on the selected user
   const handleClickUser = (user) => {
@@ -41,21 +40,22 @@ const Chat = (props) => {
   // fetch data and messages from the database methode called upon loading the component
   const fetchData = async () => {
     let user = await getUsers();
-    setUserById(user.find((user) => user._id === userPrompt));
-    setMessages(await getMessages(userPrompt));
-    setMessagesR(await getMessages(userPrompt));
+    setUserById(user.find((user) => user._id === props.userID));
+    setMessages(await getMessages(props.userID));
+    setMessagesR(await getMessages(props.userID));
     user.forEach(user => {
       user.hasNewMessage = 0;
     });
-    const filteredUsers = user.filter((user) => user._id !== userPrompt);
+    const filteredUsers = user.filter((user) => user._id !== props.userID);
     setUsers(filteredUsers);
     setUsersF(filteredUsers);
   };
  // get messages async function that's called in the fetch data function
   const getMessages = async (id) => {
     const result = await axios.get(
-      `http://localhost:3001/api/Messages/get/${id}`
+      `http://localhost:9000/api/Messages/get/${id}`
     );
+    console.log("messages ",result.data);
     return result.data;
   };
   // handle the new message event triggered by the socket
@@ -89,9 +89,9 @@ const Chat = (props) => {
   }, []);
   // useEffect to handle the socket event
   useEffect(() => {
-    socket.on("new-Course-message", handleMessage);
+    socket.on("new-message", handleMessage);
     return () => {
-      socket.off("new-Course-message", handleMessage);
+      socket.off("new-message", handleMessage);
     };
   }, [handleMessage, socket]);
   // useEffect to scroll to the bottom of the chat
@@ -121,13 +121,14 @@ const Chat = (props) => {
     const newMessage = {
       sender: userById._id,
       reciver: activeUserId._id,
-      username: userById.name,
+      username: userById.fullName,
       message: inputValue,
     };
+    console.log("new message ",newMessage);
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setMessagesR((prevMessages) => [...prevMessages, newMessage]);
     setInputValue("");
-    socket.emit("new-Course-message", newMessage);
+    socket.emit("new-message", newMessage);
     const hours = new Date().getHours();
     const minutes = new Date().getMinutes();
     setDate(hours + ":" + minutes);
@@ -140,7 +141,7 @@ const Chat = (props) => {
   const handleSearch = (event) => {
     const searchQuery = event.target.value.trim().toLowerCase(); // get the search input and convert to lowercase
     const filteredUsers = searchQuery
-      ? usersF.filter((user) => user.name.toLowerCase().includes(searchQuery)) // filter users array based on search input
+      ? usersF.filter((user) => user.fullName.toLowerCase().includes(searchQuery)) // filter users array based on search input
       : [...usersF]; // reset the users array if search input is empty
     setUsers(filteredUsers); // update the users state with filtered array
   };
@@ -149,7 +150,7 @@ const Chat = (props) => {
     <div className={isVisible ? "" : "invisible"}>
       <div className="chat">
         <div className="chat-title">
-          <h1 id="user">{userById.name}</h1>
+          <h1 id="user">{userById.fullName}</h1>
           <h2>user</h2>
           <figure className="avatar">
             <img
@@ -206,7 +207,7 @@ const Chat = (props) => {
                         <img
                           className="user-av"
                           alt="img"
-                          src={`${user.image}`}
+                          src={`${user.picture}`}
                         />{" "}
                         {user.hasNewMessage > 0 && (
                           <Badge
@@ -222,7 +223,7 @@ const Chat = (props) => {
                           </Badge>
                         )}
                       </div>
-                      <div style={{ color: "grey" }}>{user.name}</div>
+                      <div style={{ color: "grey" }}>{user.fullName}</div>
                     </div>
                   </div>
                 ))}
@@ -249,7 +250,7 @@ const Chat = (props) => {
                       <img
                         className="avatar"
                         alt="img"
-                        src={`${activeUserId.image}`}
+                        src={`${activeUserId.picture}`}
                       />
                       <div className="user">{msg.username}</div>
                       <div className="message-text">{msg.message}</div>
