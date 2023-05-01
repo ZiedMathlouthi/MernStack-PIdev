@@ -10,11 +10,11 @@ const ChatWidget = (props) => {
     setShowDiv(!showDiv);
     console.log(showDiv)
   };
-
+ 
   return (  
     <ChakraProvider>
     <div>
-        <Chat isVisible={showDiv} userID={props.userID}/>     
+        <Chat isVisible={showDiv} userID={props.userID}  role={props.role}/>     
         <div className="button-container">
         <button className="message-button"  onClick={handleClickShow}>
       <ChatIcon/>
