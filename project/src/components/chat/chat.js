@@ -60,7 +60,6 @@ const Chat = (props) => {
       const mergedUsers = [...user, ...filteredUsers];
       setUsers(mergedUsers);
       setUsersF(mergedUsers);
-      console.log ("fsijkdqkqsjdkqsjdkqsjkds " ,mergedUsers)
     }
     else {
       setUserById(user.find((user) => user._id === props.userID));
@@ -68,8 +67,6 @@ const Chat = (props) => {
       const mergedUsers = [...comapnies, ...filteredUsers];
       setUsers(mergedUsers);
       setUsersF(mergedUsers);
-      console.log ("fsijkdqkqsjdkqsjdkqsjkds " ,mergedUsers)
-
     }
   
   };
@@ -78,7 +75,6 @@ const Chat = (props) => {
     const result = await axios.get(
       `http://localhost:9000/api/Messages/get/${id}`
     );
-    console.log("messages ",result.data);
     return result.data;
   };
   // handle the new message event triggered by the socket
@@ -153,7 +149,6 @@ const Chat = (props) => {
         message: inputValue,
         senderModel: "company"
       };
-
     }
     else {
        newMessage = {
@@ -164,7 +159,6 @@ const Chat = (props) => {
         senderModel: "user"
       };
     }
-   
     console.log("new message ",newMessage);
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setMessagesR((prevMessages) => [...prevMessages, newMessage]);

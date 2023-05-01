@@ -8,7 +8,6 @@ const ChatWidget = (props) => {
   const [showDiv, setShowDiv] = useState(false);
   const handleClickShow = () => {
     setShowDiv(!showDiv);
-    console.log(showDiv)
   };
  
   return (  
