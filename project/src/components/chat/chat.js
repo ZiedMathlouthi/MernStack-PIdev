@@ -22,6 +22,10 @@ const Chat = (props) => {
     const result = await axios.get("http://localhost:9000/user/users");
     return result.data;
   };
+  const getCompanies = async () => {
+    const result = await axios.get("http://localhost:9000/user/companies");
+    return result.data;
+  }
   // set the active chat tab with the selected user and filter the messages array based on the selected user
   const handleClickUser = (user) => {
     setActiveUserId(user);
@@ -40,15 +44,34 @@ const Chat = (props) => {
   // fetch data and messages from the database methode called upon loading the component
   const fetchData = async () => {
     let user = await getUsers();
-    setUserById(user.find((user) => user._id === props.userID));
+    let comapnies = await getCompanies();
     setMessages(await getMessages(props.userID));
     setMessagesR(await getMessages(props.userID));
     user.forEach(user => {
       user.hasNewMessage = 0;
     });
-    const filteredUsers = user.filter((user) => user._id !== props.userID);
-    setUsers(filteredUsers);
-    setUsersF(filteredUsers);
+    comapnies.forEach(user => {
+      user.hasNewMessage = 0;
+    });
+
+    if (props.role ==="company"){
+      setUserById(comapnies.find((comp) => comp._id === props.userID));   
+      const filteredUsers = comapnies.filter((comapnies) => comapnies._id !== props.userID);
+      const mergedUsers = [...user, ...filteredUsers];
+      setUsers(mergedUsers);
+      setUsersF(mergedUsers);
+      console.log ("fsijkdqkqsjdkqsjdkqsjkds " ,mergedUsers)
+    }
+    else {
+      setUserById(user.find((user) => user._id === props.userID));
+      const filteredUsers = user.filter((user) => user._id !== props.userID);
+      const mergedUsers = [...comapnies, ...filteredUsers];
+      setUsers(mergedUsers);
+      setUsersF(mergedUsers);
+      console.log ("fsijkdqkqsjdkqsjdkqsjkds " ,mergedUsers)
+
+    }
+  
   };
  // get messages async function that's called in the fetch data function
   const getMessages = async (id) => {
@@ -118,12 +141,30 @@ const Chat = (props) => {
     if (inputValue.trim() === "") {
       return false;
     }
-    const newMessage = {
-      sender: userById._id,
-      reciver: activeUserId._id,
-      username: userById.fullName,
-      message: inputValue,
+
+    let newMessage = {
+
     };
+    if (props.role ==="company") {
+       newMessage = {
+        sender: userById._id,
+        reciver: activeUserId._id,
+        username: userById.fullName,
+        message: inputValue,
+        senderModel: "company"
+      };
+
+    }
+    else {
+       newMessage = {
+        sender: userById._id,
+        reciver: activeUserId._id,
+        username: userById.fullName,
+        message: inputValue,
+        senderModel: "user"
+      };
+    }
+   
     console.log("new message ",newMessage);
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setMessagesR((prevMessages) => [...prevMessages, newMessage]);

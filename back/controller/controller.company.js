@@ -155,7 +155,23 @@ const getCompanyByEmail = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+const getCompanies = async (req, res) => {
+  try {
+    const Company = await Companies.find()
+      .then((result) => {
+        res.status(200).send(result);
+      })
+      .catch((error) => {
+        res.status(404).json({ message: "companies not found" });
+      });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ message: `Error getting companies  .Error:\n${error}` });
+  }
+};
 module.exports = {
+  getCompanies,
   updateCompany,
   deleteCompany,
   addContact,

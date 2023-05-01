@@ -51,7 +51,7 @@ const Header = () => {
 
   return (
     <>
-     <ChatWidget userID ={data.user._id}/>
+     <ChatWidget userID ={data.user._id} role ={data.user.role}/>
       <div className="iq-top-navbar">
         <Nav
           expand="lg"

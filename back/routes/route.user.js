@@ -18,9 +18,13 @@ const {
   addNewExperience,
   getUserById
 } = require("../controller/controller.user");
+const {
+  getCompanies
+} = require("../controller/controller.company")
 const { userProfile } = require("../validators/validators.user");
 const { changePassword } = require("../validators/validators.changePassword");
 router.get("/users",getUsers);
+router.get("/companies",getCompanies);
 router.put(
   "/password",
   authorize([USER]),
