@@ -11,6 +11,7 @@ const {
   updateCoverPhoto,
   updatePicture,
   updateCV,
+  getUsers,
   addNewEducation,
   addNewCertification,
   addNewSkill,
@@ -19,6 +20,7 @@ const {
 } = require("../controller/controller.user");
 const { userProfile } = require("../validators/validators.user");
 const { changePassword } = require("../validators/validators.changePassword");
+router.get("/users",getUsers);
 router.put(
   "/password",
   authorize([USER]),

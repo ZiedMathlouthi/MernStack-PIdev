@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.18",
+    "@chakra-ui/react": "^2.5.5",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@fortawesome/fontawesome-free": "^5.15.4",
@@ -45,6 +47,7 @@
     "sass": "1.39.0",
     "sass-loader": "^12.1.0",
     "smooth-scrollbar": "^8.6.3",
+    "socket.io-client": "^4.6.1",
     "sweetalert2": "^11.1.5",
     "swiper": "^8.3.0",
     "typescript": "^4.7.3",
