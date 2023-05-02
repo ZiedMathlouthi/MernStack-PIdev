@@ -12,7 +12,13 @@ import {
 import Card from "../../../components/Card";
 import CustomToggle from "../../../components/dropdowns";
 import ReactFsLightbox from "fslightbox-react";
-import { UpdateExperience, UpdateProfile, UpdateStudyCarrier,UpdateSkill,UpdateCertificate } from "../../../api/auth.js";
+import {
+  UpdateExperience,
+  UpdateProfile,
+  UpdateStudyCarrier,
+  UpdateSkill,
+  UpdateCertificate,
+} from "../../../api/auth.js";
 import imgp1 from "../../../assets/images/user/15.jpg";
 
 import imgp25 from "../../../assets/images/user/1.jpg";
@@ -56,7 +62,11 @@ import user1 from "../../../assets/images/user/1.jpg";
 import small07 from "../../../assets/images/small/07.png";
 import small08 from "../../../assets/images/small/08.png";
 import small09 from "../../../assets/images/small/09.png";
-import { updatePicture ,updateProfilePicture,updateCv} from "../../../api/auth.js";
+import {
+  updatePicture,
+  updateProfilePicture,
+  updateCv,
+} from "../../../api/auth.js";
 import ProfilePost from "./ProfilePost";
 // Fslightbox plugin
 const FsLightbox = ReactFsLightbox.default
@@ -79,8 +89,6 @@ const Profile2 = () => {
   const [show9, setShow9] = useState(false);
   const handleClose9 = () => setShow9(false);
   const handleShow9 = () => setShow9(true);
-  
-
 
   const [imageController, setImageController] = useState({
     toggler: false,
@@ -98,38 +106,19 @@ const Profile2 = () => {
   const [company, setCompany] = useState(false);
   const [visiteur, setVisiteur] = useState(false);
 
-  const [picture,setPicture]=useState("");
-  const [coverPhoto,setCoverPhoto]=useState("");
-  const [cv,setCv]=useState("");
+  const [picture, setPicture] = useState("");
+  const [coverPhoto, setCoverPhoto] = useState("");
+  const [cv, setCv] = useState("");
 
-  const[fullname, setFullname] = useState('');
-  const[experience, setExperience] = useState('');
-  const[studyCarrier, setStudyCarrier] = useState('');
-  const[skill, setSkill] = useState('');
-  const[certificate, setCertificate] = useState('');
- 
+  const [fullname, setFullname] = useState("");
+  const [experience, setExperience] = useState("");
+  const [studyCarrier, setStudyCarrier] = useState("");
+  const [skill, setSkill] = useState("");
+  const [certificate, setCertificate] = useState("");
 
-
-
-
-
-
-
-  
-      
-
-
-
-
-
-
-
- // Récupérez les données de l'utilisateur à partir de localStorage
- const userr = JSON.parse(localStorage.getItem('myData')).user;
- console.log(userr);
-
-  
-
+  // Récupérez les données de l'utilisateur à partir de localStorage
+  const userr = JSON.parse(localStorage.getItem("myData")).user;
+  console.log(userr);
 
   const buttonsModals = (visiteur) => {
     switch (visiteur) {
@@ -159,7 +148,7 @@ const Profile2 = () => {
               add new experience
             </Button>
             <Modal centered show={show6} onHide={handleClose6}>
-              <Form onSubmit={handleSubmitExperience}> 
+              <Form onSubmit={handleSubmitExperience}>
                 <Modal.Header closeButton>
                   <Modal.Title>New Experience</Modal.Title>
                 </Modal.Header>
@@ -167,7 +156,8 @@ const Profile2 = () => {
                   <Row>
                     <Col md="6" className="mb-3">
                       <Form.Label md="6" htmlFor="validationDefault01">
-                      The Company                       </Form.Label>
+                        The Company{" "}
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         id="validationDefault01"
@@ -179,31 +169,45 @@ const Profile2 = () => {
                     <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
                         <Form.Label>Post</Form.Label>
-                        <Form.Control type="text" required name="poste"  onChange={handleChangeExperience} />
+                        <Form.Control
+                          type="text"
+                          required
+                          name="poste"
+                          onChange={handleChangeExperience}
+                        />
                       </Form.Group>
                     </Col>
-                   
+
                     <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
                         <Form.Label>Start Date</Form.Label>
-                        <Form.Control type="date" defaultValue="2019-12-18" name="startDate"   onChange={handleChangeExperience}/>
+                        <Form.Control
+                          type="date"
+                          defaultValue="2019-12-18"
+                          name="startDate"
+                          onChange={handleChangeExperience}
+                        />
                       </Form.Group>
                     </Col>
 
                     <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
                         <Form.Label>End Date </Form.Label>
-                        <Form.Control type="date" defaultValue="2019-12-18" name="endDate"   onChange={handleChangeExperience} />
+                        <Form.Control
+                          type="date"
+                          defaultValue="2019-12-18"
+                          name="endDate"
+                          onChange={handleChangeExperience}
+                        />
                       </Form.Group>
                     </Col>
                   </Row>
-                
                 </Modal.Body>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={handleClose6}>
                     Close
                   </Button>
-                  <Button variant="primary"  type ="submit">
+                  <Button variant="primary" type="submit">
                     Add new Experience
                   </Button>
                 </Modal.Footer>
@@ -217,7 +221,7 @@ const Profile2 = () => {
   const [updateProfile, setUpdateProfile] = useState(false);
 
   const [data, setData] = useState();
-  
+
   // handle Change in input
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -232,71 +236,71 @@ const Profile2 = () => {
       console.log(error);
     }
   };
-const handleChangeExperience= (e) => {
-  setExperience({ ...experience, [e.target.name]: e.target.value });
-  console.log(experience);
-};
+  const handleChangeExperience = (e) => {
+    setExperience({ ...experience, [e.target.name]: e.target.value });
+    console.log(experience);
+  };
 
-const handleSubmitExperience = (e) => {
-  e.preventDefault();
-  try {
-    const userId = JSON.parse(localStorage.getItem("myData")).user.id;
-    UpdateExperience(experience);
-    handleClose6();
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const handleSubmitExperience = (e) => {
+    e.preventDefault();
+    try {
+      const userId = JSON.parse(localStorage.getItem("myData")).user.id;
+      UpdateExperience(experience);
+      handleClose6();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-const handleChangeStudyCarrier= (e) => {
-  setStudyCarrier({ ...studyCarrier, [e.target.name]: e.target.value });
-  console.log(studyCarrier);
-};
-const handleSubmitStudyCarrier = (e) => {
-  e.preventDefault();
-  try {
-    const userId = JSON.parse(localStorage.getItem("myData")).user.id;
-    UpdateStudyCarrier(studyCarrier);
-    handleClose9();
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const handleChangeStudyCarrier = (e) => {
+    setStudyCarrier({ ...studyCarrier, [e.target.name]: e.target.value });
+    console.log(studyCarrier);
+  };
+  const handleSubmitStudyCarrier = (e) => {
+    e.preventDefault();
+    try {
+      const userId = JSON.parse(localStorage.getItem("myData")).user.id;
+      UpdateStudyCarrier(studyCarrier);
+      handleClose9();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-const handleChangeSkill= (e) => {
-  setSkill({ ...skill, [e.target.name]: e.target.value });
-  console.log(skill);
-};
-const handleSubmitSkill = (e) => {
-  e.preventDefault();
-  try {
-    const userId = JSON.parse(localStorage.getItem("myData")).user.id;
-    UpdateSkill(skill);
-    handleClose8();
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const handleChangeSkill = (e) => {
+    setSkill({ ...skill, [e.target.name]: e.target.value });
+    console.log(skill);
+  };
+  const handleSubmitSkill = (e) => {
+    e.preventDefault();
+    try {
+      const userId = JSON.parse(localStorage.getItem("myData")).user.id;
+      UpdateSkill(skill);
+      handleClose8();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-const handleSubmitCertificate = (e) => {
-  e.preventDefault();
-  try {
-    const userId = JSON.parse(localStorage.getItem("myData")).user.id;
-    UpdateCertificate(certificate);
-    handleClose7();
-  } catch (error) {
-    console.log(error);
-  }
-};
-const handleChangeCertificate= (e) => {
-  setCertificate({ ...certificate, [e.target.name]: e.target.value });
-  console.log(certificate);
-};
+  const handleSubmitCertificate = (e) => {
+    e.preventDefault();
+    try {
+      const userId = JSON.parse(localStorage.getItem("myData")).user.id;
+      UpdateCertificate(certificate);
+      handleClose7();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleChangeCertificate = (e) => {
+    setCertificate({ ...certificate, [e.target.name]: e.target.value });
+    console.log(certificate);
+  };
 
-  const handleSubmitPicture= (e) => {
+  const handleSubmitPicture = (e) => {
     e.preventDefault();
     const form = new FormData();
-    form.append('picture',picture);
+    form.append("picture", picture);
     console.log(form);
     try {
       const userId = JSON.parse(localStorage.getItem("myData")).user.id;
@@ -304,17 +308,12 @@ const handleChangeCertificate= (e) => {
     } catch (error) {
       console.log(error);
     }
-
   };
-  
 
-
-
-
-  const handleSubmitProfilePicture= (e) => {
+  const handleSubmitProfilePicture = (e) => {
     e.preventDefault();
     const form = new FormData();
-    form.append('coverPhoto',coverPhoto);
+    form.append("coverPhoto", coverPhoto);
     console.log(form);
     try {
       const userId = JSON.parse(localStorage.getItem("myData")).user.id;
@@ -322,14 +321,12 @@ const handleChangeCertificate= (e) => {
     } catch (error) {
       console.log(error);
     }
-
   };
 
-
-  const handleSubmitCv= (e) => {
+  const handleSubmitCv = (e) => {
     e.preventDefault();
     const form = new FormData();
-    form.append('cv',cv);
+    form.append("cv", cv);
     console.log(form);
     try {
       const userId = JSON.parse(localStorage.getItem("myData")).user.id;
@@ -337,7 +334,6 @@ const handleChangeCertificate= (e) => {
     } catch (error) {
       console.log(error);
     }
-
   };
   return (
     <>
@@ -346,7 +342,10 @@ const handleChangeCertificate= (e) => {
         sources={[g1, g2, g3, g4, g5, g6, g7, g8, g9]}
         slide={imageController.slide}
       />
-      <ProfileHeader title="Profile 2" img={`http://localhost:9000/data/${userr.picture}`} />
+      <ProfileHeader
+        title="Profile 2"
+        img={`http://localhost:9000/data/${userr.picture}`}
+      />
       <div className="profile-2">
         <div id="content-page" className="content-page">
           <Container>
@@ -864,7 +863,7 @@ const handleChangeCertificate= (e) => {
                         <div className="user-img">
                           <img
                             loading="lazy"
-                            src= {`http://localhost:9000/data/${userr.coverPhoto}`} 
+                            src={`http://localhost:9000/data/${userr.coverPhoto}`}
                             alt="userimg"
                             className="avatar-60 rounded-circle"
                           />
@@ -1259,7 +1258,7 @@ const handleChangeCertificate= (e) => {
                     </Card.Body>
                   </div>
                   <Card>
-                  <ProfilePost/>
+                    <ProfilePost />
                     {/* <Card.Body>
                       <ul className="post-comments p-0 m-0">
                         <li className="mb-2">
@@ -2052,11 +2051,13 @@ const handleChangeCertificate= (e) => {
                       <div className="header-title">
                         <h4 className="card-title">Update Your Profile</h4>
                       </div>
-
                     </Card.Header>
                     <Card.Body>
-                      <Form onSubmit={handleSubmitPicture} enctype="multipart/form-data">
-                    <Form.Group className="form-group">
+                      <Form
+                        onSubmit={handleSubmitPicture}
+                        enctype="multipart/form-data"
+                      >
+                        <Form.Group className="form-group">
                           <Form.Label className="custom-file-input">
                             cover Image :
                           </Form.Label>
@@ -2064,21 +2065,22 @@ const handleChangeCertificate= (e) => {
                             type="file"
                             id="customFile"
                             name="imgProfile"
-
-                            onChange={(e)=>{setPicture(e.target.files[0])}}
-                          
-
+                            onChange={(e) => {
+                              setPicture(e.target.files[0]);
+                            }}
                           />
                         </Form.Group>
-                         <Button type="submit" variant="primary">
+                        <Button type="submit" variant="primary">
                           Submit
                         </Button>{" "}
                         <Button variant="danger">Cancel</Button>
-                        </Form >
+                      </Form>
 
-
-                        <Form onSubmit={handleSubmitProfilePicture} enctype="multipart/form-data">
-                    <Form.Group className="form-group">
+                      <Form
+                        onSubmit={handleSubmitProfilePicture}
+                        enctype="multipart/form-data"
+                      >
+                        <Form.Group className="form-group">
                           <Form.Label className="custom-file-input">
                             Profile Image :
                           </Form.Label>
@@ -2086,20 +2088,18 @@ const handleChangeCertificate= (e) => {
                             type="file"
                             id="customFile"
                             name="imgProfile"
-
-                            onChange={(e)=>{setCoverPhoto(e.target.files[0])}}
-                          
-
+                            onChange={(e) => {
+                              setCoverPhoto(e.target.files[0]);
+                            }}
                           />
                         </Form.Group>
-                         <Button type="submit" variant="primary">
+                        <Button type="submit" variant="primary">
                           Submit
                         </Button>{" "}
                         <Button variant="danger">Cancel</Button>
-                        </Form >
-                        
+                      </Form>
+
                       <Form onSubmit={handleSubmit}>
-                      
                         <Form.Group className="form-group">
                           <Form.Label>
                             {company ? "Full Name" : "Full Name :"}
@@ -2111,313 +2111,335 @@ const handleChangeCertificate= (e) => {
                             name="fullName"
                             onChange={handleChange}
                           />
-
                         </Form.Group>
-                        </Form >
+                      </Form>
+                      <Form.Group className="form-group">
+                        <Form.Label>
+                          {company ? "Birthdate" : " Birthdate :"}
+                        </Form.Label>
+                        <Form.Control
+                          type="date"
+                          defaultValue={userr.birthDate}
+                          onChange={handleChange}
+                        />
+                      </Form.Group>
+                      <Form.Group className="form-group">
+                        <Form.Label>gender :</Form.Label>
+                        <Form.Control as="select">
+                          <option value="male">male</option>
+                          <option value="female">female</option>
+                        </Form.Control>
+                      </Form.Group>
+                      <Form.Group className="form-group"></Form.Group>
+                      {company ? (
                         <Form.Group className="form-group">
-                          <Form.Label>
-                            {company ? "Birthdate" : " Birthdate :"}
-                          </Form.Label>
-                          <Form.Control
-                            type="date"
-                            defaultValue={userr.birthDate}
-                            
-                            onChange={handleChange}
-                          />
-                        </Form.Group>
-                        <Form.Group className="form-group">
-                          <Form.Label>gender :</Form.Label>
-                          <Form.Control 
-                          as="select"
-          
-       
-                                         >
-         
-          <option value="male">male</option>
-          <option value="female">female</option>
-        
-        </Form.Control>
-                        </Form.Group>
-                        <Form.Group className="form-group">
-                         
-                        </Form.Group>
-                        {company ? (
-                          <Form.Group className="form-group">
-                            <Form.Label>studyCarrier </Form.Label>
-                            <Form.Control
-                              type="text"
-                              defaultValue="https://getbootstrap.com"
-                              placeholder="Enter university"
-                              onChange={handleChange}
-                            />
-                          </Form.Group>
-                        ) : (
-                          ""
-                        )}
-                        <Form.Group className="form-group">
-                         
-                        </Form.Group>
-                     
-                       
-                        <Form.Group className="form-group">
-                          <Form.Label>Adress :</Form.Label>
+                          <Form.Label>studyCarrier </Form.Label>
                           <Form.Control
                             type="text"
-                            defaultValue={userr.address}
-                            placeholder="Enter Adress"
+                            defaultValue="https://getbootstrap.com"
+                            placeholder="Enter university"
                             onChange={handleChange}
                           />
                         </Form.Group>
-                        <Form.Group className="form-group">
-                          <Form.Label>City :</Form.Label>
-                          <Form.Control
-                            type="text"
-                            defaultValue={userr.city}
-                            placeholder="Enter City"
-                            onChange={handleChange}
-                          />
-                    
-                        </Form.Group>
-                        <Form.Group className="form-group">
-                          
-                          <Form.Check
-                            type="checkbox"
-                            label="Open To Work "
-                   
-                          />
-                            
-                        
-                        
-                        </Form.Group>
-                        <Form.Group className="form-group">
-                          <Form.Check
-                            type="checkbox"
-                            label="Open To Intership "
-                          />
-                        </Form.Group>
-                        {!company ? (
-                          <Form.Group className="form-group">
-                            
-                          </Form.Group>
-                        ) : (
-                          ""
-                        )}
+                      ) : (
+                        ""
+                      )}
+                      <Form.Group className="form-group"></Form.Group>
 
-
-<Button
-              className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
-              onClick={handleShow9}
-            >
-              <span className="material-symbols-outlined  md-16">add</span>
-
-           Study carrier
-            </Button>
-            <Modal centered show={show9} onHide={handleClose9}>
-              <Form onSubmit={handleSubmitStudyCarrier}>  
-                <Modal.Header closeButton>
-                  <Modal.Title>Study carrier</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <Row>
-                  <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      UniversityName                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="validationDefault01"
-                        name="university"
-                        required
-                        onChange={handleChangeStudyCarrier}
-                      />
-                    </Col>
-                    <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
-                        <Form.Label>Start Date</Form.Label>
-                        <Form.Control type="date" required name="startDate"   onChange={handleChangeStudyCarrier}/>
+                        <Form.Label>Adress :</Form.Label>
+                        <Form.Control
+                          type="text"
+                          defaultValue={userr.address}
+                          placeholder="Enter Adress"
+                          onChange={handleChange}
+                        />
                       </Form.Group>
-                    </Col>
-                    <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
-                        <Form.Label>End Date</Form.Label>
-                        <Form.Control type="date" required name="endDate"   onChange={handleChangeStudyCarrier} />
+                        <Form.Label>City :</Form.Label>
+                        <Form.Control
+                          type="text"
+                          defaultValue={userr.city}
+                          placeholder="Enter City"
+                          onChange={handleChange}
+                        />
                       </Form.Group>
-                    </Col>
-
-                  </Row>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleClose9}>
-                    Close
-                  </Button>
-                  <Button variant="primary"  type ="submit">
-                    Add an other etablishement 
-                  </Button>
-                </Modal.Footer>
-              </Form>
-            </Modal>
-
-
-
-
-
-
-         <Button
-              className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
-              onClick={handleShow7}
-            >
-              <span className="material-symbols-outlined  md-16">add</span>
-
-           add new certificate
-            </Button>
-            <Modal centered show={show7} onHide={handleClose7}>
-              <Form onSubmit={handleSubmitCertificate} enctype="multipart/form-data">
-                <Modal.Header closeButton>
-                  <Modal.Title>New certificate</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <Row>
-                    <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      Name                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="validationDefault01"
-                        name="name"
-                        required
-                        onChange={handleChangeCertificate}
-                      />
-                    </Col>
-                    <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      company                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="validationDefault01"
-                        required
-                        name="company"
-                        onChange={handleChangeCertificate}
-                      />
-                    </Col>
-                   
-                    <Col md="6" className="mb-3">
                       <Form.Group className="form-group">
-                        <Form.Label>Date</Form.Label>
-                        <Form.Control type="date" drequired name="date"    onChange={handleChangeCertificate} />
+                        <Form.Check type="checkbox" label="Open To Work " />
                       </Form.Group>
-                    </Col>
-                    <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      upload your certificate                      </Form.Label>
-                      <Form.Control
-                         type="file"
-                         id="customFile"
-                        required
-                        name="file"
-                        onChange={(e)=>{setCertificate({...certificate,certificate:e.target.files[0]})}}
-                      />
-                       </Col>
-                       <Col md="6" className="mb-3">
-                      <Form.Label md="6" htmlFor="validationDefault01">
-                      url                       </Form.Label>
-                      <Form.Control
-                        type="url"
-                        id="validationDefault01"
-                        name="url"
-                        onChange={handleChangeCertificate}
-                      />
-                    </Col>
-                    
+                      <Form.Group className="form-group">
+                        <Form.Check
+                          type="checkbox"
+                          label="Open To Intership "
+                        />
+                      </Form.Group>
+                      {!company ? (
+                        <Form.Group className="form-group"></Form.Group>
+                      ) : (
+                        ""
+                      )}
 
+                      <Button
+                        className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
+                        onClick={handleShow9}
+                      >
+                        <span className="material-symbols-outlined  md-16">
+                          add
+                        </span>
+                        Study carrier
+                      </Button>
+                      <Modal centered show={show9} onHide={handleClose9}>
+                        <Form onSubmit={handleSubmitStudyCarrier}>
+                          <Modal.Header closeButton>
+                            <Modal.Title>Study carrier</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <Row>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  UniversityName{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  id="validationDefault01"
+                                  name="university"
+                                  required
+                                  onChange={handleChangeStudyCarrier}
+                                />
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Group className="form-group">
+                                  <Form.Label>Start Date</Form.Label>
+                                  <Form.Control
+                                    type="date"
+                                    required
+                                    name="startDate"
+                                    onChange={handleChangeStudyCarrier}
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Group className="form-group">
+                                  <Form.Label>End Date</Form.Label>
+                                  <Form.Control
+                                    type="date"
+                                    required
+                                    name="endDate"
+                                    onChange={handleChangeStudyCarrier}
+                                  />
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose9}>
+                              Close
+                            </Button>
+                            <Button variant="primary" type="submit">
+                              Add an other etablishement
+                            </Button>
+                          </Modal.Footer>
+                        </Form>
+                      </Modal>
 
-                   
-                         
-                  </Row>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleClose7}>
-                    Close
-                  </Button>
-                  <Button variant="primary" type="submit">
-                    Add new Certificate
-                  </Button>
-                </Modal.Footer>
-              </Form>
-            </Modal>
+                      <Button
+                        className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
+                        onClick={handleShow7}
+                      >
+                        <span className="material-symbols-outlined  md-16">
+                          add
+                        </span>
+                        add new certificate
+                      </Button>
+                      <Modal centered show={show7} onHide={handleClose7}>
+                        <Form
+                          onSubmit={handleSubmitCertificate}
+                          enctype="multipart/form-data"
+                        >
+                          <Modal.Header closeButton>
+                            <Modal.Title>New certificate</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <Row>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  Name{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  id="validationDefault01"
+                                  name="name"
+                                  required
+                                  onChange={handleChangeCertificate}
+                                />
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  company{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  id="validationDefault01"
+                                  required
+                                  name="company"
+                                  onChange={handleChangeCertificate}
+                                />
+                              </Col>
 
+                              <Col md="6" className="mb-3">
+                                <Form.Group className="form-group">
+                                  <Form.Label>Date</Form.Label>
+                                  <Form.Control
+                                    type="date"
+                                    drequired
+                                    name="date"
+                                    onChange={handleChangeCertificate}
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  upload your certificate{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="file"
+                                  id="customFile"
+                                  required
+                                  name="file"
+                                  onChange={(e) => {
+                                    setCertificate({
+                                      ...certificate,
+                                      certificate: e.target.files[0],
+                                    });
+                                  }}
+                                />
+                              </Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Label
+                                  md="6"
+                                  htmlFor="validationDefault01"
+                                >
+                                  url{" "}
+                                </Form.Label>
+                                <Form.Control
+                                  type="url"
+                                  id="validationDefault01"
+                                  name="url"
+                                  onChange={handleChangeCertificate}
+                                />
+                              </Col>
+                            </Row>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose7}>
+                              Close
+                            </Button>
+                            <Button variant="primary" type="submit">
+                              Add new Certificate
+                            </Button>
+                          </Modal.Footer>
+                        </Form>
+                      </Modal>
 
+                      <Button
+                        className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
+                        onClick={handleShow8}
+                      >
+                        <span className="material-symbols-outlined  md-16">
+                          add
+                        </span>
+                        add new Skill
+                      </Button>
+                      <Modal centered show={show8} onHide={handleClose8}>
+                        <Form onSubmit={handleSubmitSkill}>
+                          <Modal.Header closeButton>
+                            <Modal.Title>New Skill</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <Row>
+                              <Col md="6" className="mb-3">
+                                <Form.Label md="6" htmlFor="skillName">
+                                  Nom de compétence
+                                </Form.Label>
+                                <Form.Control
+                                  as="select"
+                                  id="skillName"
+                                  name="name"
+                                  required
+                                  onChange={handleChangeSkill}
+                                >
+                                  <option value="">
+                                    Choisissez une compétence
+                                  </option>
+                                  <option value="HTML">HTML</option>
+                                  <option value="CSS">CSS</option>
+                                  <option value="JavaScript">JavaScript</option>
+                                  <option value="Python">Python</option>
+                                  <option value="SQL">SQL</option>
+                                  <option value="React">React</option>
+                                  <option value="Angular">Angular</option>
+                                  <option value="VueJs">VueJs</option>
+                                  <option value="Java">Java</option>
+                                  <option value="C++">C++</option>
+                                  <option value="C#">C#</option>
+                                  <option value="swift">swift</option>
+                                  <option value="ruby">ruby</option>
+                                  <option value="dotnet">dotnet</option>
+                                  <option value="spring">spring</option>
+                                  <option value="django">django</option>
+                                  // Ajoutez d'autres options de compétences si
+                                  nécessaire
+                                </Form.Control>
+                              </Col>
 
-            <Button
-              className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
-              onClick={handleShow8}
-            >
-              <span className="material-symbols-outlined  md-16">add</span>
- 
-           add new Skill
-            </Button>
-            <Modal centered show={show8} onHide={handleClose8}>
-               <Form onSubmit={handleSubmitSkill}> 
-                <Modal.Header closeButton>
-                  <Modal.Title>New Skill</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <Row>
-                  <Col md="6" className="mb-3">
-  <Form.Label md="6" htmlFor="skillName">
-    Nom de compétence
-  </Form.Label>
-  <Form.Control
-    as="select"
-    id="skillName"
-    name="name"
-    required
-    onChange={handleChangeSkill}
-  >
-    <option value="">Choisissez une compétence</option>
-    <option value="HTML">HTML</option>
-    <option value="CSS">CSS</option>
-    <option value="JavaScript">JavaScript</option>
-    <option value="Python">Python</option>
-    <option value="SQL">SQL</option>
-    // Ajoutez d'autres options de compétences si nécessaire
-    
-  </Form.Control >
-</Col>
+                              <Col md="6" className="mb-3">
+                                <Form.Label md="6" htmlFor="skillLevel">
+                                  Niveau de compétence
+                                </Form.Label>
+                                <Form.Control
+                                  as="select"
+                                  id="skillLevel"
+                                  name="level"
+                                  required
+                                  onChange={handleChangeSkill}
+                                >
+                                  <option value="">Choisissez un niveau</option>
+                                  <option value="beginner">beginner</option>
+                                  <option value="intermediate">
+                                    intermediate
+                                  </option>
+                                  <option value="advanced">advanced</option>
+                                </Form.Control>
+                              </Col>
+                            </Row>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose8}>
+                              Close
+                            </Button>
+                            <Button variant="primary" type="submit">
+                              Add new Skill
+                            </Button>
+                          </Modal.Footer>
+                        </Form>
+                      </Modal>
 
-<Col md="6" className="mb-3">
-  <Form.Label md="6" htmlFor="skillLevel">
-    Niveau de compétence
-  </Form.Label>
-  <Form.Control
-    as="select"
-    id="skillLevel"
-    name="level"
-    required
-    onChange={handleChangeSkill}
-  >
-    <option value="">Choisissez un niveau</option>
-    <option value="beginner">beginner</option>
-    <option value="intermediate">intermediate</option>
-    <option value="advanced">advanced</option>
-  </Form.Control>
-</Col>
-
-
-         
-                  </Row>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleClose8}>
-                    Close
-                  </Button>
-                  <Button variant="primary" type="submit">
-                    Add new Skill
-                  </Button>
-                </Modal.Footer>
-              </Form>
-            </Modal>
-
-
-                        <Form onSubmit={handleSubmitCv} enctype="multipart/form-data">
+                      <Form
+                        onSubmit={handleSubmitCv}
+                        enctype="multipart/form-data"
+                      >
                         <Form.Group className="form-group">
                           <Form.Label className="custom-file-input">
                             {company
@@ -2430,12 +2452,11 @@ const handleChangeCertificate= (e) => {
                             type="file"
                             id="customFile"
                             name="docs"
-                            onChange={(e)=>{setCv(e.target.files[0])}}
+                            onChange={(e) => {
+                              setCv(e.target.files[0]);
+                            }}
                           />
-            
                         </Form.Group>
-                        
-                        
                         <Button type="submit" variant="primary">
                           Submit
                         </Button>{" "}

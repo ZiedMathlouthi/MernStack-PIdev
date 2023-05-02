@@ -1,6 +1,22 @@
 const Users = require("../models/model.user");
 const Companies = require("../models/model.company");
 
+const getUsers = async (req, res) => {
+  try {
+    const user = await Users.find()
+      .then((result) => {
+        res.status(200).send(result);
+      })
+      .catch((error) => {
+        res.status(404).json({ message: "Users not found" });
+      });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ message: `Error getting users  .Error:\n${error}` });
+  }
+};
+
 const updatePassword = async (req, res) => {
   const user = await Users.findOne({ email: req.body.email });
   const match = await user.matchPassword(req.body.password);
@@ -145,6 +161,7 @@ const getUserById = async (req, res) => {
 };
 
 module.exports = {
+  getUsers,
   updatePassword,
   updateProfile,
   updateCoverPhoto,
