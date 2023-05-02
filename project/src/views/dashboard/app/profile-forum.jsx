@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 
-import {Row, Col, Container, Nav, Button, Table, Tab} from 'react-bootstrap'
-import Card from '../../../components/Card'
-import {Link} from 'react-router-dom'
+import {Row, Col, Container, Nav, Button, Table, Tab} from 'react-bootstrap';
+import Card from '../../../components/Card';
+import {Link} from 'react-router-dom';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // images
 import user1 from '../../../assets/images/user/1.jpg'
@@ -290,7 +292,7 @@ const ProfileForums =() =>{
                                                                         {singleTest.testTimer} minutes
                                                                     </td>
                                                                     <td className="col-lg-4">
-                                                                        <Link to={"/takeTest/"+singleTest._id}>
+                                                                        <Link to={"/test/"+singleTest._id}>
                                                                             <button type="submit" className="btn btn-primary d-block w-100">
                                                                                 Take Test
                                                                             </button>
@@ -318,7 +320,17 @@ const ProfileForums =() =>{
     }else{
         return(
             <>
-            LOAAAAADDIIIIIIING
+            <Container>
+                <div style={{margin:"250px 350px"}}>
+                    <Box sx={{ display: 'flex' }}>
+                        <CircularProgress />
+                    </Box>
+                </div>
+                <div style={{textAlign:"center"}}>
+                    <h2>if the LOADING took too long.. Go <Link to={"/"}>Home</Link></h2>
+                </div>
+
+            </Container>
             </>
         )
     }

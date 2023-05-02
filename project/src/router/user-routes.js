@@ -10,6 +10,7 @@ import SignUp from "../views/dashboard/auth/sign-up";
 // errors
 import Error404 from "../views/dashboard/errors/error404";
 import Error500 from "../views/dashboard/errors/error500";
+import UiCards from "../views/dashboard/ui-kit/ui-cards";
 
 //extrpages
 import Maintenance from "../views/dashboard/extrapages/maintenance";
@@ -24,6 +25,7 @@ import NewPassword from "../views/dashboard/auth/NewPassword";
 import PrivateRoute from "./PrivateRoute";
 import Admin from "../views/dashboard/app/admin";
 import Index from "../views/dashboard/CreatePostes";
+import UiButtons from "../views/dashboard/ui-kit/ui-buttons";
 import Default from "../layouts/dashboard/default";
 
 import { DefaultRouter } from "./default-router";
@@ -53,8 +55,22 @@ import TestComponent from "../views/dashboard/test";
 import RatingsComponentCompany from "../views/dashboard/NewComponent";
 import RatingsComponentUser from "../views/dashboard/NewComponent2";
 
+
+import AddCoursePage from "../pages/courses/addCourse";
+import AddChapters from "../pages/courses/courseDashboard";
+import ResultPage from "../pages/resut/resutPage";
+import FinishedCourse from "../pages/courses/finishedCourse";
+
 export const SimpleRouter = [
   // delete this
+  {
+    path: "dashboard/ui-kit/ui-cards",
+    element: <UiCards />,
+  },
+  {
+    path: "dashboard/ui-kit/ui-buttons",
+    element: <UiButtons />,
+  },
   {
     path: "dashboard/form/form-element",
     element: <FormElement />,
@@ -96,7 +112,16 @@ export const SimpleRouter = [
     element: (
       <>
         <Sidebar />
-        <Header /> <AddCourseComponent /> <RightSidebar />{" "}
+        <Header /> <AddCoursePage /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/courseDashboard/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <AddChapters /> <RightSidebar />{" "}
       </>
     ),
   },
@@ -115,6 +140,15 @@ export const SimpleRouter = [
       <>
         <Sidebar />
         <Header /> <UpdateCourseComponent /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/finishedCourse/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <FinishedCourse /> <RightSidebar />{" "}
       </>
     ),
   },
@@ -142,6 +176,15 @@ export const SimpleRouter = [
       <>
         <Sidebar />
         <Header /> <TestComponent /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/test/:idTest/result/:idUser",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <ResultPage /> <RightSidebar />{" "}
       </>
     ),
   },

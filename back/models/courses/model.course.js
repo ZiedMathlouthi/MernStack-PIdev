@@ -21,14 +21,19 @@ const courseSchema = new Schema (
                 ref: 'chapterModel'
             }
         ],
-        coursePhoto: String, // when you change this go the controller and change
+        coursePhoto: { type: String, default: null }, // when you change this go the controller and change
         courseOwner: { type: mongoose.Schema.Types.ObjectId, ref: 'expert', required: true},
         courseSubcribed: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'users',
             }
-        ]
+        ],
+        courseQuizz: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'test',
+            default: null
+        }
     }
 );
 

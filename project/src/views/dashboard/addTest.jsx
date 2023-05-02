@@ -39,6 +39,7 @@ const AddTestComponent = () => {
     const [testData, setTestData] = useState({
         testTitle: "",
         testDescription: "",
+        testTimer: null,
         listOfQuestions: [
             {
                 questionTitle: "",
@@ -120,14 +121,32 @@ const AddTestComponent = () => {
     const submitData = (event) => {
         const myForm = document.getElementById("myForm");
         if( myForm.checkValidity() ){
-            axios.post(API_url+"addTest", testData).then(
-                (result) => {
-                    console.log("success");
-                    setAlertVisibility(true);
-                }
-            ).catch( (error) => {
-                    console.log("error"+ error);
-            });
+            if(testData.testTimer){
+                axios.post(API_url+"addTest", testData).then(
+                    (result) => {
+                        console.log("success");
+                        setAlertVisibility(true);
+                    }
+                ).catch( (error) => {
+                        console.log(error);
+                });
+            }else{
+                const dataTest = {
+                    testTitle: testData.testTitle,
+                    testDescription: testData.testDescription,
+                    listOfQuestions: testData.listOfQuestions,
+                    testOwner: user._id
+                };
+                axios.post(API_url+"addTest", dataTest).then(
+                    (result) => {
+                        console.log("success");
+                        setAlertVisibility(true);
+                    }
+                ).catch( (error) => {
+                        console.log(error);
+                });
+            }
+            console.log(testData)
         }else{
             console.log("form invalid");
             setAlertVisibilityF(true);

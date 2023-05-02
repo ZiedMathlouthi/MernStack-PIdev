@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
@@ -126,7 +127,7 @@ const CourseComponent = (props) => {
                 typeOfUpdate: 1
             });
         }else if (chaptersArrayLength-1 === indexCurrentChapter){
-            navigate("/Quizzzz/"+idCourse);
+            navigate("/finishedCourse/"+idCourse);
         }else{
             navigate("/Error");
         }
@@ -195,7 +196,21 @@ const CourseComponent = (props) => {
                                                                 (paragraph,indexParagraph) => (
                                                                     <>
                                                                     <h5><u><strong>Pragraph title : </strong>{paragraph.paragraphTitle}</u></h5>
+                                                                    {(paragraph.paragraphImages) ? (
+                                                                        <>
+                                                                        <img
+                                                                            src={`http://127.0.0.1:9000/data/${paragraph.paragraphImages}`}
+                                                                        />
+                                                                        </>
+                                                                    ): ""}
                                                                     <p><em>{paragraph.paragraphContent}</em></p>
+                                                                    {(paragraph.paragraphVideos) ? (
+                                                                        <>
+                                                                        <img
+                                                                            src={`http://127.0.0.1:9000/data/${paragraph.paragraphVideos}`}
+                                                                        />
+                                                                        </>
+                                                                    ): ""}
                                                                     </>
                                                                 )
                                                             )}
@@ -271,7 +286,15 @@ const CourseComponent = (props) => {
         return(
             <>
             <Container>
-                LOAAAAAAAADIIIING... if it took too long : <Link to={"/home"}>Home</Link>
+                <div style={{margin:"250px 350px"}}>
+                    <Box sx={{ display: 'flex' }}>
+                        <CircularProgress />
+                    </Box>
+                </div>
+                <div style={{textAlign:"center"}}>
+                    <h2>if the LOADING took too long.. Go <Link to={"/home"}>Home</Link></h2>
+                </div>
+
             </Container>
             </>
         )

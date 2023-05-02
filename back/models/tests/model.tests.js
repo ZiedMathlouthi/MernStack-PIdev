@@ -31,7 +31,7 @@ const testSchema = new Schema({
     ref: "expert",
     required: true,
   },
-  testTimer: { type: String },
+  testTimer: { type: String, default: "00:15" },
 });
 
 module.exports = mongoose.model("test", testSchema);
