@@ -51,7 +51,7 @@ const Header = () => {
 
   return (
     <>
-     <ChatWidget userID ={data.user._id} role ={data.user.role}/>
+      <ChatWidget userID={data.user._id} role={data.user.role} />
       <div className="iq-top-navbar">
         <Nav
           expand="lg"
@@ -1195,7 +1195,7 @@ const Header = () => {
                   </Card>
                 </Dropdown.Menu>
               </Dropdown>
-            
+
               {/* <Nav.Item as="li" className="d-lg-none">
               <Link
                 to="/dashboard/app/notification"
@@ -1225,7 +1225,11 @@ const Header = () => {
                   variant="d-flex align-items-center"
                 >
                   <Image
-                    src={data.user.picture ? data.user.picture : user1}
+                    src={
+                      data.user.picture
+                        ? `http://localhost:9000/data/${data.user.picture}`
+                        : user1
+                    }
                     className="img-fluid rounded-circle me-3"
                     alt="user"
                     loading="lazy"

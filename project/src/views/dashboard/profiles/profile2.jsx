@@ -2383,24 +2383,33 @@ const Profile2 = () => {
                                   <option value="">
                                     Choisissez une compétence
                                   </option>
-                                  <option value="HTML">HTML</option>
-                                  <option value="CSS">CSS</option>
-                                  <option value="JavaScript">JavaScript</option>
-                                  <option value="Python">Python</option>
-                                  <option value="SQL">SQL</option>
-                                  <option value="React">React</option>
-                                  <option value="Angular">Angular</option>
-                                  <option value="VueJs">VueJs</option>
-                                  <option value="Java">Java</option>
-                                  <option value="C++">C++</option>
-                                  <option value="C#">C#</option>
-                                  <option value="swift">swift</option>
+                                  <option value="react  js">react js</option>
+                                  <option value="node  js">node js</option>
+                                  <option value="angular  js">
+                                    angular js
+                                  </option>
+                                  <option value="vue  js">vue js</option>
+                                  <option value="java">java</option>
+                                  <option value="python">python</option>
+                                  <option value="c++">c++</option>
+                                  <option value="c#">c#</option>
+                                  <option value="c">c</option>
+                                  <option value="php">php</option>
                                   <option value="ruby">ruby</option>
-                                  <option value="dotnet">dotnet</option>
+                                  <option value="swift">swift</option>
+                                  <option value="kotlin">kotlin</option>
+                                  <option value="dart">dart</option>
+                                  <option value="go">go</option>
+                                  <option value="scala">scala</option>
+                                  <option value="rust">rust</option>
                                   <option value="spring">spring</option>
                                   <option value="django">django</option>
-                                  // Ajoutez d'autres options de compétences si
-                                  nécessaire
+                                  <option value="laravel">laravel</option>
+                                  <option value="flask">flask</option>
+                                  <option value="express">express</option>
+                                  <option value="spring boot">
+                                    spring boot
+                                  </option>
                                 </Form.Control>
                               </Col>
 
