@@ -370,23 +370,7 @@ const Profile2 = () => {
                             <h4 className="">{userr.fullName}</h4>
                           </div>
                           <div className="item4 ms-1">
-                            <div className="d-flex justify-content-between align-items-center ms-1 flex-wrap">
-                              <div className="d-flex align-items-center">
-                                <span className="material-symbols-outlined writ-icon md-18">
-                                  send
-                                </span>
-                                <h6 className="ms-1">Write a message</h6>
-                              </div>
-                              <button
-                                type="button"
-                                className="btn btn-primary ms-2 btn-sm d-flex align-items-center"
-                              >
-                                <span className="material-symbols-outlined  md-16">
-                                  add
-                                </span>
-                                Follow
-                              </button>
-                            </div>
+                            <div className="d-flex justify-content-between align-items-center ms-1 flex-wrap"></div>
                             {buttonsModals(visiteur)}
                           </div>
                         </div>
@@ -737,125 +721,13 @@ const Profile2 = () => {
                     </div>
                   </Card.Body>
                 </Card>
-                <Card>
-                  <Card.Header className="d-flex align-items-center justify-content-between">
-                    <div className="header-title">
-                      <h4 className="card-title">Photos</h4>
-                    </div>
-                    <Link to="#">See all photos</Link>
-                  </Card.Header>
-                  <Card.Body>
-                    <div className="d-grid gap-2 grid-cols-3">
-                      <Link onClick={() => imageOnSlide(1)} to="#">
-                        <img
-                          loading="lazy"
-                          src={g1}
-                          alt="gallary"
-                          className="img-fluid"
-                        />
-                      </Link>
-                      <Link onClick={() => imageOnSlide(2)} to="#">
-                        <img
-                          loading="lazy"
-                          src={g2}
-                          alt="gallary"
-                          className="img-fluid"
-                        />
-                      </Link>
-                      <Link onClick={() => imageOnSlide(3)} to="#">
-                        <img
-                          loading="lazy"
-                          src={g3}
-                          alt="gallary"
-                          className="img-fluid"
-                        />
-                      </Link>
-                      <Link onClick={() => imageOnSlide(4)} to="#">
-                        <img
-                          loading="lazy"
-                          src={g4}
-                          alt="gallary"
-                          className="img-fluid"
-                        />
-                      </Link>
-                      <Link onClick={() => imageOnSlide(5)} to="#">
-                        <img
-                          loading="lazy"
-                          src={g5}
-                          alt="gallary"
-                          className="img-fluid"
-                        />
-                      </Link>
-                      <Link onClick={() => imageOnSlide(6)} to="#">
-                        <img
-                          loading="lazy"
-                          src={g6}
-                          alt="gallary"
-                          className="img-fluid"
-                        />
-                      </Link>
-                      <Link onClick={() => imageOnSlide(7)} to="#">
-                        <img
-                          loading="lazy"
-                          src={g7}
-                          alt="gallary"
-                          className="img-fluid"
-                        />
-                      </Link>
-                      <Link onClick={() => imageOnSlide(8)} to="#">
-                        <img
-                          loading="lazy"
-                          src={g8}
-                          alt="gallary"
-                          className="img-fluid"
-                        />
-                      </Link>
-                      <Link onClick={() => imageOnSlide(9)} to="#">
-                        <img
-                          loading="lazy"
-                          src={g9}
-                          alt="gallary"
-                          className="img-fluid"
-                        />
-                      </Link>
-                    </div>
-                  </Card.Body>
-                </Card>
-                <Card>
-                  <div className="card-header d-flex align-items-center justify-content-between">
-                    <div className="header-title">
-                      <h4 className="card-title">Videos</h4>
-                    </div>
-                    <Link to="#">See all videos</Link>
-                  </div>
-                  <Card.Body>
-                    <div className="d-grid gap-2">
-                      <Link to="#" className="ratio ">
-                        <iframe
-                          title="myFrame"
-                          className="rounded embed-responsive-item"
-                          src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0"
-                          allowFullScreen
-                        ></iframe>
-                      </Link>
-                      <Link to="#" className="ratio">
-                        <iframe
-                          title="myFrame"
-                          className="rounded embed-responsive-item"
-                          src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0"
-                          allowFullScreen
-                        ></iframe>
-                      </Link>
-                    </div>
-                  </Card.Body>
-                </Card>
               </Col>
               {!updateProfile ? (
                 <Col lg="8">
                   <Card id="post-modal-data">
                     <div className="card-header d-flex justify-content-between">
                       <div className="header-title">
-                        <h4 className="card-title">Create Postttt</h4>
+                        <h4 className="card-title">Create Post</h4>
                       </div>
                     </div>
                     <Card.Body>

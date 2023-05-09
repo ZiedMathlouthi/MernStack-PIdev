@@ -1,13 +1,13 @@
 import AxiosInstance from "../utils/axiosInstance";
 
 export const addOffer = async (values) => {
-    const token = JSON.parse(localStorage.getItem("myData")).token;
+  const token = JSON.parse(localStorage.getItem("myData")).token;
 
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
   try {
-    const response = await AxiosInstance.post("/offer", values,config);
+    const response = await AxiosInstance.post("/offer", values, config);
     console.log(response);
     return response;
   } catch (error) {
@@ -17,14 +17,14 @@ export const addOffer = async (values) => {
 };
 
 export const getAllOffers = async () => {
-    const token = JSON.parse(localStorage.getItem("myData")).token;
+  const token = JSON.parse(localStorage.getItem("myData")).token;
 
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
   try {
-    const response = await AxiosInstance.get("/offer/all",config);
-    console.log(response);
+    const response = await AxiosInstance.get("/offer/all", config);
+
     return response;
   } catch (error) {
     console.log(error);
@@ -33,16 +33,20 @@ export const getAllOffers = async () => {
 };
 
 export const applyOffer = async (offreId, userId) => {
-    const token = JSON.parse(localStorage.getItem("myData")).token;
+  const token = JSON.parse(localStorage.getItem("myData")).token;
 
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
-    const values = {
-        id: userId
-    }
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const values = {
+    id: userId,
+  };
   try {
-    const response = await AxiosInstance.put(`/offer/apply/${offreId}/${userId}`,values,config);
+    const response = await AxiosInstance.put(
+      `/offer/apply/${offreId}/${userId}`,
+      values,
+      config
+    );
     console.log(response);
     return response;
   } catch (error) {
@@ -51,15 +55,19 @@ export const applyOffer = async (offreId, userId) => {
   }
 };
 export const unApplyOffer = async (offreId, userId) => {
-    const token = JSON.parse(localStorage.getItem("myData")).token;
-    const values = {
-        id: userId
-    }
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+  const values = {
+    id: userId,
+  };
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
   try {
-    const response = await AxiosInstance.put(`/offer/unapply/${offreId}/${userId}`,values,config);
+    const response = await AxiosInstance.put(
+      `/offer/unapply/${offreId}/${userId}`,
+      values,
+      config
+    );
     console.log(response);
     return response;
   } catch (error) {
@@ -67,36 +75,37 @@ export const unApplyOffer = async (offreId, userId) => {
     return error;
   }
 };
-
-
 
 export const getOwnOffers = async () => {
-    const token = JSON.parse(localStorage.getItem("myData")).token;
-
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
-  try {
-    const response = await AxiosInstance.get("/offer/company",config);
-    console.log(response);
-    return response;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-
-export const editOffer = async (id,values) => {
   const token = JSON.parse(localStorage.getItem("myData")).token;
 
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
   try {
-    const response = await AxiosInstance.put(`/offer/update/${id}`, values, config);
+    const response = await AxiosInstance.get("/offer/company", config);
     console.log(response);
-    
+    return response;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+export const editOffer = async (id, values) => {
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  try {
+    const response = await AxiosInstance.put(
+      `/offer/update/${id}`,
+      values,
+      config
+    );
+    console.log(response);
+
     return response.data;
   } catch (error) {
     console.log(error);
@@ -105,34 +114,37 @@ export const editOffer = async (id,values) => {
 };
 
 export const deleteOffer = async (id) => {
-    const token = JSON.parse(localStorage.getItem("myData")).token;
+  const token = JSON.parse(localStorage.getItem("myData")).token;
 
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
-    try {
-      const response = await AxiosInstance.delete(`/offer/${id}`, config);
-      console.log(response);
-      
-      return response.data;
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-}
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  try {
+    const response = await AxiosInstance.delete(`/offer/${id}`, config);
+    console.log(response);
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
 export const getAppliers = async (offerId) => {
-    const token = JSON.parse(localStorage.getItem("myData")).token;
+  const token = JSON.parse(localStorage.getItem("myData")).token;
 
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
-    try {
-      const response = await AxiosInstance.get(`/offer/appliers/${offerId}`, config);
-      console.log(response);
-      
-      return response.data;
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-}
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  try {
+    const response = await AxiosInstance.get(
+      `/offer/appliers/${offerId}`,
+      config
+    );
+    console.log(response);
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};

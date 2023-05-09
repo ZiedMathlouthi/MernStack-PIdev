@@ -52,6 +52,7 @@ import UpdateTestComponent from "../views/dashboard/updateTest";
 import TestComponent from "../views/dashboard/test";
 import RatingsComponentCompany from "../views/dashboard/NewComponent";
 import RatingsComponentUser from "../views/dashboard/NewComponent2";
+import RatingsComponentCourse from "../views/dashboard/CourseRatingComponent";
 
 export const SimpleRouter = [
   // delete this
@@ -79,6 +80,15 @@ export const SimpleRouter = [
       <>
         <Sidebar />
         <Header /> <RatingsComponentCompany /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/ratingsCourse/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <RatingsComponentCourse/> <RightSidebar />{" "}
       </>
     ),
   },
@@ -190,6 +200,7 @@ export const SimpleRouter = [
       </>
     ),
   },
+  
   {
     path: "/dashboard/app/profile-forum",
     element: (

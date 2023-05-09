@@ -21,9 +21,10 @@ const CompanyOffers = () => {
   const [filterCategory, setFilterCategory] = useState("");
 
   const getOffers = async () => {
-    console.log(filterMode);
+    
     try {
       const response = await getAllOffers();
+      console.log({ response });
       const user = JSON.parse(localStorage.getItem("myData")).user;
       if (filterMode === "" || filterMode === "all") {
         if (user.role === "user") {

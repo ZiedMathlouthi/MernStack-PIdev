@@ -1,6 +1,12 @@
 const Users = require("../models/model.user");
 const Companies = require("../models/model.company");
+const getUsersList = async (req, res) => {
+  const users = await Users.find({});
 
+  if (users) {
+    res.status(200).json(users);
+  } else res.status(200).json("password updated");
+};
 const getUsers = async (req, res) => {
   try {
     const user = await Users.find()
@@ -172,4 +178,5 @@ module.exports = {
   addNewCertification,
   addNewSkill,
   addNewExperience,
+  getUsersList,
 };

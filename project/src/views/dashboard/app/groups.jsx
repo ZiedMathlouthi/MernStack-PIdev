@@ -226,6 +226,11 @@ const Groups = () => {
                                     Go to course
                                   </button>
                                 </Link>
+                                <Link to={"/ratingsCourse/" + singleCourseData._id}>
+      <button type="submit" className="btn btn-primary d-block w-100">
+        Rate this course
+      </button>
+    </Link>
                                 </>
                               ): (
                                 <>

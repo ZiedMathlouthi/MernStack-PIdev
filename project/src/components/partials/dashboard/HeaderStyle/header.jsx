@@ -106,23 +106,9 @@ const Header = () => {
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModalFullscreenSm"
               >
-                <Link className="search-link d-none d-lg-block" to="/">
-                  <span className="material-symbols-outlined">search</span>
-                </Link>
-                <Form.Control
-                  type="text"
-                  className="text search-input form-control bg-soft-primary  d-none d-lg-block"
-                  placeholder="Search here..."
-                />
-                <Link
-                  className="d-lg-none d-flex d-none d-lg-block"
-                  to="/"
-                  onClick={handleShow}
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModalFullscreenSm"
-                >
-                  <span className="material-symbols-outlined">search</span>
-                </Link>
+                
+              
+             
               </form>
 
               <Modal
@@ -1246,26 +1232,8 @@ const Header = () => {
                       </div>
                     </Card.Header>
                     <Card.Body className="p-0 ">
-                      <div className="d-flex align-items-center iq-sub-card border-0">
-                        <span className="material-symbols-outlined">
-                          line_style
-                        </span>
-                        <div className="ms-3">
-                          <Link to="/dashboard/app/profile" className="mb-0 h6">
-                            My Profile
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-center iq-sub-card border-0">
-                        <span className="material-symbols-outlined">
-                          edit_note
-                        </span>
-                        <div className="ms-3">
-                          <Link to="#" className="mb-0 h6">
-                            Edit Profile
-                          </Link>
-                        </div>
-                      </div>
+                      
+                     
 
                       <div className="d-flex align-items-center iq-sub-card">
                         <span className="material-symbols-outlined">login</span>

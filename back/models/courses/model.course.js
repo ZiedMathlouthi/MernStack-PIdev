@@ -7,14 +7,7 @@ const courseSchema = new Schema (
     {
         courseName: { type: String, required: true },
         courseDescription: { type: String, required: true },
-        listOfRatesCourse: {
-            type: [{
-              type: Number,
-              min: 1,
-              max: 5
-            }],
-            default: [],
-        },
+        listofRates: [{ type: mongoose.Schema.Types.ObjectId, ref: "Rating" }],
         courseContent: [
             {
                 type: mongoose.Schema.Types.ObjectId,

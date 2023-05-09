@@ -185,7 +185,7 @@ const CardOffer = ({
             {/* <img height="70px" width="80px" src="http://www.ensit.tn/wp-content/uploads/2021/02/1549615448898.png" alt="img" /> */}
 
             <h5 class="card-title" style={{ fontWeight: "bold" }}>
-              {owner.fullName}
+              {owner.fullName} {owner?.averageRating} ⭐
             </h5>
           </div>
           <h6 class="card-subtitle mb-2 text-body-secondary">

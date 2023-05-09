@@ -156,7 +156,11 @@ const unacceptApplier = (offerId, userId) => async (req, res) => {
 const getAllOffers = async (req, res) => {
   try {
     const offers = await Offres.find({})
-      .populate({ path: "owner", select: offerOwner })
+      .populate({
+        path: "owner",
+        populate: { path: "listofRates" },
+      })
+      .sort("-owner.averageRating")
       .select(offerDetails)
       .lean()
       .exec();

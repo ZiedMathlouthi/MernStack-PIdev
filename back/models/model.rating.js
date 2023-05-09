@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-
 const ratingSchema = new mongoose.Schema({
   subject: {
     type: String,
-    enum: ["company", "user"],
+    enum: ["user", "company", "course"],
     required: true,
   },
   subjectId: {
@@ -13,7 +12,7 @@ const ratingSchema = new mongoose.Schema({
   },
   rater: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",
     required: true,
   },
   rating: {

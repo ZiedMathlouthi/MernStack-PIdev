@@ -6,50 +6,63 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ListGroup } from "react-bootstrap";
 
-const RatingsComponentCompany = () => {
+const RatingsComponentCourse = () => {
   const [rating, setRating] = useState(0);
+
   const [comment, setComment] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [averageRating, setAverageRating] = useState(0);
-  const [companyRatings, setCompanyRatings] = useState([]);
-  const [companyRatingsData, setCompanyRatingsData] = useState(null);
-  const { id } = useParams();
+  const [courseRatings, setCourseRatings] = useState([]);
+  const [courseRatingsData, setCourseRatingsData] = useState(null);
+  const [courseData, setCourseData] = useState(null);
+  const [avarageRating, setAvarageRating] = useState(1);
+  const courseId = useParams();
   const currentConnectedUser = JSON.parse(localStorage.getItem("myData")).user;
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get(`http://localhost:9000/ratings/company/${id}/average`)
+      .get(`http://localhost:9000/ratings/course/${courseId.id}/average`)
       .then((response) => {
-        console.log("response", response);
-        setAverageRating(response.data.averageRating);
+        setAvarageRating(response.data.averageRating);
       })
       .catch((error) => console.error(error.message));
 
-    // Appel de l'API pour récupérer la liste des notes de l'entreprise
     axios
-      .get(`http://localhost:9000/ratings/company/${id}/ratings`)
+      .get(`http://localhost:9000/ratings/course/${courseId.id}/ratings`)
       .then((response) => {
-        setCompanyRatings(response.data);
+        console.log({ response });
+        setCourseRatings(response.data.ratings);
+        setAvarageRating(response.data.average);
+      })
+      .catch((error) => console.error(error.message));
+
+    axios
+      .get(`http://localhost:9000/courses/getCourseById/${courseId.id}`) // Call the API to retrieve course data
+      .then((response) => {
+        setCourseData(response.data);
       })
       .catch((error) => console.error(error.message));
   }, []);
 
   useEffect(() => {
-    const fetchdata = async () => {
-      const p = companyRatings.map((r) => {
-        return axios.get(`http://localhost:9000/ratings/Rate/${r}`);
+    const fetchData = async () => {
+      const p = courseRatings.map((r) => {
+        return axios.get(`http://localhost:9000/ratings/Rate/${r._id}`);
       });
-
-      const ratingresponsive = await Promise.all(p);
-      const ratingdata = ratingresponsive.map((w) => w.data);
-      if (ratingdata !== [] && ratingdata) {
-        setCompanyRatingsData(ratingdata);
+      const ratingResponsive = await Promise.all(p);
+      const ratingData = ratingResponsive.map((w) => (w.data ? w.data : null));
+      if (ratingData !== [] && ratingData) {
+        setCourseRatingsData(
+          ratingData.map((r, i) => ({ ...r, user: courseRatings[i].user }))
+        );
       }
     };
-    fetchdata();
-  }, [companyRatings]);
+
+    fetchData();
+  }, [courseRatings]);
+
+  // Add dependency array
 
   const handleRatingChange = (event, newValue) => {
     setRating(newValue);
@@ -63,7 +76,7 @@ const RatingsComponentCompany = () => {
     event.preventDefault();
     const ratingValue = parseFloat(rating);
     axios
-      .post(`http://localhost:9000/ratings/company/${id}/ratings`, {
+      .post(`http://localhost:9000/ratings/course/${courseId.id}/ratings`, {
         rating: ratingValue,
         comment: comment,
         user: currentConnectedUser._id,
@@ -77,20 +90,36 @@ const RatingsComponentCompany = () => {
       .catch((error) => {
         console.log(error);
         setMessage("");
-        setError("Erreur serveur.");
+        setError("Server error.");
       });
   };
+
   const handleCancel = () => {
     navigate("/");
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const p = courseRatings.map((r) => {
+        return axios.get(`http://localhost:9000/ratings/Rate/${r._id}`);
+      });
+
+      const ratingResponsive = await Promise.all(p);
+      const ratingData = ratingResponsive.map((w) => (w.data ? w.data : null)); // Add a check for empty data
+      if (ratingData !== [] && ratingData) {
+        setCourseRatingsData(ratingData);
+      }
+    };
+    fetchData();
+  }, [courseRatings]);
 
   return (
     <Container>
       <Row>
         <Col md={{ span: 6, offset: 3 }}>
-          <h2>RATE THIS COMPANY</h2>
-          {averageRating !== null && (
-            <div>Average of rates : {averageRating.toFixed(2)}</div>
+          <h2>RATE THIS COURSE</h2>
+          {avarageRating !== null && (
+            <div>Average of rates : {avarageRating} ⭐</div>
           )}
           <Form onSubmit={handleSubmit}>
             <Rating
@@ -111,24 +140,22 @@ const RatingsComponentCompany = () => {
                 required
               />
             </Form.Group>
-            <div className="mt-2">
-              <Button type="submit">Send</Button>
-              <Button
-                style={{ marginLeft: "10px" }}
-                type="button"
-                onClick={handleCancel}
-              >
-                Cancel
-              </Button>
-            </div>
+            <Button type="submit">Send</Button>
+            <Button
+              style={{ marginLeft: "10px" }}
+              type="button"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
           </Form>
           {message && <Alert variant="success">{message}</Alert>}
           {error && <Alert variant="danger">{error}</Alert>}
-          <h3>List of rates for this company :</h3>
-          {companyRatings.length > 0 ? (
+          <h3>List of rates for this course :</h3>
+          {courseRatings.length > 0 ? (
             <ListGroup>
-              {companyRatingsData &&
-                companyRatingsData.map((rating, index) => (
+              {courseRatingsData &&
+                courseRatingsData.map((rating, index) => (
                   <ListGroup.Item key={index}>
                     <div>User : {rating?.rater?.fullName}</div>
                     <div>Rate : {rating.rating}</div>
@@ -137,7 +164,7 @@ const RatingsComponentCompany = () => {
                 ))}
             </ListGroup>
           ) : (
-            <p>No rating for this company.</p>
+            <p>No rating for this course.</p>
           )}
         </Col>
       </Row>
@@ -145,4 +172,4 @@ const RatingsComponentCompany = () => {
   );
 };
 
-export default RatingsComponentCompany;
+export default RatingsComponentCourse;
