@@ -29,6 +29,7 @@ import Default from "../layouts/dashboard/default";
 import { DefaultRouter } from "./default-router";
 import { Layout1Router } from "./layout1-router";
 import Profile2 from "../views/dashboard/profiles/profile2";
+import ProfileUserPost from "../views/dashboard/profiles/ProfileUserPost";
 import Header from "../components/partials/dashboard/HeaderStyle/header";
 import Sidebar from "../components/partials/dashboard/SidebarStyle/sidebar";
 import RightSidebar from "../components/partials/dashboard/SidebarStyle/rightsidebar";
@@ -160,7 +161,15 @@ export const SimpleRouter = [
     element: (
       <>
         <Sidebar />
-        <Header /> <Profile2 /> <RightSidebar />{" "}
+        <Header /> <Profile2 /> {" "}
+      </>
+    ),
+  },
+  {
+    path: "/dashboards/user/:userId/profile",
+    element: (
+      <>
+<Header /> <ProfileUserPost /> {" "}
       </>
     ),
   },
