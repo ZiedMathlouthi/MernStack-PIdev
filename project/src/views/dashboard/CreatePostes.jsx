@@ -236,17 +236,17 @@ console.log(signaled)
 		if (signaled) {
 			emailjs
 				.send(
-					'service_lxnfc1l',
-			    'template_h1ccihs',
+					'service_yed2f4f',
+			    'template_u3wfja9',
 					{
             subject:"Signaled Post!",
 						from_name: User.user.fullName,
-						to_name: 'Ghaoui Oussema',
+						to_name: 'israa neji',
 						from_email: User.user.email,
-						to_email: 'ghaoui.o@yahoo.com',
+						to_email: 'israa.neji8@gmail.com',
 						message: `A post with ID ${postId} has been signaled by user ${userId}.`,
 					},
-					'dIncrZGBKOL-RjJfc'
+					'Is3m-Kd7A8xCMlCr6'
 				)
 				.then(
 					() => {

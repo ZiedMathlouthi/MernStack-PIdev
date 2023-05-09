@@ -39,8 +39,8 @@ console.log(signaled)
 		if (signaled) {
 			emailjs
 				.send(
-					'service_9hub40s',
-			    'template_ko3wd9o',
+					'service_yed2f4f',
+			        'template_u3wfja9',
 					{
             subject:"Signaled Post!",
 						from_name: User.user.fullName,
@@ -49,7 +49,7 @@ console.log(signaled)
 						to_email: 'israa.neji8@gmail.com',
 						message: `A post with ID ${postId} has been signaled by user ${userId}.`,
 					},
-					'65LCscZ7FmReAhthr'
+					'Is3m-Kd7A8xCMlCr6'
 				)
 				.then(
 					() => {

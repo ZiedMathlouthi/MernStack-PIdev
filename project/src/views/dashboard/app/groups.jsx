@@ -152,7 +152,7 @@ const Groups = () => {
                             </div>
                             <div className="group-info pt-3 pb-3">
                               <h4>
-                                {singleCourseData.courseName}
+                                {singleCourseData.courseName}  {" "} {singleCourseData?.averageRating} ⭐
                               </h4>
                               <p key={indexCourse}> {singleCourseData.courseDescription} </p>
                             </div>

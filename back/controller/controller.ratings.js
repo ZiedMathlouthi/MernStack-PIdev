@@ -278,17 +278,22 @@ exports.getCourseAverageRating = async (req, res) => {
       totalRating += rating.rating;
     });
 
-    const averageRating = totalRating / ratings.length;
+    const averageRating = (totalRating / ratings.length).toFixed(1);
 
+
+    course.averageRating = averageRating;
+    await course.save();
+    
     res.status(200).json({ averageRating });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Server Error." });
   }
-};
+}
 offerOwner = {
   fullName: 1,
 };
+
 exports.getReleted = async (req, res) => {
   try {
     console.log(req.id);
@@ -300,3 +305,4 @@ exports.getReleted = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+

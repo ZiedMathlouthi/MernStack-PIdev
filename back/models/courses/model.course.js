@@ -8,6 +8,7 @@ const courseSchema = new Schema (
         courseName: { type: String, required: true },
         courseDescription: { type: String, required: true },
         listofRates: [{ type: mongoose.Schema.Types.ObjectId, ref: "Rating" }],
+        averageRating: { type: Number, default: 0 },
         courseContent: [
             {
                 type: mongoose.Schema.Types.ObjectId,
