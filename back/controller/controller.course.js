@@ -5,20 +5,75 @@ const progressionCourseModel = require("../models/courses/model.progressionCours
 const axios = require("axios");
 
 exports.uploadPhoto = async (req, res) => {
-  const idCourse = req.params.id;
+  const idChapter = req.body.id;
+  const indexParagraph = req.body.indexParagraph;
+  const file = req.file?.filename;
   try {
-    await Course.findByIdAndUpdate(idCourse, {
-      coursePhoto: req.file?.filename,
-    })
-      .then((result) => {
-        return res.status(200).send(result);
-      })
-      .catch((error) => {
-        return res.status(400).send(error);
-      });
+    const ch = await Chapter.findById(idChapter);
+    ch.chapterParagraphs = ch.chapterParagraphs.map(
+      (parag, i) => {
+        if(i == indexParagraph){
+          parag.paragraphImages = file
+        };
+        return parag
+      }
+    )
+    ch.save();
+
+
+    // const arrayPromises = await Chapter.findById(idChapter).then(
+    //   (retu) => {
+    //     return retu.chapterParagraphs;
+    //   }
+    // );
+    // let array = await Promise.all(arrayPromises)
+    // array[indexParagraph].paragraphImages = req.file?.filename;
+    // res.send(array)
+
+
+    // await Chapter.findByIdAndUpdate(idChapter, {
+    //   chapterParagraphs: array
+    // }).then(
+    //   (success) => {res.status(200).send(success)}
+    // ).catch(
+    //   (error) => {res.status(404).send(error)}
+    // )
+
+    
+    // Chapter.updateOne(
+    //   { _id: idChapter},
+    //   {
+    //     chapterParagraphs: chapterParagraphs.map((p,i) => {
+    //       if(i == indexParagraph){
+    //         return 
+    //       }
+    //     })
+    //   }
+    // );
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).json(error);
   }
+};
+
+//this is the latest method for adding a new course check doc in routing for usage
+exports.addCourseTemplate = async (req, res) => {
+  const data = {
+    courseName: req.body.courseName,
+    courseDescription: req.body.courseDescription,
+    courseOwner: req.body.courseOwner,
+    courseCategory: req.body.courseCategory,
+    coursePhoto: req.file?.filename,
+  };
+  const _course = new Course(data);
+  _course
+    .save()
+    .then((createdCourse) => {
+      res.status(200).send(createdCourse);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json({ message: "Failed adding new Course !!!!!!!" });
+    });
 };
 
 exports.addCourse = async (req, res) => {
@@ -55,21 +110,90 @@ exports.addCourse = async (req, res) => {
     });
 };
 
+//this is the LTS version of the adding chapter
 exports.addChapter = async (req, res) => {
+  let paragsArray = [];
+  const courseId = req.body.courseId;
+  // const files=req.files;
+
+
+  req.body.chapterParagraphs.map(
+    (paragraph, i) => {
+      const paragObject = {
+        paragraphTitle: paragraph.paragraphTitle,
+        paragraphContent: paragraph.paragraphContent,
+        // paragraphVideos: req.files["paragraphVideos"] ? req.files["paragraphVideos"][0].filename : null,
+      };
+      paragsArray.push(paragObject);
+    }
+  );
   const data = {
     chapterTitle: req.body.chapterTitle,
-    chapterParagraphs: req.body.chapterParagraphs,
+    chapterParagraphs: paragsArray
   };
-
   const _chapter = new Chapter(data);
   _chapter
     .save()
     .then((createdCourse) => {
-      res.status(200).json({ message: "Chapter created successfully...." });
+      Course.findByIdAndUpdate(courseId, { $push: { courseContent: createdCourse._id } }).then(
+        () => {return res.status(200).send("cbn")}
+      ).catch((error) => { res.status(404).send(error)})
     })
     .catch((err) => {
       res.status(400).json({ message: "Failed adding new Chapter !!!!!!!" });
     });
+};
+
+//this is the LTS version of the update of a chapter 
+exports.updateChapter = async (req, res) => {
+  const chapterIdToUpdate = req.body.id;
+  const updatedChapter = {
+    chapterTitle: req.body.chapterTitle,
+    chapterParagraphs: req.body.chapterParagraphs
+  };
+  await Chapter.findByIdAndUpdate(chapterIdToUpdate, updatedChapter).then(
+    (success) => { res.status(200).send(success)}
+  ).catch(
+    (error) => { res.status(404).send(error) }
+  );
+};
+
+//this is the latest method for deleting a chapter in a course check doc in routing
+exports.deleteChapterInCourseById = async (req, res) => {
+  const courseId = req.body.courseId;
+  const chapterId = req.body.chapterId; 
+  try {
+    await Course.findById(courseId).then(
+      async (result) => {
+        let chaptersArray = result.courseContent;
+        const newArray = chaptersArray.filter((id) => id != chapterId);
+        await Course.findByIdAndUpdate(courseId,{courseContent:newArray}).then(
+          (resultat) => {
+            res.status(200).send(resultat);
+          }
+        )
+      }
+    )
+  } catch (error) {
+    res.status(400).send(error)
+  }
+};
+
+//this is the latest method for deleting a quizz in a course check doc in routing
+exports.deleteQuizzInCourseById = async (req, res) => {
+  const courseId = req.body.courseId;
+  try {
+    await Course.findByIdAndUpdate(
+        courseId,
+        {courseQuizz: null}
+        ).then(
+          (result) => { return res.status(200).send(result); }
+        ).catch(
+          (error) => { return res.status(404).send(error); }
+    );
+  } catch (error) {
+    return res.status(400).send(error);
+  }
 };
 
 exports.getAllCourses = async (req, res) => {
@@ -241,6 +365,21 @@ exports.updateProgressionCourseByUserIdAndCourseId = async (req, res) => {
     });
 };
 
+//this is the simple fct for the delete of a course by Id used in the latest version
+exports.deleteCourseByIdLTS = async (req, res) => {
+  const id = req.body.id;
+  try {
+    await Course.findByIdAndDelete(id).then(
+      (result) => { res.status(200).send(result); }
+    ).catch(
+      (error) => { res.status(404).send(error); }
+    );
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
+//this fct is NOT used in the latest version. Token must be provided and  too much to provide
 exports.deleteCourseById = async (req, res) => {
   const id = req.body.id;
   let token = req.header("x-auth-token") || req.headers.authorization;
@@ -331,20 +470,63 @@ exports.getAllExpertsOwnersArray = async (req, res) => {
   }
 };
 
-// exports.getUserById = async (req, res) => {
-//     const idExp = req.params.id;
-//     try {
-//       await UserModel.findById(idExp).then(
-//         (result) => {
-//           console.log(result)
-//           res.status(200).send(result);
-//         }
-//       ).catch(
-//         (error) => {
-//           res.status(404).send(error);
-//         }
-//       );
-//     } catch (error) {
-//       res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
-//     }
+exports.getUserById = async (req, res) => {
+    const idExp = req.params.id;
+    try {
+      await UserModel.findById(idExp).then(
+        (result) => {
+          res.status(200).send(result);
+        }
+      ).catch(
+        (error) => {
+          res.status(404).send(error);
+        }
+      );
+    } catch (error) {
+      res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
+    }
+}
+
+exports.getPhoto = async (req, res) => {
+  const idExp = req.params.id;
+  try {
+    await UserModel.findById(idExp).then(
+      (result) => {
+        res.status(200).send(result.coverPhoto);
+      }
+    ).catch(
+      (error) => {
+        res.status(404).send(error);
+      }
+    );
+  } catch (error) {
+    res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
+  }
+}
+exports.getPhotoCouv = async (req, res) => {
+  const idExp = req.params.id;
+  try {
+    await UserModel.findById(idExp).then(
+      (result) => {
+        res.status(200).send(result.picture);
+      }
+    ).catch(
+      (error) => {
+        res.status(404).send(error);
+      }
+    );
+  } catch (error) {
+    res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
+  }
+};
+
+//this is the fonction i'm gonna work with
+// (req,res)=>{
+// const files=req.files
+// files.forEach(file => {
+//   const names = file.map((f)=>{
+//     f.filename
+//   })
+//   req.body.chaptersParagrphes[parseInt(file.map(x => Object.keys(x)[0]))].files= names
+// });
 // }

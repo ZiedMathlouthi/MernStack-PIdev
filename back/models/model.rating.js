@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const ratingSchema = new mongoose.Schema({
   subject: {
     type: String,
-    enum: ["user", "company", "course"],
+    enum: ["company", "user", "course"],
     required: true,
   },
   subjectId: {

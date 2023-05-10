@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
@@ -126,7 +127,7 @@ const CourseComponent = (props) => {
                 typeOfUpdate: 1
             });
         }else if (chaptersArrayLength-1 === indexCurrentChapter){
-            navigate("/Quizzzz/"+idCourse);
+            navigate("/finishedCourse/"+idCourse);
         }else{
             navigate("/Error");
         }
@@ -139,7 +140,7 @@ const CourseComponent = (props) => {
                 typeOfUpdate: -1
             });
         }else{
-            navigate("/Error");
+            navigate("/dashboards/app/profile-events");
         }
     };
 
@@ -179,7 +180,7 @@ const CourseComponent = (props) => {
                                         {/** ends here */}
                                     
                                     
-                                            <h3><strong>Chapter : </strong>{chaptersArray[indexCurrentChapter].chapterTitle}</h3>
+                                            <h3><strong>Chapter {indexCurrentChapter +1}: </strong>{chaptersArray[indexCurrentChapter].chapterTitle}</h3>
                                     
                                         
                                         {/** this is where it begins the parags details and course details */}
@@ -194,8 +195,25 @@ const CourseComponent = (props) => {
                                                             {chaptersArray[indexCurrentChapter].chapterParagraphs.map(
                                                                 (paragraph,indexParagraph) => (
                                                                     <>
-                                                                    <h5><u><strong>Pragraph title : </strong>{paragraph.paragraphTitle}</u></h5>
+                                                                    <h5><u><strong>{paragraph.paragraphTitle}</strong></u></h5>
+                                                                    {(paragraph.paragraphImages) ? (
+                                                                        <>
+                                                                        <div style={{}}>
+                                                                        <img
+                                                                            src={`http://127.0.0.1:9000/data/${paragraph.paragraphImages}`}
+                                                                        />
+                                                                        </div>
+                                                                        
+                                                                        </>
+                                                                    ): ""}
                                                                     <p><em>{paragraph.paragraphContent}</em></p>
+                                                                    {/* {(paragraph.paragraphVideos) ? (
+                                                                        <>
+                                                                        <img
+                                                                            src={`http://127.0.0.1:9000/data/${paragraph.paragraphVideos}`}
+                                                                        />
+                                                                        </>
+                                                                    ): ""} */}
                                                                     </>
                                                                 )
                                                             )}
@@ -208,7 +226,9 @@ const CourseComponent = (props) => {
                                                                         (chapter,indexChapter) => (
                                                                             <>
                                                                             <ListItem disablePadding>
-                                                                                <ListItemText primary={`${indexChapter+1}. ${chapter.chapterTitle}`} />
+                                                                                {(indexChapter == indexCurrentChapter) ? (
+                                                                                        <b>{indexChapter+1}. {chapter.chapterTitle}</b>
+                                                                                    ):(<ListItemText primary={`${indexChapter+1}. ${chapter.chapterTitle}`} />)}
                                                                                 <br/>
                                                                             </ListItem>
                                                                             </>
@@ -271,7 +291,15 @@ const CourseComponent = (props) => {
         return(
             <>
             <Container>
-                LOAAAAAAAADIIIING... if it took too long : <Link to={"/home"}>Home</Link>
+                <div style={{margin:"250px 350px"}}>
+                    <Box sx={{ display: 'flex' }}>
+                        <CircularProgress />
+                    </Box>
+                </div>
+                <div style={{textAlign:"center"}}>
+                    <h2>if the LOADING took too long.. Go <Link to={"/home"}>Home</Link></h2>
+                </div>
+
             </Container>
             </>
         )

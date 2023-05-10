@@ -21,6 +21,7 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Groups = () => {
 
@@ -31,7 +32,7 @@ const Groups = () => {
   const [courseData, setCourseData] = useState(null);
   const [ownersData, setOwnersData] = useState({});
   const [coursePicture, setCoursePicture] = useState("http://127.0.0.1:9000/data/1681830270752-deddyPhotoDeProfil.jpg");
-
+  console.log(ownersData)
   const [value, setValue] = React.useState('1');
 
   const handleChange = (event, newValue) => {
@@ -75,23 +76,22 @@ const Groups = () => {
 
   useEffect(() => {
     const fetchOwnerData = async (id) => {
-      try {
-        const result = await axios.get(API_url+"user/getUserById/"+id);
-        const data = result.data;
-        setOwnersData((prevState) => {
-          return {
-            ...prevState,
-            [id]: data.fullName // assuming that the name of the owner is stored in the "name" field of the response object
-          };
-        });
-      } catch (error) {
-        console.log(error);
-      }
+      await axios.get(API_url+"courses/getUserById/"+id).then(
+        (succes) => {
+          setOwnersData((prevState) => {
+            return {
+              ...prevState,
+              [id]: succes.data.fullName // assuming that the name of the owner is stored in the "name" field of the response object
+            };
+          });
+        }
+      ).catch(
+        (error) => {console.log(error)}
+      );
     };
     if (courseData) {
       courseData.forEach((singleCourseData) => {
         const ownerId = singleCourseData.courseOwner;
-        console.log(ownerId)
         fetchOwnerData(ownerId);
       });
     }
@@ -100,7 +100,7 @@ const Groups = () => {
   // const res = fetchOwnersData("64248c024db8ea26a26d203f");
 
   if(courseData){
-    console.log(courseData)
+    // console.log(courseData)
     return (
       <>
         <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -119,37 +119,34 @@ const Groups = () => {
                   <Container>
           
                     { courseData.map((singleCourseData, indexCourse) => (
-                      
                       <>
+                      { !(singleCourseData.courseOwner == currentConnectedUser._id) && !(singleCourseData.courseSubcribed.includes(currentConnectedUser._id)) ? (
+                        <>
                         <div className="d-grid gap-3 d-grid-template-1fr-19">
                           <Card className="mb-0">
                             <div className="top-bg-image">
                               {/** insert image of course here */}
-                              <img key={indexCourse} src={img1} className="img-fluid w-100" alt="group-bg" />
-                            </div>
-                            <Card.Body className=" text-center">
-                            <div className="group-icon">
-                              {`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}` === `http://127.0.0.1:9000/data/` ? (
+                              {`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}` === `http://127.0.0.1:9000/data/null` ? (
                                 <>
                                 <img
+                                  style={{width:"100%", height:"300px"}}
                                   key={indexCourse}
                                   src={gi1}
                                   alt="profile-img"
-                                  className="rounded-circle img-fluid avatar-120"
                                 />
                                 </>
                               ): (
                                 <>
                                 <img
+                                  style={{width:"100%", height:"300px"}}
                                   key={indexCourse}
                                   src={`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}`}
                                   alt="profile-img"
-                                  className="rounded-circle img-fluid avatar-120"
                                 />
                                 </>
                               )}
-                              
                             </div>
+                            <Card.Body className=" text-center">
                             <div className="group-info pt-3 pb-3">
                               <h4>
                                 {singleCourseData.courseName}
@@ -160,59 +157,14 @@ const Groups = () => {
                               <ul className="d-flex align-items-center justify-content-between list-inline m-0 p-0">
                                 <li className="pe-3 ps-3">
                                   <p className="mb-0">Course By</p>
-                                  <h6>{Object.entries(ownersData).find(([id,value]) => id=== singleCourseData.courseOwner.toString())}</h6>
+                                  <h6>{Object.entries(ownersData).find(([id,value]) => id === singleCourseData.courseOwner.toString())}</h6>
                                 </li>
                               </ul>
                             </div>
-                            <div className="group-member mb-3">
-                              <div className="iq-media-group">
-                                <Link to="#" className="iq-media">
-                                  <img
-                                    className="img-fluid avatar-40 rounded-circle"
-                                    src={user05}
-                                    alt=""
-                                  />
-                                </Link>
-                                <Link to="#" className="iq-media">
-                                  <img
-                                    className="img-fluid avatar-40 rounded-circle"
-                                    src={user06}
-                                    alt=""
-                                  />
-                                </Link>
-                                <Link to="#" className="iq-media">
-                                  <img
-                                    className="img-fluid avatar-40 rounded-circle"
-                                    src={user07}
-                                    alt=""
-                                  />
-                                </Link>
-                                <Link to="#" className="iq-media">
-                                  <img
-                                    className="img-fluid avatar-40 rounded-circle"
-                                    src={user08}
-                                    alt=""
-                                  />
-                                </Link>
-                                <Link to="#" className="iq-media">
-                                  <img
-                                    className="img-fluid avatar-40 rounded-circle"
-                                    src={user09}
-                                    alt=""
-                                  />
-                                </Link>
-                                <Link to="#" className="iq-media">
-                                  <img
-                                    className="img-fluid avatar-40 rounded-circle"
-                                    src={user10}
-                                    alt=""
-                                  />
-                                </Link>
-                              </div>
-                            </div>
+                            
                             { singleCourseData.courseOwner == currentConnectedUser._id ? ( 
                                 <>
-                                <Link to={"/updateCourse/"+singleCourseData._id}>
+                                <Link to={"/courseDashboard/"+singleCourseData._id}>
                                   <button type="submit" className="btn btn-primary d-block w-100">
                                     Update
                                   </button>
@@ -244,8 +196,11 @@ const Groups = () => {
                         </Card.Body>
                       </Card>
                       
-                    </div>
+                      </div>
                       </>
+                      ):"" }
+                      </>
+                      
                     )) }
           
                   </Container>
@@ -265,20 +220,30 @@ const Groups = () => {
                           <div className="d-grid gap-3 d-grid-template-1fr-19">
                             <Card className="mb-0">
                               <div className="top-bg-image">
-                                <img key={indexCourse} src={img1} className="img-fluid w-100" alt="group-bg" />
+                                {`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}` === `http://127.0.0.1:9000/data/null` ? (
+                                    <>
+                                    <img
+                                      style={{width:"100%", height:"300px"}}
+                                      key={indexCourse}
+                                      src={gi1}
+                                      alt="profile-img"
+                                    />
+                                    </>
+                                  ): (
+                                    <>
+                                    <img
+                                      style={{width:"100%", height:"300px"}}
+                                      key={indexCourse}
+                                      src={`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}`}
+                                      alt="profile-img"
+                                    />
+                                    </>
+                                )}
                               </div>
                               <Card.Body className=" text-center">
-                              <div className="group-icon">
-                                <img
-                                  key={indexCourse}
-                                  src={gi1}
-                                  alt="profile-img"
-                                  className="rounded-circle img-fluid avatar-120"
-                                />
-                              </div>
                               <div className="group-info pt-3 pb-3">
                                 <h4>
-                                  <Link key={indexCourse} to="/dashboards/app/group-detail">{singleCourseData.courseName}</Link>
+                                  {singleCourseData.courseName}
                                 </h4>
                                 <p key={indexCourse}> {singleCourseData.courseDescription} </p>
                               </div>
@@ -290,53 +255,7 @@ const Groups = () => {
                                   </li>
                                 </ul>
                               </div>
-                              <div className="group-member mb-3">
-                                <div className="iq-media-group">
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user05}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user06}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user07}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user08}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user09}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user10}
-                                      alt=""
-                                    />
-                                  </Link>
-                                </div>
-                              </div>
-                              <Link to={"/updateCourse/"+singleCourseData._id}>
+                              <Link to={"/courseDashboard/"+singleCourseData._id}>
                                 <button type="submit" className="btn btn-primary d-block w-100">
                                   Update
                                 </button>
@@ -351,20 +270,31 @@ const Groups = () => {
                         <div className="d-grid gap-3 d-grid-template-1fr-19">
                             <Card className="mb-0">
                               <div className="top-bg-image">
-                                <img key={indexCourse} src={img1} className="img-fluid w-100" alt="group-bg" />
+                                {`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}` === `http://127.0.0.1:9000/data/null` ? (
+                                      <>
+                                      <img
+                                        style={{width:"100%", height:"300px"}}
+                                        key={indexCourse}
+                                        src={gi1}
+                                        alt="profile-img"
+                                      />
+                                      </>
+                                    ): (
+                                      <>
+                                      <img
+                                        style={{width:"100%", height:"300px"}}
+                                        key={indexCourse}
+                                        src={`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}`}
+                                        alt="profile-img"
+                                      />
+                                      </>
+                                  )}
                               </div>
                               <Card.Body className=" text-center">
-                              <div className="group-icon">
-                                <img
-                                  key={indexCourse}
-                                  src={gi1}
-                                  alt="profile-img"
-                                  className="rounded-circle img-fluid avatar-120"
-                                />
-                              </div>
+                              
                               <div className="group-info pt-3 pb-3">
                                 <h4>
-                                  <Link key={indexCourse} to="/dashboards/app/group-detail">{singleCourseData.courseName}</Link>
+                                  {singleCourseData.courseName}
                                 </h4>
                                 <p key={indexCourse}> {singleCourseData.courseDescription} </p>
                               </div>
@@ -375,52 +305,6 @@ const Groups = () => {
                                     <h6>{Object.entries(ownersData).find(([id,value]) => id=== singleCourseData.courseOwner.toString())}</h6>
                                   </li>
                                 </ul>
-                              </div>
-                              <div className="group-member mb-3">
-                                <div className="iq-media-group">
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user05}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user06}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user07}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user08}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user09}
-                                      alt=""
-                                    />
-                                  </Link>
-                                  <Link to="#" className="iq-media">
-                                    <img
-                                      className="img-fluid avatar-40 rounded-circle"
-                                      src={user10}
-                                      alt=""
-                                    />
-                                  </Link>
-                                </div>
                               </div>
                               <Link to={"/course/"+singleCourseData._id}>
                                 <button type="submit" className="btn btn-primary d-block w-100">
@@ -447,9 +331,18 @@ const Groups = () => {
     );
   }else{
     return (
-      <div>
-        LOAAAAAING
-      </div>
+      <>
+        <Container>
+          <div style={{margin:"250px 350px"}}>
+            <Box sx={{ display: 'flex' }}>
+              <CircularProgress />
+            </Box>
+          </div>
+          <div style={{textAlign:"center"}}>
+            <h2>if the LOADING took too long.. Go <Link to={"/"}>Home</Link></h2>
+          </div>
+        </Container>
+      </>
     )
   }
   

@@ -31,7 +31,8 @@ const testSchema = new Schema({
     ref: "expert",
     required: true,
   },
-  testTimer: { type: String },
+  testTimer: { type: String, default: "00:15" },
+  testCategory: [String]
 });
 
 module.exports = mongoose.model("test", testSchema);

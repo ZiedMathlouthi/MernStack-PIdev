@@ -1,5 +1,6 @@
 const questionModel = require("../models/tests/model.question");
 const testModel = require("../models/tests/model.tests");
+const resultTestModel = require("../models/tests/model.result");
 const UserModel = require("../models/model.user");
 const axios = require("axios");
 
@@ -24,6 +25,7 @@ exports.addTest = async (req, res) => {
     testPhoto: req.body.testPhoto,
     testOwner: req.body.testOwner,
     testTimer: req.body.testTimer,
+    testCategory: req.body.testCategory
   };
 
   const _test = new testModel(data);
@@ -136,47 +138,58 @@ exports.getTestDataById = async (req, res) => {
   }
 };
 
+exports.updateTestByIdLTS = async (req, res) => {
+  const id = req.params.id;
+  let updatedTestContent = req.body.updatedTest;
+  let questionsArrayContent = updatedTestContent.listOfQuestions;
+  let questionArrayIds = [];
+  try {
+    questionsArrayContent.map(
+      (question) => {
+        if(question._id){
+          questionModel.findByIdAndUpdate(question._id, question);
+        }else{
+          const Quest = new questionModel(question);
+          Quest.save().then(
+            (resultat) => { 
+              testModel.findByIdAndUpdate(id, {$push: {listOfQuestions: resultat._id}})
+             }
+          ).catch(
+            (error) => {return res.send("houni l ghalta 2")}
+          )
+        }
+      }
+    );
+    // updatedTestContent.listOfQuestions = questionArrayIds;
+    // await testModel.findByIdAndUpdate(id,updatedTestContent).then(
+    //   (result) => { res.status(200).send(result) }
+    // ).catch(
+    //   (error) => { res.status(404).send(updatedTestContent) }
+    // )
+  } catch (error) {
+    res.status(400).send(error)
+  }
+};
+
 exports.updateTestById = async (req, res) => {
   const id = req.params.id;
   let updatedTestContent = req.body.updatedTest;
   const questionsData = updatedTestContent.listOfQuestions;
   let questionsArray = [];
 
-  const tokkeeeeen = req.header("x-auth-token") || req.headers.authorization;
-  const config = {
-    headers: { Authorization: `Bearer ${tokkeeeeen}` },
-  };
-
-  let token = req.header("x-auth-token") || req.headers.authorization;
-  if (!token) {
-    return res.status(401).send("Access denied. No token provided");
-  }
-  token = token.split(" ")[1];
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { email } = decoded;
-    const user = await UserModel.findOne({ email });
-    if (!user) {
-      return res.status(400).send("Invalid token.");
-    } else {
-      const test = await testModel.findById(id);
-      if (test.testOwner.toString() === user.id) {
-        const questionsPromises = questionsData.map((e) => {
-          const _question = new questionModel(e);
-          return _question.save();
-        });
-        try {
-          questionsArray = await Promise.all(questionsPromises);
-        } catch (error) {
-          res
-            .status(400)
-            .json({ message: "error adding different questions " + error });
-          console.log(error);
-        }
-
-        updatedTestContent.listOfQuestions = questionsArray;
-        console.log(updatedTestContent);
-        await testModel
+    const questionsPromises = questionsData.map((e) => {
+      const q = {
+        questionTitle: e.questionTitle,
+        suggestedResponse: e.suggestedResponse,
+        correctResponse: e.correctResponse
+      };
+      const _question = new questionModel(q);
+      return _question.save();
+    });
+    questionsArray = await Promise.all(questionsPromises);
+    updatedTestContent.listOfQuestions = questionsArray;
+    await testModel
           .findByIdAndUpdate(id, updatedTestContent)
           .then((RES) => res.status(200).send("success"))
           .catch((error) => {
@@ -191,12 +204,7 @@ exports.updateTestById = async (req, res) => {
         //     return res.status(400).json({ message: "Error while catching" })
         // });
         // const updatedTest = await testModel.findByIdAndDelete(id);
-      }
-    }
   } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(404).json({ msg: "Cast Error !!!!!!" });
-    }
     return res.status(400).send(error);
   }
 };
@@ -217,4 +225,35 @@ exports.applyTestById = async (req, res) => {
     .catch((error) => {
       return res.status(400).send(error);
     });
+};
+
+//this section is dedicated for the resultTest model
+exports.addResult = async (req, res) => {
+  const resultObject = req.body.resultObject;
+  const _result = new resultTestModel(resultObject);
+  await resultTestModel.deleteMany({
+    userId: resultObject.userId,
+    testId: resultObject.testId
+  }).then(
+    (result) => {
+      _result.save().then(
+        (result) => { return res.status(200).send(result) }
+      ).catch(
+        (error) => { return res.status(400).send(error) }
+      )
+    }
+  ).catch((error) => {
+    res.status(400).send(error)
+  });
+ 
+};
+
+exports.getResultBy2Ids = async (req, res) => {
+  const idTest = req.params.idTest;
+  const idUser = req.params.idUser;
+  await resultTestModel.findOne({userId: idUser, testId: idTest}).then(
+    (result) => { res.status(200).send(result) }
+  ).catch(
+    (error) => { res.status(404).send(error) }
+  )
 };

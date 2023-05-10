@@ -1,6 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
 
 import {Row, Col, Form, Container, Card} from 'react-bootstrap';
@@ -9,6 +9,8 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Padding } from '@mui/icons-material';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 const UpdateTestComponent = () => {
     const navigate = useNavigate();
@@ -100,7 +102,7 @@ const UpdateTestComponent = () => {
     const submitData = (event) => {
         const myForm = document.getElementById("myForm");
         if( myForm.checkValidity() ){
-            axios.put(API_url+"updateTestById/"+idTest, { updatedTest: testData }, config).then(
+            axios.put(API_url+"updateTestById/"+idTest, { updatedTest: testData }).then(
                 (result) => {
                     console.log("success");
                 }
@@ -109,15 +111,17 @@ const UpdateTestComponent = () => {
             });
         }else{
             console.log("form invalid");
-            console.log(myForm)
         }
+        console.log(testData)
     }
 
     //this is where I get and store testToUpdateData
     useEffect(() => {
         const fetchTestToUpdateData = async () => {
             const test = await axios.get(API_url+"getTestDataById/"+idTest);
+            console.log(test)
             setTestToUpdateData(test.data);
+//here there is a bug in my code testData.listOfQuestions is getting _id and i DONT WANT TO GET THAT 
             setTestData(test.data);
         }
         fetchTestToUpdateData()
@@ -126,7 +130,6 @@ const UpdateTestComponent = () => {
 
 
     if(testToUpdateData){
-        console.log(testData)
         return(
             <>
             <div id='content-page' className='content-page'>
@@ -168,7 +171,7 @@ const UpdateTestComponent = () => {
                                             <Form.Control
                                                 name='testTimer'
                                                 type="time"
-                                                defaultValue={`00:${testData.testTimer}`}
+                                                defaultValue={`${testData.testTimer}`}
                                                 onChange={handleInputTest}
                                                 required
                                             />
@@ -276,7 +279,7 @@ const UpdateTestComponent = () => {
                         </Col>
                     </Row>
                     <Button variant="contained" color="success" 
-                    onClick={submitData}
+                    onClick={(e) => submitData(e)}
                     >
                         submit
                     </Button>
@@ -288,7 +291,15 @@ const UpdateTestComponent = () => {
         return(
             <>
             <Container>
-                LOAAAADIIIIING
+                <div style={{margin:"250px 350px"}}>
+                    <Box sx={{ display: 'flex' }}>
+                        <CircularProgress />
+                    </Box>
+                </div>
+                <div style={{textAlign:"center"}}>
+                    <h2>if the LOADING took too long.. Go <Link to={"/"}>Home</Link></h2>
+                </div>
+
             </Container>
             </>
         )

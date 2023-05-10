@@ -47,11 +47,15 @@ const RatingsComponentCourse = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const p = courseRatings.map((r) => {
-        return axios.get(`http://localhost:9000/ratings/Rate/${r._id}`);
-      });
-      const ratingResponsive = await Promise.all(p);
-      const ratingData = ratingResponsive.map((w) => (w.data ? w.data : null));
+      let ratingData = []
+      if(courseRatings){
+        const p = courseRatings.map((r) => {
+          return axios.get(`http://localhost:9000/ratings/Rate/${r._id}`);
+        });
+        const ratingResponsive = await Promise.all(p);
+        ratingData = ratingResponsive.map((w) => (w.data ? w.data : null));
+      }
+      
       if (ratingData !== [] && ratingData) {
         setCourseRatingsData(
           ratingData.map((r, i) => ({ ...r, user: courseRatings[i].user }))
@@ -100,12 +104,16 @@ const RatingsComponentCourse = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const p = courseRatings.map((r) => {
-        return axios.get(`http://localhost:9000/ratings/Rate/${r._id}`);
-      });
-
-      const ratingResponsive = await Promise.all(p);
-      const ratingData = ratingResponsive.map((w) => (w.data ? w.data : null)); // Add a check for empty data
+      let ratingData = []
+      if(courseRatings){
+        const p = courseRatings.map((r) => {
+          return axios.get(`http://localhost:9000/ratings/Rate/${r._id}`);
+        });
+  
+        const ratingResponsive = await Promise.all(p);
+        ratingData = ratingResponsive.map((w) => (w.data ? w.data : null)); // Add a check for empty data
+      }
+      
       if (ratingData !== [] && ratingData) {
         setCourseRatingsData(ratingData);
       }
@@ -113,6 +121,7 @@ const RatingsComponentCourse = () => {
     fetchData();
   }, [courseRatings]);
 
+  
   return (
     <Container>
       <Row>
@@ -152,7 +161,8 @@ const RatingsComponentCourse = () => {
           {message && <Alert variant="success">{message}</Alert>}
           {error && <Alert variant="danger">{error}</Alert>}
           <h3>List of rates for this course :</h3>
-          {courseRatings.length > 0 ? (
+
+          {courseRatings && courseRatings?.length > 0 ? (
             <ListGroup>
               {courseRatingsData &&
                 courseRatingsData.map((rating, index) => (

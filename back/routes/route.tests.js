@@ -15,6 +15,13 @@ route.get("/getTestDataById/:id", testsController.getTestDataById);
 
 route.put("/updateTestById/:id", testsController.updateTestById);
 
+route.put("/updateTestByIdLTS/:id", testsController.updateTestByIdLTS);
+
 route.put("/applyUserById/:id", testsController.applyTestById)
+
+//this is for the reultTest 
+route.post("/addResult", testsController.addResult);
+
+route.get("/getResult/:idTest/:idUser", testsController.getResultBy2Ids);
 
 module.exports = route;

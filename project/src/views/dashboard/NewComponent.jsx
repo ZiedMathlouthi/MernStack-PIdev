@@ -83,6 +83,7 @@ const RatingsComponentCompany = () => {
   const handleCancel = () => {
     navigate("/");
   };
+  console.log(companyRatings)
 
   return (
     <Container>
