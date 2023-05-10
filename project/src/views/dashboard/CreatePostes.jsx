@@ -55,16 +55,18 @@ import { uploadImage, uploadPost } from "../../actions/uploadAction";
 import {UilTimes} from '@iconscout/react-unicons'
 import axios from "axios";
 import jwt from "jwt-decode";
+import emailjs from '@emailjs/browser';
 
 const Postes = () => {
   
   const [selectedPost, setSelectedPost] = useState({});
   const [posts, setPosts] = useState([]);
-  const [user, setUser] = useState(null);
   const token = JSON.parse(localStorage.getItem("myData")).token;
   const User = JSON.parse(localStorage.getItem("myData"));
   const [likes, setLikes] = useState(posts.likes);
   const [imagee, setImagee] = useState([])
+  
+  const [user, setUser] = useState(null);
 const [isLiked, setIsLiked] = useState(false);
 const userpicture = JSON.parse(localStorage.getItem("myData")).user.picture;
 	const getUserByID = () => {
@@ -148,6 +150,22 @@ const userpicture = JSON.parse(localStorage.getItem("myData")).user.picture;
 		}
 
 	};
+
+  const deleteComment = async (postId, commentId) => {
+    try {
+      const res = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/post/${postId}/comment/${commentId}`
+      );
+      if (res.data.message === "Comment deleted successfully") {
+        alert("Comment deleted successfully");
+        window.location.reload();
+      } else {
+        alert("Failed to delete comment");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   //console.log(likes)
 const [comment,setComment] = useState()
   const [comments, setComments] = useState([]);
@@ -169,7 +187,7 @@ const [comment,setComment] = useState()
 		fetchComments();
 	}, []);
   console.log(posts)
-
+  console.log("comments",comments)
   const handleAddComment = async (postId) => {
     console.log("postId is :",postId)
 		try {
@@ -200,6 +218,53 @@ const [comment,setComment] = useState()
   const desc = useRef();
   const fullName = useRef();
   const dispatch = useDispatch()
+  const [loadingp, setLoadingp] = useState(false);
+
+const [message, setMessage] = useState('');
+const [signaled, setSignaled] = useState(false);
+  const signalPost = async (postId) => {
+    try {
+      const userId = User.user._id
+      setLoadingp(true);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/post/${postId}/user/${userId}`
+      );
+      setMessage(response.data.message);
+      message === 'Post signaled successfully.' && alert(message);
+      const signaled = response.data.signaled;
+console.log(signaled)
+		if (signaled) {
+			emailjs
+				.send(
+					'service_yed2f4f',
+			    'template_u3wfja9',
+					{
+            subject:"Signaled Post!",
+						from_name: User.user.fullName,
+						to_name: 'israa neji',
+						from_email: User.user.email,
+						to_email: 'israa.neji8@gmail.com',
+						message: `A post with ID ${postId} has been signaled by user ${userId}.`,
+					},
+					'Is3m-Kd7A8xCMlCr6'
+				)
+				.then(
+					() => {
+						setLoadingp(false);
+					},
+					(error) => {
+						setLoadingp(false);
+						console.error(error);
+					}
+				);
+		}
+    } catch (err) {
+      console.error(err);
+      setMessage('Error signaling post.');
+      setLoadingp(false);
+      alert('Ahh, something went wrong. Please try again.');
+    }
+  };
   
 
    const onImageChange = (event) => {
@@ -228,6 +293,11 @@ const [comment,setComment] = useState()
     fetchData()
 
   }
+
+
+
+
+
   return (
     <>
       <div id="content-page" className="content-page ">
@@ -247,11 +317,14 @@ const [comment,setComment] = useState()
                   <Card.Body>
                     <div className="d-flex align-items-center">
                       <div className="user-img">
-                        <img
+                         <Link to={`/dashboards/profiles/profile2`}>
+                         <img
                           src={`http://localhost:9000/data/${userpicture}`}
                           alt="user1"
                           className="avatar-60 rounded-circle"
                         />
+                       </Link> 
+                        
                       </div>
                       <form
                         enctype="multipart/form-data"
@@ -324,11 +397,15 @@ const [comment,setComment] = useState()
                       <div className="user-post-data">
                         <div className="d-flex justify-content-between">
                           <div className="me-3">
-                            <img
+                            <Link to={`/dashboards/user/${post.userId?._id}/profile`}>
+                            
+                           <img 
                               className="avatar-60 rounded-circle"
                               src={`http://localhost:9000/data/${post.userId?.picture}`}
                               alt=""
                             />
+                           </Link>  
+                            
                           </div>
 
                           <div className="w-100">
@@ -346,7 +423,7 @@ const [comment,setComment] = useState()
                                     </span>
                                   </Dropdown.Toggle>
                                   <Dropdown.Menu className="dropdown-menu m-0 p-0">
-                                    {User.user._id === post.userId ? (
+                                    {User.user._id === post.userId?._id ? (
                                       <Dropdown.Item
                                         className=" p-3 btn btn-danger"
                                         to="#"
@@ -364,39 +441,7 @@ const [comment,setComment] = useState()
                                     ) : (
                                       <></>
                                     )}
-                                    <Dropdown.Item className="p-3" to="#">
-                                      <div className="d-flex align-items-top">
-                                        <i className="ri-close-circle-line h4"></i>
-                                        <div className="data ms-2">
-                                          <h6>Hide Post</h6>
-                                          <p className="mb-0">
-                                            See fewer posts like this.
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </Dropdown.Item>
-                                    <Dropdown.Item className=" p-3" to="#">
-                                      <div className="d-flex align-items-top">
-                                        <i className="ri-user-unfollow-line h4"></i>
-                                        <div className="data ms-2">
-                                          <h6>Unfollow User</h6>
-                                          <p className="mb-0">
-                                            Stop seeing posts but stay friends.
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </Dropdown.Item>
-                                    <Dropdown.Item className=" p-3" to="#">
-                                      <div className="d-flex align-items-top">
-                                        <i className="ri-notification-line h4"></i>
-                                        <div className="data ms-2">
-                                          <h6>Notifications</h6>
-                                          <p className="mb-0">
-                                            Turn on notifications for this post
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </Dropdown.Item>
+                                    
                                   </Dropdown.Menu>
                                 </Dropdown>
                               </div>
@@ -424,12 +469,13 @@ const [comment,setComment] = useState()
                           <div className="like-block position-relative d-flex align-items-center">
                             <div className="d-flex align-items-center">
                               <div className="like-data">
+                                <Link>
                                 <img
                                   onClick={() => handleLike(post._id)}
                                   src={icon2}
                                   className="img-fluid"
                                   alt=""
-                                />
+                                /></Link>
                               </div>
                               <div className="total-like-block ms-2 me-3">
                                 <Dropdown>
@@ -458,11 +504,20 @@ const [comment,setComment] = useState()
                               </Dropdown>
                             </div>
                           </div>
-                          <ShareOffcanvas />
+                          <div className="d-flex align-items-center feather-icon mt-2 mt-md-0">
+                <Link to="#"  className="d-flex align-items-center">
+                    <span className="material-symbols-outlined md-18">
+                        share
+                    </span>
+                    <span className='ms-1' onClick={() => signalPost(post._id)}>
+		                              {loadingp ? 'Sending...' : 'Post Signaled'}
+	                                          </span>
+                </Link>  
+                </div>
                         </div>
                         <hr />
                         <ul className="post-comments list-inline p-0 m-0">
-                          {post.comments.map((item, i) => (
+                          { post.comments.map((item, i) => (
                             <li>
                               <div className="d-flex">
                                 <div className="user-img">
@@ -478,13 +533,19 @@ const [comment,setComment] = useState()
                                   className="comment-data-block ms-3"
                                   key={item.user}
                                 >
-                                  <h6>{item.fullName}</h6>
+                                  <h5>{item.fullName}</h5>
                                   <p className="mb-0">{item.comment}</p>
                                   <div className="d-flex flex-wrap align-items-center comment-activity">
-                                    <Link to="#">Like</Link>
-                                    <Link to="#">reply</Link>
-                                    <span>5min</span>
-                                  </div>
+                           
+                              {
+                              post.userId._id === User.user._id 
+                              ? ( <p
+                              className="btn mycustumclass "
+                              onClick={() => deleteComment(post._id, item._id)}
+                            >delete comment</p>) : null}
+                              
+                            
+                          </div>
                                 </div>
                               </div>
                             </li>
@@ -506,12 +567,7 @@ const [comment,setComment] = useState()
                                 {" "}
                               </i>
                             </Link>
-                            {/* <Link to="#">
-                            <i className="ri-user-smile-line me-3"></i>
-                          </Link>
-                          <Link to="#">
-                            <i className="ri-camera-line me-3"></i>
-                          </Link> */}
+                           
                           </div>
                         </form>
                       </div>
@@ -519,6 +575,7 @@ const [comment,setComment] = useState()
                   </Card>
                 </Col>
               ))}
+              
             </Col>
 
             <div className="col-sm-12 text-center">

@@ -1,6 +1,7 @@
 const Post = require("../models/model.post.js");
 const UserModel = require("../models/model.user.js")
 const mongoose = require('mongoose')
+const Company = require("../models/model.company.js")
 
 const commentDetails = {
   fullName: 1,
@@ -238,6 +239,84 @@ const getAllPostsByUserId =async ( req,res)=>{
 	}
 }
 
+const getTotalLikes = async (req, res) => {
+	try {
+		const user = await UserModel.findById(req.params.userId);
+		if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const userPosts = await Post.find({ userId: req.params.userId });
+    let totalLikes =0; 
+    userPosts.forEach((post) => {
+			totalLikes += post.likes.length;
+		});
+		res.status(200).json({ totalLikes });
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({
+			status: 500,
+			errorMessage: err,
+			error: 'Error fetching total likes',
+		});
+	}
+};
+const signalerUPost = async (req, res) => {
+	try {
+    const { postId, userId } = req.params;
+		console.log(`POST ID : ${postId} AND USER ID : ${userId}`);
+		const post = await Post.findOne({ _id: postId, user: userId });
+
+		// VERIFICATION OF THE EXISTING POST AND USER
+		const verifPost = await Post.findOne({ _id: postId });
+		const verifUser = await UserModel.findOne({ user: userId });
+		const userEmail = verifUser?.email;
+		console.log('USER EMAIL : ', userEmail);
+
+		if (!verifPost) {
+			return res.status(404).json({ message: 'Post not found.' });
+		}
+		if (!verifUser) {
+			return res.status(404).json({ message: 'User not found.' });
+		}
+     if (verifPost && verifUser) {
+      post.signaled = true;
+      await post.save();
+		}
+    res.status(200).json({
+			status: 200,
+			'POST ID': postId,
+      signaled : post.signaled,
+			message: 'Post signaled successfully.',
+		});
+
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({
+			status: false,
+			errorMessage: err,
+			message: 'Problem with USER PROFILE',
+		});
+	}
+};
+const getUserData = async (req, res) => {
+	try {
+		const user = await UserModel.findById(req.params.userId);
+		//const company = await Company.findById(req.params.userId);
+		if (!user ) {
+			return res
+				.status(404)
+				.json({ staus: 404, error: 'User not found' });
+		}
+		res.status(200).json({
+			status: 200,
+			user,
+		});
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ status: 500, error: 'Server error' });
+	}
+};
 
 
-module.exports={getAllPostsByUserId,createPost ,getUserByID,getAllComents,addComent, getPost,updatePost,deletePost,likePost,getTimelinePosts,getAllPost,deleteComment}
+
+module.exports={getAllPostsByUserId,getUserData,signalerUPost,getTotalLikes,createPost ,getUserByID,getAllComents,addComent, getPost,updatePost,deletePost,likePost,getTimelinePosts,getAllPost,deleteComment}

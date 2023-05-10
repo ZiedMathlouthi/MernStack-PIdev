@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect , useRef ,useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Container,
@@ -20,7 +20,7 @@ import {
   UpdateCertificate,
 } from "../../../api/auth.js";
 import imgp1 from "../../../assets/images/user/15.jpg";
-
+import img1 from "../../../assets/images/small/07.png";
 import imgp25 from "../../../assets/images/user/1.jpg";
 import imgp26 from "../../../assets/images/user/02.jpg";
 import imgp27 from "../../../assets/images/user/05.jpg";
@@ -68,6 +68,10 @@ import {
   updateCv,
 } from "../../../api/auth.js";
 import ProfilePost from "./ProfilePost";
+import {UilTimes} from '@iconscout/react-unicons'
+import { useDispatch, useSelector } from "react-redux";
+import { uploadImage, uploadPost } from "../../../actions/uploadAction";
+
 // Fslightbox plugin
 const FsLightbox = ReactFsLightbox.default
   ? ReactFsLightbox.default
@@ -116,6 +120,37 @@ const Profile2 = () => {
   const [skill, setSkill] = useState("");
   const [certificate, setCertificate] = useState("");
 
+  const User = JSON.parse(localStorage.getItem("myData"));
+  const loading = useSelector((state)=>state.uploading)
+  const imageRef = useRef();
+  const desc = useRef();
+  const [image, setImage] = useState(null);
+  const dispatch = useDispatch()
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      let img = event.target.files[0];
+      setImage( img);
+    }
+  };
+  const reset =()=>{
+    setImage(null)
+    desc.current.value=""
+  }
+
+  const handleSubmitPost =(e) =>{
+    e.preventDefault()
+    const newPost ={
+      userId : User.user._id,
+      fullName : User.user.fullName,
+      desc :desc.current.value,
+      image
+    }
+    
+    dispatch(uploadPost(newPost))
+    reset()
+
+  }
+
   // Récupérez les données de l'utilisateur à partir de localStorage
   const userr = JSON.parse(localStorage.getItem("myData")).user;
   console.log(userr);
@@ -134,19 +169,7 @@ const Profile2 = () => {
       default:
         return (
           <div>
-            <Button
-              className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
-              onClick={() => setVisiteur(!visiteur)}
-            >
-              Show Profession Profile
-            </Button>
-            <Button
-              className="me-2 mt-2 btn btn-primary ms-2 btn-sm d-flex align-items-center"
-              onClick={handleShow6}
-            >
-              <span className="material-symbols-outlined  md-16">add</span>
-              add new experience
-            </Button>
+           
             <Modal centered show={show6} onHide={handleClose6}>
               <Form onSubmit={handleSubmitExperience}>
                 <Modal.Header closeButton>
@@ -343,7 +366,7 @@ const Profile2 = () => {
         slide={imageController.slide}
       />
       <ProfileHeader
-        title="Profile 2"
+        
         img={`http://localhost:9000/data/${userr.picture}`}
       />
       <div className="profile-2">
@@ -741,81 +764,66 @@ const Profile2 = () => {
                           />
                         </div>
                         <form
-                          className="post-text ms-3 w-100 "
-                          onClick={handleShow}
-                        >
-                          <input
-                            type="text"
-                            className="form-control rounded"
-                            placeholder="Write something here..."
-                            style={{ border: "none" }}
-                          />
-                        </form>
+                        enctype="multipart/form-data"
+                        className="post-text ms-3 w-100 "
+                        // onClick={handleShow}
+                      >
+                        <input
+                          type="text"
+                          className="form-control rounded"
+                          placeholder="Write something here..."
+                          style={{ border: "none" }}
+                          ref={desc}
+                          required
+                        />
+
+                        <ul className=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap w-100">
+                          <li className="me-3 mb-md-0 mb-2 w-50">
+                            <Link
+                              to="#"
+                              className="btn btn-soft-primary"
+                              onClick={() => imageRef.current.click()}
+                            >
+                              <img
+                                src={img1}
+                                alt="icon"
+                                className="img-fluid me-2"
+                              />{" "}
+                              Photo/Video
+                            </Link>
+                          </li>
+                          <li className="me-3 mb-md-0 mb-2 ms-auto ">
+                            <button
+                              type="submit"
+                              className="btn btn-primary w-100"
+                              onClick={handleSubmitPost}
+                              disabled={loading}
+                            >
+                              {loading ? "Uploading..." : "Share"}
+                            </button>
+                            <div style={{ display: "none" }}>
+                              <input
+                                type="file"
+                                name="myImage"
+                                ref={imageRef}
+                                onChange={onImageChange}
+                              />
+                            </div>
+                          </li>
+                          {image && (
+                            <div className="previewImage">
+                              <UilTimes onClick={() => setImage(null)} />
+                              <img
+                                src={URL.createObjectURL(image)}
+                                alt="preview"
+                              />
+                            </div>
+                          )}
+                        </ul>
+                      </form>
                       </div>
                       <hr />
-                      <ul className=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap">
-                        <li className="bg-soft-primary rounded p-2 pointer d-flex align-items-center me-3 mb-md-0 mb-2">
-                          <img
-                            loading="lazy"
-                            src={small07}
-                            alt="icon"
-                            className="img-fluid me-2"
-                          />{" "}
-                          Photo/Video
-                        </li>
-                        <li className="bg-soft-primary rounded p-2 pointer d-flex align-items-center me-3 mb-md-0 mb-2">
-                          <img
-                            loading="lazy"
-                            src={small08}
-                            alt="icon"
-                            className="img-fluid me-2"
-                          />{" "}
-                          Tag Friend
-                        </li>
-                        <li className="bg-soft-primary rounded p-2 pointer d-flex align-items-center me-3">
-                          <img
-                            loading="lazy"
-                            src={small09}
-                            alt="icon"
-                            className="img-fluid me-2"
-                          />{" "}
-                          Feeling/Activity
-                        </li>
-                        <li className="bg-soft-primary rounded p-2 pointer text-center">
-                          <div className="card-header-toolbar d-flex align-items-center">
-                            <Dropdown>
-                              <Dropdown.Toggle
-                                as={CustomToggle}
-                                id="post-option"
-                              >
-                                <span className="material-symbols-outlined">
-                                  more_horiz
-                                </span>
-                              </Dropdown.Toggle>
-                              <Dropdown.Menu
-                                className=" dropdown-menu-right"
-                                aria-labelledby="post-option"
-                              >
-                                <Dropdown.Item onClick={handleShow} href="#">
-                                  Check in
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={handleShow} href="#">
-                                  Live Video
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={handleShow} href="#">
-                                  Gif
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={handleShow} href="#">
-                                  Watch Party
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={handleShow} href="#">
-                                  Play with Friend
-                                </Dropdown.Item>
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </div>
-                        </li>
-                      </ul>
+                      
                     </Card.Body>
                     <Modal show={show} onHide={handleClose} size="lg">
                       <Modal.Header className="d-flex justify-content-between">
@@ -865,90 +873,7 @@ const Profile2 = () => {
                               Photo/Video
                             </div>
                           </li>
-                          <li className="col-md-6 mb-3">
-                            <div className="bg-soft-primary rounded p-2 pointer me-3">
-                              <Link to="#"></Link>
-                              <img
-                                loading="lazy"
-                                src={small2}
-                                alt="icon"
-                                className="img-fluid"
-                              />
-                              Tag Friend
-                            </div>
-                          </li>
-                          <li className="col-md-6 mb-3">
-                            <div className="bg-soft-primary rounded p-2 pointer me-3">
-                              <Link to="#"></Link>
-                              <img
-                                loading="lazy"
-                                src={small3}
-                                alt="icon"
-                                className="img-fluid"
-                              />
-                              Feeling/Activity
-                            </div>
-                          </li>
-                          <li className="col-md-6 mb-3">
-                            <div className="bg-soft-primary rounded p-2 pointer me-3">
-                              <Link to="#"></Link>
-                              <img
-                                loading="lazy"
-                                src={small4}
-                                alt="icon"
-                                className="img-fluid"
-                              />
-                              Check in
-                            </div>
-                          </li>
-                          <li className="col-md-6 mb-3">
-                            <div className="bg-soft-primary rounded p-2 pointer me-3">
-                              <Link to="#"></Link>
-                              <img
-                                loading="lazy"
-                                src={small5}
-                                alt="icon"
-                                className="img-fluid"
-                              />
-                              Live Video
-                            </div>
-                          </li>
-                          <li className="col-md-6 mb-3">
-                            <div className="bg-soft-primary rounded p-2 pointer me-3">
-                              <Link to="#"></Link>
-                              <img
-                                loading="lazy"
-                                src={small6}
-                                alt="icon"
-                                className="img-fluid"
-                              />
-                              Gif
-                            </div>
-                          </li>
-                          <li className="col-md-6 mb-3">
-                            <div className="bg-soft-primary rounded p-2 pointer me-3">
-                              <Link to="#"></Link>
-                              <img
-                                loading="lazy"
-                                src={small7}
-                                alt="icon"
-                                className="img-fluid"
-                              />
-                              Watch Party
-                            </div>
-                          </li>
-                          <li className="col-md-6 mb-3">
-                            <div className="bg-soft-primary rounded p-2 pointer me-3">
-                              <Link to="#"></Link>
-                              <img
-                                loading="lazy"
-                                src={small8}
-                                alt="icon"
-                                className="img-fluid"
-                              />
-                              Play with Friends
-                            </div>
-                          </li>
+                          
                         </ul>
                         <hr />
                         <div className="other-option">
@@ -965,75 +890,7 @@ const Profile2 = () => {
                               <h6>Your Story</h6>
                             </div>
                             <div className="card-post-toolbar">
-                              <Dropdown>
-                                <Dropdown.Toggle
-                                  className="dropdown-toggle"
-                                  data-bs-toggle="dropdown"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
-                                  role="button"
-                                >
-                                  <span className="btn btn-primary">
-                                    Friend
-                                  </span>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu clemassName="dropdown-menu m-0 p-0">
-                                  <Dropdown.Item
-                                    className="dropdown-item p-3"
-                                    href="#"
-                                  >
-                                    <div className="d-flex align-items-top">
-                                      <i className="ri-save-line h4"></i>
-                                      <div className="data ms-2">
-                                        <h6>Public</h6>
-                                        <p className="mb-0">
-                                          Anyone on or off Facebook
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </Dropdown.Item>
-                                  <Dropdown.Item
-                                    className="dropdown-item p-3"
-                                    href="#"
-                                  >
-                                    <div className="d-flex align-items-top">
-                                      <i className="ri-close-circle-line h4"></i>
-                                      <div className="data ms-2">
-                                        <h6>Friends</h6>
-                                        <p className="mb-0">
-                                          Your Friend on facebook
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </Dropdown.Item>
-                                  <Dropdown.Item
-                                    className="dropdown-item p-3"
-                                    href="#"
-                                  >
-                                    <div className="d-flex align-items-top">
-                                      <i className="ri-user-unfollow-line h4"></i>
-                                      <div className="data ms-2">
-                                        <h6>Friends except</h6>
-                                        <p className="mb-0">
-                                          Don't show to some friends
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </Dropdown.Item>
-                                  <Dropdown.Item
-                                    className="dropdown-item p-3"
-                                    href="#"
-                                  >
-                                    <div className="d-flex align-items-top">
-                                      <i className="ri-notification-line h4"></i>
-                                      <div className="data ms-2">
-                                        <h6>Only Me</h6>
-                                        <p className="mb-0">Only me</p>
-                                      </div>
-                                    </div>
-                                  </Dropdown.Item>
-                                </Dropdown.Menu>
-                              </Dropdown>
+                              
                             </div>
                           </div>
                         </div>
@@ -1131,790 +988,9 @@ const Profile2 = () => {
                   </div>
                   <Card>
                     <ProfilePost />
-                    {/* <Card.Body>
-                      <ul className="post-comments p-0 m-0">
-                        <li className="mb-2">
-                          <div className="d-flex justify-content-between">
-                            <div className="user-img">
-                              <img
-                                loading="lazy"
-                                src={imgp26}
-                                alt="userimg"
-                                className="avatar-60 me-3 rounded-circle img-fluid"
-                              />
-                            </div>
-                            <div className="w-100 text-margin">
-                              <h5>Mathilda Gvarliana</h5>
-                              <small className=" d-flex align-items-center ">
-                                <i className="material-symbols-outlined md-14 me-1">
-                                  schedule
-                                </i>
-                                March 14, 23:00
-                              </small>
-                              <p>
-                                Hi, I am flying to Los Angeles to attend
-                                #VSFS2020 castings. I hope it will happen and my
-                                dream comes true. Wish me luck.
-                              </p>
-                              <hr />
-                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      favorite_border
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Love it
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      comment
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Comment
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center">
-                                    <span className="material-symbols-outlined md-18">
-                                      share
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Share
-                                    </span>
-                                  </div>
-                                </div>
-                                <span className="card-text-2">
-                                  5.2k people love it
-                                </span>
-
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <span className="card-text-1 me-1">
-                                    5.2k people love it
-                                  </span>
-                                  <div className="iq-media-group ms-2">
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp27}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp28}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp29}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp30}
-                                        alt=""
-                                      />
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                              <form
-                                className="d-flex align-items-center mt-3"
-                                action="#"
-                              >
-                                <input
-                                  type="text"
-                                  className="form-control rounded"
-                                  placeholder="Write your comment"
-                                />
-                                <div className="comment-attagement d-flex align-items-center me-4">
-                                  <span className="material-symbols-outlined md-18 me-1">
-                                    comment
-                                  </span>
-                                  <h6 className="card-text-1">Comment</h6>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </Card.Body>
+                    
                   </Card>
-                  <Card>
-                    <Card.Body>
-                      <ul className="post-comments p-0 m-0">
-                        <li className="mb-2">
-                          <div className="d-flex justify-content-between">
-                            <div className="user-img">
-                              <img
-                                loading="lazy"
-                                src={imgp31}
-                                alt="userimg"
-                                className="avatar-60 me-3 rounded-circle img-fluid"
-                              />
-                            </div>
-                            <div className="w-100 text-margin">
-                              <h5>Mathilda Gvarliana</h5>
-                              <small className=" d-flex align-items-center ">
-                                <i className="material-symbols-outlined md-14 me-1">
-                                  schedule
-                                </i>
-                                March 14, 23:00
-                              </small>
-                              <div className="mt-2 mb-2 ratio">
-                                <iframe
-                                  title="myFrame"
-                                  className="rounded embed-responsive-item"
-                                  src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0"
-                                  allowFullScreen
-                                ></iframe>
-                              </div>
-                              <p>Dolce Spring Summer 2020 - Women's Show</p>
-                              <hr />
-                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      favorite_border
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Love it
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      comment
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Comment
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center">
-                                    <span className="material-symbols-outlined md-18">
-                                      share
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Share
-                                    </span>
-                                  </div>
-                                </div>
-                                <span className="card-text-2">
-                                  5.2k people love it
-                                </span>
-
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <span className="card-text-1 me-1">
-                                    5.2k people love it
-                                  </span>
-                                  <div className="iq-media-group ms-2">
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp27}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp28}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp29}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp30}
-                                        alt=""
-                                      />
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                              <form
-                                className="d-flex align-items-center mt-3"
-                                action="#"
-                              >
-                                <input
-                                  type="text"
-                                  className="form-control rounded"
-                                  placeholder="Write your comment"
-                                />
-                                <div className="comment-attagement d-flex align-items-center me-4">
-                                  <span className="material-symbols-outlined md-18 me-1">
-                                    comment
-                                  </span>
-                                  <h6 className="card-text-1">Comment</h6>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </Card.Body>
-                  </Card>
-                  <Card>
-                    <Card.Body>
-                      <ul className="post-comments p-0 m-0">
-                        <li className="mb-2">
-                          <div className="d-flex justify-content-between">
-                            <div className="user-img">
-                              <img
-                                loading="lazy"
-                                src={imgp36}
-                                alt="userimg"
-                                className="avatar-60 me-3 rounded-circle img-fluid"
-                              />
-                            </div>
-                            <div className="w-100 text-margin">
-                              <h5>Mathilda Gvarliana</h5>
-                              <small className=" d-flex align-items-center ">
-                                {" "}
-                                <i className="material-symbols-outlined md-14 me-1">
-                                  schedule
-                                </i>{" "}
-                                March 14, 23:00
-                              </small>
-                              <p>
-                                Lorem Ipsum is simply dummy text of the printing
-                                and typesetting industry.{" "}
-                              </p>
-                              <hr />
-                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      favorite_border
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Love it
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center me-3">
-                                    <span className="material-symbols-outlined md-18">
-                                      comment
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Comment
-                                    </span>
-                                  </div>
-                                  <div className="d-flex align-items-center">
-                                    <span className="material-symbols-outlined md-18">
-                                      share
-                                    </span>
-                                    <span className="card-text-1 ms-1">
-                                      Share
-                                    </span>
-                                  </div>
-                                </div>
-                                <span className="card-text-2">
-                                  5.2k people love it
-                                </span>
-
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <span className="card-text-1 me-1">
-                                    5.2k people love it
-                                  </span>
-                                  <div className="iq-media-group ms-2">
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp27}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp28}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp29}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp30}
-                                        alt=""
-                                      />
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="text-center mt-4">
-                                <p>Hide 203 comments</p>
-                              </div>
-                              <ul className="post-comments p-2  card rounded">
-                                <li className="mb-2">
-                                  <div className="d-flex justify-content-between">
-                                    <div className="user-img">
-                                      <img
-                                        src={imgp45}
-                                        alt="userimg"
-                                        className="avatar-60 me-3 rounded-circle img-fluid"
-                                      />
-                                    </div>
-                                    <div className="w-100 text-margin">
-                                      <div className="">
-                                        <h5 className="mb-0 d-inline-block me-1">
-                                          Emma Labelle
-                                        </h5>
-                                        <h6 className=" mb-0 d-inline-block">
-                                          2 weeks ago
-                                        </h6>
-                                      </div>
-                                      <p>
-                                        Lorem Ipsum is simply dummy text of the
-                                        printing and typesetting industry.{" "}
-                                      </p>
-                                      <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                        <div className="d-flex justify-content-between align-items-center">
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              favorite_border
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Love it
-                                            </span>
-                                          </div>
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              comment
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Comment
-                                            </span>
-                                          </div>
-                                          <div className="d-flex align-items-center">
-                                            <span className="material-symbols-outlined md-18">
-                                              share
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Share
-                                            </span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ul>
-                              <ul className="post-comments p-2 m-0 bg-soft-light text-dark">
-                                <li className="mb-2">
-                                  <div className="d-flex justify-content-between">
-                                    <div className="user-img">
-                                      <img
-                                        loading="lazy"
-                                        src={imgp42}
-                                        alt="userimg"
-                                        className="avatar-60 me-3 rounded-circle img-fluid"
-                                      />
-                                    </div>
-                                    <div className="w-100 text-margin">
-                                      <div className="">
-                                        <h5 className="mb-0 d-inline-block me-1">
-                                          Emma Labelle
-                                        </h5>
-                                        <span className=" mb-0 d-inline-block">
-                                          2 weeks ago
-                                        </span>
-                                      </div>
-                                      <p>
-                                        Lorem Ipsum is simply dummy text of the
-                                        printing and typesetting industry. Lorem
-                                        Ipsum has been the industry's standard
-                                        dummy text ever since the 1500s
-                                      </p>
-                                      <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                        <div className="d-flex justify-content-around align-items-center">
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              favorite_border
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Love it
-                                            </span>
-                                          </div>
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              comment
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Comment
-                                            </span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <ul className="post-comments p-0 mt-4 text-dark">
-                                        <li className="mb-2">
-                                          <div className="d-flex justify-content-between">
-                                            <div className="user-img">
-                                              <img
-                                                loading="lazy"
-                                                src={imgp43}
-                                                alt="userimg"
-                                                className="avatar-60 me-3 rounded-circle img-fluid avatar-1"
-                                              />
-                                            </div>
-                                            <div className="w-100 text-margin">
-                                              <div className="">
-                                                <h5 className="mb-0 d-inline-block me-1">
-                                                  Emma Labelle
-                                                </h5>
-                                                <h6 className=" mb-0 d-inline-block">
-                                                  2 weeks ago
-                                                </h6>
-                                              </div>
-                                              <p>
-                                                Lorem Ipsum is simply dummy text
-                                                of the printing and typesetting
-                                                industry. Lorem Ipsum has been
-                                                the industry's standard dummy
-                                                text ever since the 1500s.
-                                              </p>
-                                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                                <div className="d-flex justify-content-around align-items-center">
-                                                  <div className="d-flex align-items-center me-3">
-                                                    <span className="material-symbols-outlined md-18">
-                                                      favorite_border
-                                                    </span>
-                                                    <span className="card-text-1 ms-1">
-                                                      Love it
-                                                    </span>
-                                                  </div>
-                                                  <div className="d-flex align-items-center me-3">
-                                                    <span className="material-symbols-outlined md-18">
-                                                      comment
-                                                    </span>
-                                                    <span className="card-text-1 ms-1">
-                                                      Comment
-                                                    </span>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                      <ul className="post-comments p-0 mt-4 text-dark">
-                                        <li className="mb-2">
-                                          <div className="d-flex justify-content-between">
-                                            <div className="user-img">
-                                              <img
-                                                loading="lazy"
-                                                src={imgp44}
-                                                alt="userimg"
-                                                className="avatar-60 me-3 rounded-circle img-fluid avatar-1"
-                                              />
-                                            </div>
-                                            <div className="w-100 text-margin">
-                                              <div className="">
-                                                <h5 className="mb-0 d-inline-block me-1">
-                                                  Emma Labelle
-                                                </h5>
-                                                <h6 className=" mb-0 d-inline-block">
-                                                  2 weeks ago
-                                                </h6>
-                                              </div>
-                                              <p>
-                                                Lorem Ipsum is simply dummy text
-                                                of the printing and typesetting
-                                                industry.{" "}
-                                              </p>
-                                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                                <div className="d-flex justify-content-around align-items-center">
-                                                  <div className="d-flex align-items-center me-3">
-                                                    <span className="material-symbols-outlined md-18">
-                                                      favorite_border
-                                                    </span>
-                                                    <span className="card-text-1 ms-1">
-                                                      Love it
-                                                    </span>
-                                                  </div>
-                                                  <div className="d-flex align-items-center me-3">
-                                                    <span className="material-symbols-outlined md-18">
-                                                      comment
-                                                    </span>
-                                                    <span className="card-text-1 ms-1">
-                                                      Comment
-                                                    </span>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                              <form
-                                                className="d-flex align-items-center mt-3"
-                                                action="#"
-                                              >
-                                                <input
-                                                  type="text"
-                                                  className="form-control rounded"
-                                                  placeholder="Write your comment"
-                                                />
-                                                <div className="comment-attagement d-flex align-items-center me-4">
-                                                  <span className="material-symbols-outlined md-18 me-1">
-                                                    comment
-                                                  </span>
-                                                  <h6 className="card-text-1 me-2">
-                                                    Comment
-                                                  </h6>
-                                                </div>
-                                              </form>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ul>
-                              <ul className="post-comments p-2 mt-4 text-dark">
-                                <li className="mb-2">
-                                  <div className="d-flex justify-content-between">
-                                    <div className="user-img">
-                                      <img
-                                        loading="lazy"
-                                        src={imgp45}
-                                        alt="userimg"
-                                        className="avatar-60 me-3 rounded-circle img-fluid "
-                                      />
-                                    </div>
-                                    <div className="w-100 text-margin">
-                                      <div className="">
-                                        <h5 className="mb-0 d-inline-block me-1">
-                                          Emma Labelle
-                                        </h5>
-                                        <span className=" mb-0 d-inline-block">
-                                          2 weeks ago
-                                        </span>
-                                      </div>
-                                      <p>
-                                        Lorem Ipsum is simply dummy text of the
-                                        printing and typesetting industry.
-                                      </p>
-                                      <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                        <div className="d-flex justify-content-around align-items-center">
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              favorite_border
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Love it
-                                            </span>
-                                          </div>
-                                          <div className="d-flex align-items-center me-3">
-                                            <span className="material-symbols-outlined md-18">
-                                              comment
-                                            </span>
-                                            <span className="card-text-1 ms-1">
-                                              Comment
-                                            </span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-                                <form
-                                  className="d-flex align-items-center mt-3"
-                                  action="#"
-                                >
-                                  <input
-                                    type="text"
-                                    className="form-control rounded"
-                                    placeholder="Write your comment"
-                                  />
-                                  <div className="comment-attagement d-flex align-items-center me-4">
-                                    <span className="material-symbols-outlined md-18 me-1">
-                                      comment
-                                    </span>
-                                    <h6 className="card-text-1 me-2">
-                                      Comment
-                                    </h6>
-                                  </div>
-                                </form>
-                              </ul>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </Card.Body> */}
-                  </Card>
-                  <Card>
-                    {/* <Card.Body>
-                      <ul className="post-comments p-0 m-0">
-                        <li className="mb-2">
-                          <div className="d-flex justify-content-between">
-                            <div className="user-img">
-                              <img
-                                loading="lazy"
-                                src={imgp46}
-                                alt="userimg"
-                                className="avatar-60 me-3 rounded-circle img-fluid"
-                              />
-                            </div>
-                            <div className="w-100 text-margin">
-                              <h4>Mathilda Gvarliana</h4>
-                              <p className="mb-4">June 30, 12: 26</p>
-                              <div className="d-grid gap-2 grid-cols-2 mb-2">
-                                <Link to="#">
-                                  <img
-                                    loading="lazy"
-                                    src={imgp47}
-                                    className="img-fluid bg-soft-info rounded  image-size"
-                                    alt="profile-img"
-                                  />
-                                </Link>
-                                <Link to="#">
-                                  <img
-                                    loading="lazy"
-                                    src={imgp48}
-                                    className="img-fluid bg-soft-info rounded  image-size"
-                                    alt="profile-img"
-                                  />
-                                </Link>
-                                <Link to="#">
-                                  <img
-                                    loading="lazy"
-                                    src={imgp49}
-                                    className="img-fluid bg-soft-info rounded  image-size"
-                                    alt="profile-img"
-                                  />
-                                </Link>
-                                <Link to="#">
-                                  <img
-                                    loading="lazy"
-                                    src={imgp50}
-                                    className="img-fluid bg-soft-info rounded  image-size"
-                                    alt="profile-img"
-                                  />
-                                </Link>
-                              </div>
-                              <span className="">
-                                Photoshoot for Buyers Magazine - 2019
-                              </span>
-                              <hr />
-                              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="d-flex justify-content-between align-items-center">
-                                    <div className="d-flex align-items-center me-3">
-                                      <span className="material-symbols-outlined md-18">
-                                        favorite_border
-                                      </span>
-                                      <span className="card-text-1 ms-1">
-                                        Love it
-                                      </span>
-                                    </div>
-                                    <div className="d-flex align-items-center me-3">
-                                      <span className="material-symbols-outlined md-18">
-                                        comment
-                                      </span>
-                                      <span className="card-text-1 ms-1">
-                                        Comment
-                                      </span>
-                                    </div>
-                                    <div className="d-flex align-items-center">
-                                      <span className="material-symbols-outlined md-18">
-                                        share
-                                      </span>
-                                      <span className="card-text-1 ms-1">
-                                        Share
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <span className="card-text-1 me-1">
-                                    5.2k people love it
-                                  </span>
-                                  <div className="iq-media-group ms-2">
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp27}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp28}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp29}
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <Link to="#" className="iq-media ">
-                                      <img
-                                        loading="lazy"
-                                        className="img-fluid avatar-30 rounded-circle"
-                                        src={imgp30}
-                                        alt=""
-                                      />
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                              <form
-                                className="d-flex align-items-center mt-3"
-                                action="#"
-                              >
-                                <input
-                                  type="text"
-                                  className="form-control rounded"
-                                  placeholder="Write your comment"
-                                />
-                                <div className="comment-attagement d-flex align-items-center me-4">
-                                  <span className="material-symbols-outlined md-18 me-1">
-                                    comment
-                                  </span>
-                                  <h6 className="card-text-1 me-2">Comment</h6>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </Card.Body> */}
-                  </Card>
+                  
                 </Col>
               ) : (
                 <Col lg="8">

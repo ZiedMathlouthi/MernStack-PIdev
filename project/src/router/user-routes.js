@@ -26,6 +26,8 @@ import Admin from "../views/dashboard/app/admin";
 import Index from "../views/dashboard/CreatePostes";
 import Default from "../layouts/dashboard/default";
 
+import ProfileUserPost from "../views/dashboard/profiles/ProfileUserPost";
+
 import { DefaultRouter } from "./default-router";
 import { Layout1Router } from "./layout1-router";
 import Profile2 from "../views/dashboard/profiles/profile2";
@@ -161,6 +163,14 @@ export const SimpleRouter = [
       <>
         <Sidebar />
         <Header /> <Profile2 /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/dashboards/user/:userId/profile",
+    element: (
+      <>
+<Header /> <ProfileUserPost /> {" "}
       </>
     ),
   },
