@@ -148,7 +148,18 @@ const ChapterComponent = (props) => {
         // console.log(chapter);
         const myForm = document.getElementById("myForm");
         if(myForm.checkValidity()){
-            await axios.put("http://127.0.0.1:9000/courses/updateChapter", chapter).then(
+            const chapterParagraphs = chapter.chapterParagraphs.map(
+                (parag) => {
+                    return {
+                        paragraphTitle: parag.paragraphTitle,
+                        paragraphContent: parag.paragraphContent
+                    }
+                }
+            )
+            await axios.put("http://127.0.0.1:9000/courses/updateChapter", {
+                ...chapter,
+                chapterParagraphs
+            }).then(
                 (result) => { refreshPage(); }
             ).catch(
                 (error) => {console.log(error)}
@@ -184,7 +195,11 @@ const ChapterComponent = (props) => {
             indexParagraph: i,
             paragraphImages: chapter.chapterParagraphs[i].paragraphImages
         };
-        axios.put("http://127.0.0.1:9000/courses/uploadImage", data)
+        axios.put("http://127.0.0.1:9000/courses/uploadImage", data, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
         console.log(data);
     }
 
@@ -381,7 +396,7 @@ const ChapterComponent = (props) => {
                                                 }
                                                 required
                                             />
-                                            {/* <Form.Group className="form-group">
+                                            <Form.Group className="form-group">
                                                 <Form.Label style={{marginLeft:"-438px"}} className="custom-file-input">
                                                     Paragraph Image
                                                 </Form.Label>{" "}
@@ -394,7 +409,7 @@ const ChapterComponent = (props) => {
                                                 <Button onClick={(e) =>ClickEd(e, props.chapter, indexParag )}>
                                                     submit
                                                 </Button>
-                                            </Form.Group> */}
+                                            </Form.Group>
                                             {/* <Form.Group className="form-group">
                                                 <Form.Label style={{marginLeft:"-438px"}} className="custom-file-input">
                                                     Paragraph Video

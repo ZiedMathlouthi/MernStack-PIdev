@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 //profile-header
 
-
 import { getAllOffers } from "../../api/offer";
 import CardOffer from "../../components/card/CardOffer";
 import ProfileHeader from "../../components/profile-header";
@@ -14,7 +13,6 @@ import ProfileHeader from "../../components/profile-header";
 // import img6 from "../../../assets/images/page-img/profile-bg6.jpg";
 
 const CompanyOffers = () => {
-
   const [offers, setOffers] = useState();
   const [show, setShow] = useState(false);
   const [value, setValue] = useState("");
@@ -22,14 +20,31 @@ const CompanyOffers = () => {
   const [filterMode, setFilterMode] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
 
-  
-
   const getOffers = async () => {
-    console.log(filterMode);
+    
     try {
       const response = await getAllOffers();
+      console.log({ response });
+      const user = JSON.parse(localStorage.getItem("myData")).user;
       if (filterMode === "" || filterMode === "all") {
-        setOffers(response.data);
+        if (user.role === "user") {
+          const skills = JSON.parse(localStorage.getItem("myData")).user.skills;
+          const skillsNames = skills.map((skills) =>
+            skills.name.toLowerCase().replace(/\s+/g, " ").trim()
+          );
+          const list = response.data.filter((offer) =>
+            offer.requirements.some((requirement) => {
+              return skillsNames.some((skill) => {
+                return (
+                  skill.toLowerCase().replace(/\s+/g, " ").trim() ===
+                  requirement.toLowerCase().replace(/\s+/g, " ").trim()
+                );
+              });
+            })
+          );
+          console.log("list ", list);
+          setOffers(list);
+        } else setOffers(response.data);
       } else {
         setOffers(
           response.data.filter((offer) => {
@@ -38,7 +53,24 @@ const CompanyOffers = () => {
         );
       }
       if (filterCategory === "" || filterCategory === "all") {
-        setOffers(response.data);
+        if (user.role === "user") {
+          const skills = JSON.parse(localStorage.getItem("myData")).user.skills;
+          const skillsNames = skills.map((skills) =>
+            skills.name.toLowerCase().replace(/\s+/g, " ").trim()
+          );
+          const list = response.data.filter((offer) =>
+            offer.requirements.some((requirement) => {
+              return skillsNames.some((skill) => {
+                return (
+                  skill.toLowerCase().replace(/\s+/g, " ").trim() ===
+                  requirement.toLowerCase().replace(/\s+/g, " ").trim()
+                );
+              });
+            })
+          );
+          console.log("list ", list);
+          setOffers(list);
+        } else setOffers(response.data);
       } else {
         setOffers(
           response.data.filter((offer) => {
@@ -66,9 +98,7 @@ const CompanyOffers = () => {
 
   const handleClose = () => setShow(false);
 
-  const handleDelete = () => {
-
-  }
+  const handleDelete = () => {};
 
   return (
     <>
@@ -81,8 +111,9 @@ const CompanyOffers = () => {
             </h1>
             <div className="d-flex flex-row flex-wrap gap-5">
               {offers &&
-                offers.map((offer) => (
+                offers.map((offer, index) => (
                   <CardOffer
+                    key={index}
                     id={offer._id}
                     name={offer.name}
                     description={offer.description}

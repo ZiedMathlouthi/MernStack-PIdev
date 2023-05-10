@@ -198,19 +198,22 @@ const CourseComponent = (props) => {
                                                                     <h5><u><strong>{paragraph.paragraphTitle}</strong></u></h5>
                                                                     {(paragraph.paragraphImages) ? (
                                                                         <>
+                                                                        <div style={{}}>
                                                                         <img
                                                                             src={`http://127.0.0.1:9000/data/${paragraph.paragraphImages}`}
                                                                         />
+                                                                        </div>
+                                                                        
                                                                         </>
                                                                     ): ""}
                                                                     <p><em>{paragraph.paragraphContent}</em></p>
-                                                                    {(paragraph.paragraphVideos) ? (
+                                                                    {/* {(paragraph.paragraphVideos) ? (
                                                                         <>
                                                                         <img
                                                                             src={`http://127.0.0.1:9000/data/${paragraph.paragraphVideos}`}
                                                                         />
                                                                         </>
-                                                                    ): ""}
+                                                                    ): ""} */}
                                                                     </>
                                                                 )
                                                             )}

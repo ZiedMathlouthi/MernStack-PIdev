@@ -18,19 +18,38 @@ const companySchema = new Schema(
     description: { type: String },
     isBlocked: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
-    listofRates: [{ type: mongoose.Schema.Types.ObjectId, ref: "rating" }],
+    listofRates: [{ type: mongoose.Schema.Types.ObjectId, ref: "Rating" }],
+    averageRating: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
-companySchema.pre("save", async function (nxt) {
+
+companySchema.pre("save", async function (next) {
   try {
-    if (this.isModified("password"))
+    if (this.isModified("password")) {
       this.password = await bcrypt.hash(this.password, 10);
-    nxt();
+    }
+
+    const Rating = mongoose.model("Rating");
+
+    // Get all ratings for this company
+    const ratings = await Rating.find({ _id: { $in: this.listofRates } });
+
+    // Calculate the average rating if there are ratings
+    if (ratings.length > 0) {
+      const totalRating = ratings.reduce(
+        (acc, rating) => acc + rating.rating,
+        0
+      );
+      this.averageRating = totalRating / ratings.length;
+    }
+
+    next();
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
+
 companySchema.methods.matchPassword = async function (password) {
   try {
     const match = await bcrypt.compare(password, this.password);

@@ -8,6 +8,8 @@ const client = new OAuth2Client();
 const { AUTH_ROLES } = require("../middleware/auth");
 const ResetPasswordTokens = require("../models/model.resetPasswordToken");
 const bcrypt = require("bcryptjs");
+const { getUserById } = require("./controller.user");
+
 const signUpExpert = async (req, res) => {
   try {
     const expertise = [];
@@ -178,8 +180,10 @@ const signUpCompany = async (req, res) => {
 const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await Users.findOne({ email });
+
+    const user = await Users.findOne({ email }).maxTimeMS(30000);
     const company = await Companies.findOne({ email });
+
     if (!user && !company) {
       return res.status(400).json({ error: "user not found" });
     }

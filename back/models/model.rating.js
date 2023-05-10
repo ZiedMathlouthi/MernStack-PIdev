@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const ratingSchema = new mongoose.Schema({
   subject: {
     type: String,
@@ -13,7 +12,7 @@ const ratingSchema = new mongoose.Schema({
   },
   rater: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",
     required: true,
   },
   rating: {

@@ -9,11 +9,16 @@ exports.uploadPhoto = async (req, res) => {
   const indexParagraph = req.body.indexParagraph;
   const file = req.file?.filename;
   try {
-    // Chapter.updateOne(
-    //     { _id: idChapter },
-    //     { $set: { [`chapterParagraphs.0.paragraphImages`]: "ew" } }
-    // );
-    console.log(file)
+    const ch = await Chapter.findById(idChapter);
+    ch.chapterParagraphs = ch.chapterParagraphs.map(
+      (parag, i) => {
+        if(i == indexParagraph){
+          parag.paragraphImages = file
+        };
+        return parag
+      }
+    )
+    ch.save();
 
 
     // const arrayPromises = await Chapter.findById(idChapter).then(

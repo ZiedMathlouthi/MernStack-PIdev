@@ -243,6 +243,7 @@ export const SimpleRouter = [
       </>
     ),
   },
+  
   {
     path: "/dashboard/app/profile-forum",
     element: (

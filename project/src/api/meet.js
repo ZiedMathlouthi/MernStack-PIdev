@@ -16,6 +16,22 @@ export const createMeet = async (offerId, userId, values) => {
     return error;
   }
 };
+export const getUsersList = async () => {
+  const token = JSON.parse(localStorage.getItem("myData")).token;
+
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  try {
+    const { data } = await AxiosInstance.get("/user/users-list", config);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
 
 export const getMeetsOwner = async (ownerId) => {
   const token = JSON.parse(localStorage.getItem("myData")).token;

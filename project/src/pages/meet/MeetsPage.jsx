@@ -2,36 +2,29 @@ import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import { getAllOffers } from "../../api/offer";
-import CardOffer from "../../components/card/CardOffer";
 import ProfileHeader from "../../components/profile-header";
 import { getMeetsInvited, getMeetsOwner } from "../../api/meet";
 
 const MeetsPage = () => {
   const [meetings, setMeetings] = useState();
-  const [meetingsInvited, setMeetingsInvited] = useState();
 
   const user = JSON.parse(localStorage.getItem("myData"));
-
+  const userId = user.user._id;
   const [expert, setExpert] = useState(false);
   const [company, setCompany] = useState(false);
-  // console.log(document);
-  //   useEffect(() => {
-  //     if (user.user.role === "expert") {
-  //       setExpert(true);
-  //       setCompany(false);
-  //     }
-  //     if (user.user.role === "company") {
-  //       setExpert(false);
-  //       setCompany(true);
-  //     }
-  //   }, []);
+  const user_id = userId; // Define user_id here
 
-  //   For company
   const getMeetingsOwner = async (id) => {
     const response = await getMeetsOwner(id);
-    setMeetings(response.data);
-    console.log("Meetings : ", response);
+    const meetingsData = response.data.map((meet) => {
+      return {
+        ...meet,
+        companyId: meet.company?._id,
+      };
+    });
+
+    setMeetings(meetingsData);
+    setCompany(meetingsData[0]?.company?._id);
   };
 
   const getMeetingsInvited = async (id) => {
@@ -42,8 +35,10 @@ const MeetsPage = () => {
 
   useEffect(() => {
     if (user.user.role === "company") {
+      setCompany(true);
       getMeetingsOwner(user.user._id);
     } else {
+      setExpert(true);
       getMeetingsInvited(user.user._id);
     }
   }, []);
@@ -61,10 +56,9 @@ const MeetsPage = () => {
               {meetings &&
                 meetings.map((meet) => (
                   <MeetingCard
-                    name={meet.name}
-                    url={meet.url}
-                    startDate={meet.startDateTime}
-                    expireDate={meet.expires}
+                    isCompany={user.user.role === "company" ? true : false}
+                    key={meet._id}
+                    meet={meet}
                   />
                 ))}
             </div>
@@ -77,7 +71,7 @@ const MeetsPage = () => {
 
 export default MeetsPage;
 
-export const MeetingCard = ({ name, url, startDate, expireDate }) => {
+export const MeetingCard = ({ isCompany, meet }) => {
   const formatDate = (d) => {
     const date = new Date(d);
     const options = {
@@ -103,25 +97,33 @@ export const MeetingCard = ({ name, url, startDate, expireDate }) => {
             class="card-title text-center mb-3"
             style={{ fontSize: "20px", fontWeight: "bold" }}
           >
-            {name}
+            {meet.name}
           </h4>
 
           <div>
             <h5 style={{ fontWeight: "bold", opacity: "0.8" }}>
               Starts Date :{" "}
             </h5>
-            {formatDate(startDate)}
+            {formatDate(meet.startDate)}
           </div>
           <div className="mt-3">
             <h5 style={{ fontWeight: "bold", opacity: "0.8" }}>
               Expires Date :{" "}
             </h5>
-            {formatDate(expireDate)}
+            {formatDate(meet.expireDate)}
           </div>
         </div>
       </div>
-      <div className="card-footer d-flex justify-content-end">
-        <a href={url} target="_blank">
+      <div className="card-footer d-flex  align-items-center justify-content-between">
+        <Link
+          className="btn btn-primary btn-sm me-2"
+          to={`/${isCompany ? "ratingsUser" : "ratingsCompany"}/${
+            isCompany ? meet.invited : meet.owner
+          }`}
+        >
+          {isCompany ? "Rate this User" : "Rate this Company"}
+        </Link>
+        <a href={meet.url} target="_blank">
           {" "}
           Join now
         </a>
