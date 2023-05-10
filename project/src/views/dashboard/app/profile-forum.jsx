@@ -31,14 +31,19 @@ const ProfileForums =() =>{
     const API_url = "http://127.0.0.1:9000/";
     const currentConnectedUser = JSON.parse(localStorage.getItem("myData")).user;
     
+    const [currentConnectedUserPhoto, setCurrentConnectedUserPhoto] = useState(null);
+    const [currentConnectedUserPhotoCouv, setCurrentConnectedUserPhotoCouv] = useState(null);
     const [testsDataArray, setTestsDataArray] = useState(null);
     const [ownersData, setOwnersData] = useState({});
 
 
+    const refreshPage = () => {
+        window.location.reload();
+    };
     const handleClickApplyTest = (id) => {
         axios.put("http://127.0.0.1:9000/tests/applyUserById/"+id, {
             "userID": currentConnectedUser._id
-        });
+        }).then((res) => {refreshPage();});
     }
     //getting the array of all tests DATA
     useEffect(() => {
@@ -51,12 +56,12 @@ const ProfileForums =() =>{
             ).catch( (error) => console.log("error getting data"+error))
         };
         fetchAllTestsData();
-    },[testsDataArray])
+    },[])
     //getting owners data of each test
     useEffect(() => {
         const fetchOwnersData = async (id) => {
             try{
-                const result = await axios.get(API_url+"user/getUserById/"+id);
+                const result = await axios.get(API_url+"courses/getUserById/"+id);
                 const data = result.data;
                 setOwnersData((prevState) => {
                     return {
@@ -74,11 +79,25 @@ const ProfileForums =() =>{
                 fetchOwnersData(ownerId);
             });
         }
-    },[ownersData])
-    
-    
+    },[testsDataArray])
+    //getting the pdp and pdc of the connected user    
+    useEffect(() => {
+        const fetchCurrentUserPhoto = async () => {
+            const id = currentConnectedUser._id;
+            await axios.get(API_url+"courses/getPhoto/"+id).then(
+                (result) => { setCurrentConnectedUserPhoto(result.data) }
+            )
+            await axios.get(API_url+"courses/getPhotoCouv/"+id).then(
+                (result) => { setCurrentConnectedUserPhotoCouv(result.data) }
+            )
+        }
+
+        fetchCurrentUserPhoto();
+        
+    },[])
 
     if(testsDataArray){
+        // console.log(currentConnectedUserPhoto)
         // console.log(ownersData);
         // console.log(testsDataArray);
         return(
@@ -89,33 +108,58 @@ const ProfileForums =() =>{
                             <Card>
                                 <Card.Body className=" profile-page p-0">
                                     <div className="profile-header">
-                                        <div className="position-relative">
-                                            <img loading="lazy" src={img1} alt="profile-bg" className="rounded img-fluid"/>
-                                        </div>
+                                        {/* <div className="position-relative"> */}
+                                            {/* <img loading="lazy" src={img1} alt="profile-bg" className="rounded img-fluid"/> */}
+                                            {`http://127.0.0.1:9000/data/${currentConnectedUser.picture}` === `http://127.0.0.1:9000/data/undefined` ||
+                                             `http://127.0.0.1:9000/data/${currentConnectedUser.picture}` === `http://127.0.0.1:9000/data/null` ||
+                                             `http://127.0.0.1:9000/data/${currentConnectedUser.picture}` === `http://127.0.0.1:9000/data/` ? (
+                                                    <>
+                                                    <img
+                                                        style={{width:"100%", height:"300px"}}
+                                                        loading="lazy"
+                                                        alt="profile-bg"
+                                                        src={img1}
+                                                        className="rounded img-fluid"
+                                                    />
+                                                    </>
+                                                ): (
+                                                    <>
+                                                    <img
+                                                        style={{width:"100%", height:"300px"}}
+                                                        src={`http://127.0.0.1:9000/data/${currentConnectedUserPhotoCouv}`}
+                                                        alt="profile-img"
+                                                        className="rounded img-fluid"
+                                                    />
+                                                    </>
+                                                )}
+                                        {/* </div> */}
                                         <div className="user-detail text-center mb-3">
                                             <div className="profile-img">
-                                                <img loading="lazy" src={user1} alt="profile" className="avatar-130 img-fluid" />
+                                                {/* <img style={{verticalAlign:"middle", margin:"0 auto", height:"100%", lineHeight:"100%"}} loading="lazy" src={user1} alt="profile" className="avatar-130 img-fluid" /> */}
+                                                {`http://127.0.0.1:9000/data/${currentConnectedUser.coverPhoto}` === `http://127.0.0.1:9000/data/null` ||
+                                                 `http://127.0.0.1:9000/data/${currentConnectedUser.coverPhoto}` === `http://127.0.0.1:9000/data/undefined` ||
+                                                 `http://127.0.0.1:9000/data/${currentConnectedUser.coverPhoto}` === `http://127.0.0.1:9000/data/` ? (
+                                                    <>
+                                                    <img
+                                                    style={{verticalAlign:"middle", margin:"0 auto", height:"100%", lineHeight:"100%"}}
+                                                    src={user1}
+                                                    alt="profile-img"
+                                                    className="rounded-circle img-fluid avatar-120"
+                                                    />
+                                                    </>
+                                                ): (
+                                                    <>
+                                                    <img
+                                                    style={{verticalAlign:"middle", margin:"0 auto", height:"100%", lineHeight:"100%"}}
+                                                    src={`http://127.0.0.1:9000/data/${currentConnectedUserPhoto}`}
+                                                    alt="profile-img"
+                                                    className="rounded-circle img-fluid avatar-120"
+                                                    />
+                                                    </>
+                                                )}
                                             </div>
                                             <div className="profile-detail">
                                                 <h3>{currentConnectedUser.fullName}</h3>
-                                            </div>
-                                        </div>
-                                        <div className="profile-info p-3 d-flex align-items-center justify-content-between position-relative">
-                                            <div className="social-info">
-                                                <ul className="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
-                                                    <li className="text-center ps-3">
-                                                        <h6>Tests Taken</h6>
-                                                        <p className="mb-0">690</p>
-                                                    </li>
-                                                    <li className="text-center ps-3">
-                                                        <h6>Success Tests</h6>
-                                                        <p className="mb-0">206</p>
-                                                    </li>
-                                                    <li className="text-center ps-3">
-                                                        <h6>Failed Tests</h6>
-                                                        <p className="mb-0">100</p>
-                                                    </li>
-                                                </ul>
                                             </div>
                                         </div>
                                     </div>
@@ -172,8 +216,6 @@ const ProfileForums =() =>{
                                                                 <tr>
                                                                     <td className="col-lg-4">
                                                                         <div className="d-flex align-items-center">
-                                                                            {/** insert test image here */}
-                                                                            <img loading="lazy" className="img-fluid rounded-circle avatar-40" src={user01} alt=""/>
                                                                             <div className="media-body ms-3">
                                                                                 <h6 className="mb-0">{singleTest.testTitle}</h6>
                                                                             </div>
@@ -224,8 +266,6 @@ const ProfileForums =() =>{
                                                                 <tr>
                                                                     <td className="col-lg-4">
                                                                         <div className="d-flex align-items-center">
-                                                                            {/** insert test image here */}
-                                                                            <img loading="lazy" className="img-fluid rounded-circle avatar-40" src={user01} alt=""/>
                                                                             <div className="media-body ms-3">
                                                                                 <h6 className="mb-0">{singleTest.testTitle}</h6>
                                                                             </div>
@@ -278,8 +318,6 @@ const ProfileForums =() =>{
                                                                 <tr>
                                                                     <td className="col-lg-4">
                                                                         <div className="d-flex align-items-center">
-                                                                            {/** insert test image here */}
-                                                                            <img loading="lazy" className="img-fluid rounded-circle avatar-40" src={user09} alt=""/>
                                                                             <div className="media-body ms-3">
                                                                                 <h6 className="mb-0">{singleTest.testTitle}</h6>
                                                                             </div>

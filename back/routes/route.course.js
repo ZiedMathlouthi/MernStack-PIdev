@@ -20,16 +20,18 @@ route.post(
 );
 
 route.put(
-  "/uploadImage/:id",
-  upload.single("coursePhoto"),
+  "/uploadImage",
+  upload.single("paragraphImages"),
   courseController.uploadPhoto
 );
 
 route.get("/getUserById/:id", courseController.getUserById);
+route.get("/getPhoto/:id", courseController.getPhoto);
+route.get("/getPhotoCouv/:id", courseController.getPhotoCouv);
 
 route.post(
   "/addChapter",
-  upload.array('paragraphVideos',10),
+  upload.fields([{name:1},{name:2}]),
   courseController.addChapter
 );
 
@@ -87,4 +89,9 @@ route.put(
   courseController.deleteQuizzInCourseById
 );
 
+// route.post("",upload.fields([{name: "image as in input"}, {name: "video as in input"}]), )
+
+
+//this is what i'm gonna work with
+route.post("/gg",upload.fields([{name:1},{name:3}]),(req,res)=>{return res.json(req.files)})
 module.exports = route;

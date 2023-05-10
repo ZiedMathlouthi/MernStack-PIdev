@@ -6,6 +6,52 @@ import { Container, Row, Card, Col, Form, Button } from "react-bootstrap";
 
 import TextField from "@mui/material/TextField";
 
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
+
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const names = [
+  'react js',
+  'node js',
+  'angular js',
+  'vue js',
+  'java',
+  'python',
+  'c++',
+  'c#',
+  'c',
+  'php',
+  'ruby',
+  'swift',
+  'kotlin',
+  'dart',
+  'go',
+  'scala',
+  'rust',
+  'spring',
+  'django',
+  'laravel',
+  'flask',
+  'express',
+  'spring boot'
+];
+
 const AddCoursePage = () => {
 
     const navigate = useNavigate();
@@ -21,6 +67,16 @@ const AddCoursePage = () => {
     };
 
 
+    const handleChange = (event) => {
+        const {
+          target: { value },
+        } = event;
+        setPersonName(
+          // On autofill we get a stringified value.
+          typeof value === 'string' ? value.split(',') : value,
+        );
+      };
+    const [personName, setPersonName] = useState([]);
     const [requiredTitleCourseField, setRequiredTitleCourseField] = useState(false);
     const [requiredDescriptionCourseField, setRequiredDescriptionCourseField] = useState(false);
 
@@ -29,9 +85,9 @@ const AddCoursePage = () => {
         courseDescription: "",
         courseContent: [],
         coursePhoto: "",
+        courseCategory: [],
         courseOwner: user._id,
     });
-
 
     const handleCourseInputChange = (event) => {
         const { name, value } = event.target;
@@ -57,25 +113,41 @@ const AddCoursePage = () => {
     };
     const submitData = (event) => {
         const myForm = document.getElementById("myForm");
+        const formInputs = myForm.querySelectorAll("input");
+        const formTextArea = myForm.querySelectorAll("textarea");
+        console.log(courseData)
         if (myForm.checkValidity()) {
-            axios
-                .post(API_Url + "addCourseTemplate", courseData, config)
-                .then((result) => {
-                    if(result.status === 200){
-                        navigate("/courseDashboard/"+result.data._id)
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            if(formInputs[0].value.length > 3 && formInputs[0].value.match(/[a-zA-Z]/)){
+                courseData.courseCategory = personName;
+                axios
+                    .post(API_Url + "addCourseTemplate", courseData, config)
+                    .then((result) => {
+                        if(result.status === 200){
+                            navigate("/courseDashboard/"+result.data._id)
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }else{
+                setRequiredTitleCourseField(true);
+            }
         } else {
-            setRequiredTitleCourseField(true);
-            setRequiredDescriptionCourseField(true);
+            if(!formInputs[0].checkValidity()){
+                setRequiredTitleCourseField(true);
+            }else{
+                setRequiredTitleCourseField(false);
+            }
+            if(!formTextArea[0].checkValidity()){
+                setRequiredDescriptionCourseField(true);
+            }else{
+                setRequiredDescriptionCourseField(false);
+            }
         }
     };
 
 
-    console.log(courseData)
+    // console.log(courseData)
     return(
         <>
         <div id="content-page" className="content-page">
@@ -109,10 +181,10 @@ const AddCoursePage = () => {
                                             id="outlined-multiline-static"
                                             label="Course description"
                                             name="courseDescription"
+                                            required
                                             multiline
                                             fullWidth
                                             rows={8}
-                                            required
                                             onChange={handleCourseInputChange}
                                         />
                                     </Form.Group>
@@ -127,6 +199,28 @@ const AddCoursePage = () => {
                                             onChange={onImageChange}
                                         />
                                     </Form.Group>
+                                    
+                                    <FormControl sx={{ m: 1, width: 300, marginTop:"30px", marginLeft:"0px" }}>
+                                        <InputLabel id="demo-multiple-checkbox-label">Category</InputLabel>
+                                        <Select
+                                            labelId="demo-multiple-checkbox-label"
+                                            id="demo-multiple-checkbox"
+                                            multiple
+                                            value={personName}
+                                            onChange={handleChange}
+                                            input={<OutlinedInput label="Tag" />}
+                                            renderValue={(selected) => selected.join(', ')}
+                                            MenuProps={MenuProps}
+                                        >
+                                        {names.map((name) => (
+                                            <MenuItem key={name} value={name}>
+                                                <Checkbox checked={personName.indexOf(name) > -1} />
+                                                <ListItemText primary={name} />
+                                            </MenuItem>
+                                        ))}
+                                        </Select>
+                                    </FormControl>
+
                                 </Form>
                             </Card.Body>
                         </Col>

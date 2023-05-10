@@ -25,6 +25,7 @@ exports.addTest = async (req, res) => {
     testPhoto: req.body.testPhoto,
     testOwner: req.body.testOwner,
     testTimer: req.body.testTimer,
+    testCategory: req.body.testCategory
   };
 
   const _test = new testModel(data);
@@ -140,12 +141,31 @@ exports.getTestDataById = async (req, res) => {
 exports.updateTestByIdLTS = async (req, res) => {
   const id = req.params.id;
   let updatedTestContent = req.body.updatedTest;
+  let questionsArrayContent = updatedTestContent.listOfQuestions;
+  let questionArrayIds = [];
   try {
-    await testModel.findByIdAndUpdate(id,{testTitle:"updatedTestContent"}).then(
-      (result) => { res.status(200).send(result) }
-    ).catch(
-      (error) => { res.status(404).send(updatedTestContent) }
-    )
+    questionsArrayContent.map(
+      (question) => {
+        if(question._id){
+          questionModel.findByIdAndUpdate(question._id, question);
+        }else{
+          const Quest = new questionModel(question);
+          Quest.save().then(
+            (resultat) => { 
+              testModel.findByIdAndUpdate(id, {$push: {listOfQuestions: resultat._id}})
+             }
+          ).catch(
+            (error) => {return res.send("houni l ghalta 2")}
+          )
+        }
+      }
+    );
+    // updatedTestContent.listOfQuestions = questionArrayIds;
+    // await testModel.findByIdAndUpdate(id,updatedTestContent).then(
+    //   (result) => { res.status(200).send(result) }
+    // ).catch(
+    //   (error) => { res.status(404).send(updatedTestContent) }
+    // )
   } catch (error) {
     res.status(400).send(error)
   }
@@ -159,7 +179,12 @@ exports.updateTestById = async (req, res) => {
 
   try {
     const questionsPromises = questionsData.map((e) => {
-      const _question = new questionModel(e);
+      const q = {
+        questionTitle: e.questionTitle,
+        suggestedResponse: e.suggestedResponse,
+        correctResponse: e.correctResponse
+      };
+      const _question = new questionModel(q);
       return _question.save();
     });
     questionsArray = await Promise.all(questionsPromises);

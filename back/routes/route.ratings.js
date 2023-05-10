@@ -9,6 +9,11 @@ const {
   getUserAverageRating,
   getListOfUserRatings,
   getRating,
+  addCourseRating,
+  getCourseAverageRating,
+  getListOfCourseRatings,
+  
+
 } = require("../controller/controller.ratings");
 
 // Route pour ajouter une note à une entreprise
@@ -46,4 +51,28 @@ router.get("/company/:id/ratings", getListOfCompanyRatings);
 router.get("/user/:id/ratings", getListOfUserRatings);
 router.get("/Rate/:id", getRating);
 
+
+//Adding rating course : Integration en classe
+
+
+// Route pour ajouter une note à un cours
+router.post('/course/:id/ratings', [
+  check('rating').isInt({ min: 1, max: 5 }).withMessage('La note doit être entre 1 et 5.'),
+  check('comment').isLength({ max: 500 }).withMessage('Le commentaire ne doit pas dépasser 500 caractères.')
+], addCourseRating);
+
+// Route pour récupérer la moyenne des notes de cour
+router.get("/course/:id/average", getCourseAverageRating);
+router.get("/course/:id/ratings", getListOfCourseRatings);
+router.get('/ratings/:courseId', async (req, res) => {
+  try {
+    const courseRatingsData = await Rating.find({ subjectId: req.params.courseId })
+      .populate('rater', 'name') // populer le champ "rater" avec le champ "name" de la collection "users"
+      .exec();
+    res.status(200).json(courseRatingsData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
 module.exports = router;

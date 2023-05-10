@@ -6,12 +6,23 @@ import "./chapterPopup.css"
 import { Container, Row, Card, Col, Form, Button } from "react-bootstrap";
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
+import Snackbar from '@mui/material/Snackbar';
+import Stack from '@mui/material/Stack';
+import MuiAlert from '@mui/material/Alert';
+import Alert from '@mui/material/Alert';
+
+
+
 
 const ChapterComponent = (props) => {
 
     const idCourse = useParams().id; 
     const [chapter, setChapter] = useState(null);
     const [paragraphTitle, setParagTitle] = useState("");
+    const [chapterTitleError, setChapterTitleError] = useState(false);
+    const [alertVisibilityF, setAlertVisibilityF] = useState(false);
+
+
 //this state is for the chapter that we want to add as new chapter
     const [addedNewChapter, setAddedNewChapter] = useState({
         courseId: idCourse,
@@ -19,8 +30,8 @@ const ChapterComponent = (props) => {
         chapterParagraphs: [{
             paragraphTitle: "",
             paragraphContent: "",
-            paragraphVideos: null,
-            paragraphImages: null,
+            paragraphVideos: "",
+            paragraphImages: "",
         }]
     });
 
@@ -35,7 +46,7 @@ const ChapterComponent = (props) => {
         // if(chapter){
         //     console.log(chapter.chapterTitle)
         // }
-    },[props.chapter]);
+    },);
 
 //this fct is to handle the chapter title input changes
     const handleChapterTitleInput = (event) => {
@@ -114,32 +125,67 @@ const ChapterComponent = (props) => {
 //THIS METHOD HAS BUGG
 //always delete the last one
     const handleDeleteParag = (event, indexP) => {
-        chapter.chapterParagraphs.splice(indexP,1);
+        // console.log(`this is the chapter before delete INDEX ${indexP} :`)
+        // console.log(chapter)
+        // chapter.chapterParagraphs.splice(indexP,1);
+        // console.log(`this is the chapter AFTER delete :`)
+        // console.log(chapter)
+        let updatedChapter = { ...chapter };
+        updatedChapter.chapterParagraphs.splice(indexP, 1);
+        setChapter(updatedChapter);
     };
     const handleNewDeleteParag = (event, indexP) => {
-        addedNewChapter.chapterParagraphs.splice(indexP,1);
+        // addedNewChapter.chapterParagraphs.splice(indexP,1);
+        let updatedChapter = { ...addedNewChapter };
+        updatedChapter.chapterParagraphs.splice(indexP, 1);
+        setAddedNewChapter(prevChapter => ({ ...prevChapter, chapterParagraphs: updatedChapter.chapterParagraphs }));
     };
 
 //STILL ON WORK
 //this is the submit method called when the button submit is triggered
     const handleSubmit = async () => {
-        console.log("Button Edit Chapter submit is triggered and this is the chapter object");
-        console.log(chapter);
-        await axios.put("http://127.0.0.1:9000/courses/updateChapter", chapter).then(
-            (result) => { refreshPage(); }
-        ).catch(
-            (error) => {console.log(error)}
-        )
+        // console.log("Button Edit Chapter submit is triggered and this is the chapter object");
+        // console.log(chapter);
+        const myForm = document.getElementById("myForm");
+        if(myForm.checkValidity()){
+            await axios.put("http://127.0.0.1:9000/courses/updateChapter", chapter).then(
+                (result) => { refreshPage(); }
+            ).catch(
+                (error) => {console.log(error)}
+            )
+        }else{
+            setAlertVisibilityF(true);
+        }
+        
     }
     const handleNewSubmit = async () => {
-        console.log("Button Add New Chapter submit is triggered and this is the chapter object");
-        console.log(addedNewChapter);
-        await axios.post("http://127.0.0.1:9000/courses/addChapter", addedNewChapter).then(
-            (result) => { refreshPage(); }
-        ).catch(
-            (error) => { console.log(error) }
-        )
+        const myForm = document.getElementById("myForm");
+        // console.log(formInputs);
+        // console.log(formTextArea);
+        // console.log(formInputs[2].checkValidity())
+        if (myForm.checkValidity()){
+            // console.log(addedNewChapter)
+            await axios.post("http://127.0.0.1:9000/courses/addChapter", addedNewChapter).then(
+                (result) => { refreshPage(); }
+            ).catch(
+                (error) => { console.log(error) }
+            )
+        }else{
+            setAlertVisibilityF(true);
+        }
+
+        
         // refreshPage();
+    }
+
+    const ClickEd = async (event, ch, i) => {
+        const data = {
+            id: ch.id,
+            indexParagraph: i,
+            paragraphImages: chapter.chapterParagraphs[i].paragraphImages
+        };
+        axios.put("http://127.0.0.1:9000/courses/uploadImage", data)
+        console.log(data);
     }
 
 // console.log(addedNewChapter)
@@ -150,7 +196,7 @@ const ChapterComponent = (props) => {
         return(props.trigger) ? (
             <div className="popup">
                 <div className="popup-inner">
-                    <Button style={{marginLeft:"542px"}} className="clonse-btn" onClick={() => props.setTrigger(false)}>x</Button>
+                    <Button style={{marginLeft:"542px"}} className="clonse-btn" onClick={() => {props.setTrigger(false); setAlertVisibilityF(false)}}>x</Button>
                     <Card>
                         <Col lg="13">
                             <Card.Header className="d-flex justify-content-between">
@@ -162,7 +208,7 @@ const ChapterComponent = (props) => {
                                 <Form id="myForm" encType="multipart/form-data">
                                     <Form.Group className="form-group">
                                         <TextField
-                                            // error={requiredTitleCourseField}
+                                            error={chapterTitleError}
                                             id="outlined-basic"
                                             label={`chapter title`}
                                             name={`chapterTitle`}
@@ -211,7 +257,7 @@ const ChapterComponent = (props) => {
                                                 }
                                                 required
                                             />
-                                            <Form.Group className="form-group">
+                                            {/* <Form.Group className="form-group">
                                                 <Form.Label style={{marginLeft:"-438px"}} className="custom-file-input">
                                                     Paragraph Image
                                                 </Form.Label>{" "}
@@ -232,7 +278,7 @@ const ChapterComponent = (props) => {
                                                     id="video"
                                                      onChange={(e)=> onNewVideoChange(e, indexParag)}
                                                 />
-                                            </Form.Group>
+                                            </Form.Group> */}
                                             <Divider
                                                 style={{ margin: "15px 1px" }}
                                                 variant="middle"
@@ -248,7 +294,7 @@ const ChapterComponent = (props) => {
                                     variant="middle"
                                 />
                                 <div style={{marginLeft:"320px"}}>
-                                    <Button variant="outline-danger" className="rounded-pill mb-1" onClick={() => props.setTrigger(false)}>Cancel</Button>{' '}
+                                    <Button variant="outline-danger" className="rounded-pill mb-1" onClick={() => {props.setTrigger(false); setAlertVisibilityF(false)}}>Cancel</Button>{' '}
 
 {/** this is the button of the submit STILL ON WORK */}
                                     <Button variant="outline-success" className="rounded-pill mb-1" onClick={handleNewSubmit}>Submit</Button>{' '}
@@ -256,6 +302,13 @@ const ChapterComponent = (props) => {
                             </Card.Body>
                         </Col>
                     </Card>
+                    {(alertVisibilityF) ? ( <>
+                        <Stack sx={{ width: '100%' }} spacing={2}>
+                            <Alert variant="filled" severity="error">
+                                Please fill out all the necessary fields
+                            </Alert>
+                        </Stack>
+                    </>): ""}
                 </div>
             </div>
         ): "";
@@ -264,7 +317,7 @@ const ChapterComponent = (props) => {
         return (props.trigger) ?  (
             <div className="popup">
                 <div className="popup-inner">
-                    <Button style={{marginLeft:"542px"}} className="clonse-btn" onClick={() => props.setTrigger(false)}>x</Button>
+                    <Button style={{marginLeft:"542px"}} className="clonse-btn" onClick={() => {props.setTrigger(false); setAlertVisibilityF(false)} }>x</Button>
                     <Card>
                         <Col lg="13">
                             <Card.Header className="d-flex justify-content-between">
@@ -328,7 +381,7 @@ const ChapterComponent = (props) => {
                                                 }
                                                 required
                                             />
-                                            <Form.Group className="form-group">
+                                            {/* <Form.Group className="form-group">
                                                 <Form.Label style={{marginLeft:"-438px"}} className="custom-file-input">
                                                     Paragraph Image
                                                 </Form.Label>{" "}
@@ -338,8 +391,11 @@ const ChapterComponent = (props) => {
                                                     id="image"
                                                     onChange={(e)=>onImageChange(e, indexParag)}
                                                 />
-                                            </Form.Group>
-                                            <Form.Group className="form-group">
+                                                <Button onClick={(e) =>ClickEd(e, props.chapter, indexParag )}>
+                                                    submit
+                                                </Button>
+                                            </Form.Group> */}
+                                            {/* <Form.Group className="form-group">
                                                 <Form.Label style={{marginLeft:"-438px"}} className="custom-file-input">
                                                     Paragraph Video
                                                 </Form.Label>{" "}
@@ -349,7 +405,7 @@ const ChapterComponent = (props) => {
                                                     id="video"
                                                      onChange={(e)=> onVideoChange(e, indexParag)}
                                                 />
-                                            </Form.Group>
+                                            </Form.Group> */}
                                             <Divider
                                                 style={{ margin: "15px 1px" }}
                                                 variant="middle"
@@ -364,7 +420,7 @@ const ChapterComponent = (props) => {
                                     variant="middle"
                                 />
                                 <div style={{marginLeft:"320px"}}>
-                                    <Button variant="outline-danger" className="rounded-pill mb-1" onClick={() => props.setTrigger(false)}>Cancel</Button>{' '}
+                                    <Button variant="outline-danger" className="rounded-pill mb-1" onClick={() => {props.setTrigger(false); setAlertVisibilityF(false)} }>Cancel</Button>{' '}
 
 {/** this is the button of the submit STILL ON WORK */}
                                     <Button variant="outline-success" className="rounded-pill mb-1" onClick={handleSubmit}>Submit</Button>{' '}
@@ -372,6 +428,13 @@ const ChapterComponent = (props) => {
                                 </Card.Body>
                         </Col>
                     </Card>
+                    {(alertVisibilityF) ? ( <>
+                        <Stack sx={{ width: '100%' }} spacing={2}>
+                            <Alert variant="filled" severity="error">
+                                Please fill out all the necessary fields
+                            </Alert>
+                        </Stack>
+                    </>): ""}
                 </div>
             </div>
         ): "";

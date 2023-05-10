@@ -5,19 +5,48 @@ const progressionCourseModel = require("../models/courses/model.progressionCours
 const axios = require("axios");
 
 exports.uploadPhoto = async (req, res) => {
-  const idCourse = req.params.id;
+  const idChapter = req.body.id;
+  const indexParagraph = req.body.indexParagraph;
+  const file = req.file?.filename;
   try {
-    await Course.findByIdAndUpdate(idCourse, {
-      coursePhoto: req.file?.filename,
-    })
-      .then((result) => {
-        return res.status(200).send(result);
-      })
-      .catch((error) => {
-        return res.status(400).send(error);
-      });
+    // Chapter.updateOne(
+    //     { _id: idChapter },
+    //     { $set: { [`chapterParagraphs.0.paragraphImages`]: "ew" } }
+    // );
+    console.log(file)
+
+
+    // const arrayPromises = await Chapter.findById(idChapter).then(
+    //   (retu) => {
+    //     return retu.chapterParagraphs;
+    //   }
+    // );
+    // let array = await Promise.all(arrayPromises)
+    // array[indexParagraph].paragraphImages = req.file?.filename;
+    // res.send(array)
+
+
+    // await Chapter.findByIdAndUpdate(idChapter, {
+    //   chapterParagraphs: array
+    // }).then(
+    //   (success) => {res.status(200).send(success)}
+    // ).catch(
+    //   (error) => {res.status(404).send(error)}
+    // )
+
+    
+    // Chapter.updateOne(
+    //   { _id: idChapter},
+    //   {
+    //     chapterParagraphs: chapterParagraphs.map((p,i) => {
+    //       if(i == indexParagraph){
+    //         return 
+    //       }
+    //     })
+    //   }
+    // );
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).json(error);
   }
 };
 
@@ -27,6 +56,7 @@ exports.addCourseTemplate = async (req, res) => {
     courseName: req.body.courseName,
     courseDescription: req.body.courseDescription,
     courseOwner: req.body.courseOwner,
+    courseCategory: req.body.courseCategory,
     coursePhoto: req.file?.filename,
   };
   const _course = new Course(data);
@@ -79,6 +109,9 @@ exports.addCourse = async (req, res) => {
 exports.addChapter = async (req, res) => {
   let paragsArray = [];
   const courseId = req.body.courseId;
+  // const files=req.files;
+
+
   req.body.chapterParagraphs.map(
     (paragraph, i) => {
       const paragObject = {
@@ -448,3 +481,47 @@ exports.getUserById = async (req, res) => {
       res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
     }
 }
+
+exports.getPhoto = async (req, res) => {
+  const idExp = req.params.id;
+  try {
+    await UserModel.findById(idExp).then(
+      (result) => {
+        res.status(200).send(result.coverPhoto);
+      }
+    ).catch(
+      (error) => {
+        res.status(404).send(error);
+      }
+    );
+  } catch (error) {
+    res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
+  }
+}
+exports.getPhotoCouv = async (req, res) => {
+  const idExp = req.params.id;
+  try {
+    await UserModel.findById(idExp).then(
+      (result) => {
+        res.status(200).send(result.picture);
+      }
+    ).catch(
+      (error) => {
+        res.status(404).send(error);
+      }
+    );
+  } catch (error) {
+    res.status(400).json({message: `Error getting user by Id. Error:\n${error}`})
+  }
+};
+
+//this is the fonction i'm gonna work with
+// (req,res)=>{
+// const files=req.files
+// files.forEach(file => {
+//   const names = file.map((f)=>{
+//     f.filename
+//   })
+//   req.body.chaptersParagrphes[parseInt(file.map(x => Object.keys(x)[0]))].files= names
+// });
+// }

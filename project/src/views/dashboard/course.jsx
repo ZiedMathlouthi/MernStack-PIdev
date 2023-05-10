@@ -140,7 +140,7 @@ const CourseComponent = (props) => {
                 typeOfUpdate: -1
             });
         }else{
-            navigate("/Error");
+            navigate("/dashboards/app/profile-events");
         }
     };
 
@@ -180,7 +180,7 @@ const CourseComponent = (props) => {
                                         {/** ends here */}
                                     
                                     
-                                            <h3><strong>Chapter : </strong>{chaptersArray[indexCurrentChapter].chapterTitle}</h3>
+                                            <h3><strong>Chapter {indexCurrentChapter +1}: </strong>{chaptersArray[indexCurrentChapter].chapterTitle}</h3>
                                     
                                         
                                         {/** this is where it begins the parags details and course details */}
@@ -195,7 +195,7 @@ const CourseComponent = (props) => {
                                                             {chaptersArray[indexCurrentChapter].chapterParagraphs.map(
                                                                 (paragraph,indexParagraph) => (
                                                                     <>
-                                                                    <h5><u><strong>Pragraph title : </strong>{paragraph.paragraphTitle}</u></h5>
+                                                                    <h5><u><strong>{paragraph.paragraphTitle}</strong></u></h5>
                                                                     {(paragraph.paragraphImages) ? (
                                                                         <>
                                                                         <img
@@ -223,7 +223,9 @@ const CourseComponent = (props) => {
                                                                         (chapter,indexChapter) => (
                                                                             <>
                                                                             <ListItem disablePadding>
-                                                                                <ListItemText primary={`${indexChapter+1}. ${chapter.chapterTitle}`} />
+                                                                                {(indexChapter == indexCurrentChapter) ? (
+                                                                                        <b>{indexChapter+1}. {chapter.chapterTitle}</b>
+                                                                                    ):(<ListItemText primary={`${indexChapter+1}. ${chapter.chapterTitle}`} />)}
                                                                                 <br/>
                                                                             </ListItem>
                                                                             </>

@@ -119,37 +119,34 @@ const Groups = () => {
                   <Container>
           
                     { courseData.map((singleCourseData, indexCourse) => (
-                      
                       <>
+                      { !(singleCourseData.courseOwner == currentConnectedUser._id) && !(singleCourseData.courseSubcribed.includes(currentConnectedUser._id)) ? (
+                        <>
                         <div className="d-grid gap-3 d-grid-template-1fr-19">
                           <Card className="mb-0">
                             <div className="top-bg-image">
                               {/** insert image of course here */}
-                              <img key={indexCourse} src={img1} className="img-fluid w-100" alt="group-bg" />
-                            </div>
-                            <Card.Body className=" text-center">
-                            <div className="group-icon">
                               {`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}` === `http://127.0.0.1:9000/data/null` ? (
                                 <>
                                 <img
+                                  style={{width:"100%", height:"300px"}}
                                   key={indexCourse}
                                   src={gi1}
                                   alt="profile-img"
-                                  className="rounded-circle img-fluid avatar-120"
                                 />
                                 </>
                               ): (
                                 <>
                                 <img
+                                  style={{width:"100%", height:"300px"}}
                                   key={indexCourse}
                                   src={`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}`}
                                   alt="profile-img"
-                                  className="rounded-circle img-fluid avatar-120"
                                 />
                                 </>
                               )}
-                              
                             </div>
+                            <Card.Body className=" text-center">
                             <div className="group-info pt-3 pb-3">
                               <h4>
                                 {singleCourseData.courseName}
@@ -194,8 +191,11 @@ const Groups = () => {
                         </Card.Body>
                       </Card>
                       
-                    </div>
+                      </div>
                       </>
+                      ):"" }
+                      </>
+                      
                     )) }
           
                   </Container>
@@ -215,33 +215,30 @@ const Groups = () => {
                           <div className="d-grid gap-3 d-grid-template-1fr-19">
                             <Card className="mb-0">
                               <div className="top-bg-image">
-                                <img key={indexCourse} src={img1} className="img-fluid w-100" alt="group-bg" />
-                              </div>
-                              <Card.Body className=" text-center">
-                              <div className="group-icon">
                                 {`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}` === `http://127.0.0.1:9000/data/null` ? (
-                                  <>
-                                  <img
-                                    key={indexCourse}
-                                    src={gi1}
-                                    alt="profile-img"
-                                    className="rounded-circle img-fluid avatar-120"
-                                  />
-                                  </>
-                                ): (
-                                  <>
-                                  <img
-                                    key={indexCourse}
-                                    src={`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}`}
-                                    alt="profile-img"
-                                    className="rounded-circle img-fluid avatar-120"
-                                  />
-                                  </>
+                                    <>
+                                    <img
+                                      style={{width:"100%", height:"300px"}}
+                                      key={indexCourse}
+                                      src={gi1}
+                                      alt="profile-img"
+                                    />
+                                    </>
+                                  ): (
+                                    <>
+                                    <img
+                                      style={{width:"100%", height:"300px"}}
+                                      key={indexCourse}
+                                      src={`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}`}
+                                      alt="profile-img"
+                                    />
+                                    </>
                                 )}
                               </div>
+                              <Card.Body className=" text-center">
                               <div className="group-info pt-3 pb-3">
                                 <h4>
-                                  <Link key={indexCourse} to="/dashboards/app/group-detail">{singleCourseData.courseName}</Link>
+                                  {singleCourseData.courseName}
                                 </h4>
                                 <p key={indexCourse}> {singleCourseData.courseDescription} </p>
                               </div>
@@ -268,34 +265,31 @@ const Groups = () => {
                         <div className="d-grid gap-3 d-grid-template-1fr-19">
                             <Card className="mb-0">
                               <div className="top-bg-image">
-                                <img key={indexCourse} src={img1} className="img-fluid w-100" alt="group-bg" />
+                                {`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}` === `http://127.0.0.1:9000/data/null` ? (
+                                      <>
+                                      <img
+                                        style={{width:"100%", height:"300px"}}
+                                        key={indexCourse}
+                                        src={gi1}
+                                        alt="profile-img"
+                                      />
+                                      </>
+                                    ): (
+                                      <>
+                                      <img
+                                        style={{width:"100%", height:"300px"}}
+                                        key={indexCourse}
+                                        src={`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}`}
+                                        alt="profile-img"
+                                      />
+                                      </>
+                                  )}
                               </div>
                               <Card.Body className=" text-center">
-                              <div className="group-icon">
-                                {`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}` === `http://127.0.0.1:9000/data/null` ? (
-                                    <>
-                                    <img
-                                      key={indexCourse}
-                                      src={gi1}
-                                      alt="profile-img"
-                                      className="rounded-circle img-fluid avatar-120"
-                                    />
-                                    </>
-                                  ): (
-                                    <>
-                                    <img
-                                      key={indexCourse}
-                                      src={`http://127.0.0.1:9000/data/${singleCourseData.coursePhoto}`}
-                                      alt="profile-img"
-                                      className="rounded-circle img-fluid avatar-120"
-                                    />
-                                    </>
-                                  )
-                                }
-                              </div>
+                              
                               <div className="group-info pt-3 pb-3">
                                 <h4>
-                                  <Link key={indexCourse} to="/dashboards/app/group-detail">{singleCourseData.courseName}</Link>
+                                  {singleCourseData.courseName}
                                 </h4>
                                 <p key={indexCourse}> {singleCourseData.courseDescription} </p>
                               </div>

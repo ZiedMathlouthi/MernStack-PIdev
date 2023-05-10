@@ -54,6 +54,7 @@ import UpdateTestComponent from "../views/dashboard/updateTest";
 import TestComponent from "../views/dashboard/test";
 import RatingsComponentCompany from "../views/dashboard/NewComponent";
 import RatingsComponentUser from "../views/dashboard/NewComponent2";
+import RatingsComponentCourse from "../views/dashboard/CourseRatingComponent";
 
 
 import AddCoursePage from "../pages/courses/addCourse";
@@ -95,6 +96,15 @@ export const SimpleRouter = [
       <>
         <Sidebar />
         <Header /> <RatingsComponentCompany /> <RightSidebar />{" "}
+      </>
+    ),
+  },
+  {
+    path: "/ratingsCourse/:id",
+    element: (
+      <>
+        <Sidebar />
+        <Header /> <RatingsComponentCourse/> <RightSidebar />{" "}
       </>
     ),
   },

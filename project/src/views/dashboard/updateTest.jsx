@@ -119,6 +119,7 @@ const UpdateTestComponent = () => {
     useEffect(() => {
         const fetchTestToUpdateData = async () => {
             const test = await axios.get(API_url+"getTestDataById/"+idTest);
+            console.log(test)
             setTestToUpdateData(test.data);
 //here there is a bug in my code testData.listOfQuestions is getting _id and i DONT WANT TO GET THAT 
             setTestData(test.data);

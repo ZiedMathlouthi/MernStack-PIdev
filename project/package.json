@@ -29,6 +29,7 @@
     "formik": "^2.2.9",
     "fullcalendar-interaction": "^5.3.3",
     "jquery": "^3.6.0",
+    "jspdf": "^2.5.1",
     "jwt-decode": "^3.1.2",
     "leaflet": "^1.7.1",
     "react": "^18.2.0",

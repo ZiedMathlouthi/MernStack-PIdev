@@ -32,6 +32,7 @@ const testSchema = new Schema({
     required: true,
   },
   testTimer: { type: String, default: "00:15" },
+  testCategory: [String]
 });
 
 module.exports = mongoose.model("test", testSchema);
